@@ -51,7 +51,23 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build block
+        run: pnpm build
+
+      - name: Bundle block
+        run: cd dist && tar -czf issue-form-block.tar.gz issue-form-block
+        shell: bash
+
       - name: Generate changelog
         uses: hideoo/changelogithub-action@v1
+        id: changelog
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release artifacts
+        uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: 'dist/*.tar.gz'
+          release_id: ${{ steps.changelog.outputs.release_id }}
