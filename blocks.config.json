@@ -1,0 +1,11 @@
+[
+  {
+    "type": "file",
+    "id": "issue-form-block",
+    "title": "// TODO(HiDeoo)",
+    "description": "// TODO(HiDeoo)",
+    "entry": "blocks/App.tsx",
+    "matches": ["*.yml", "*.yaml"],
+    "example_path": "https://github.com/HiDeoo/issue-form-block/blob/main/examples/example.yml"
+  }
+]
