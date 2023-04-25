@@ -28,6 +28,13 @@
     "prettier": "2.8.8",
     "typescript": "5.0.4"
   },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "typescript": "5"
+      }
+    }
+  },
   "engines": {
     "node": ">=18"
   },
