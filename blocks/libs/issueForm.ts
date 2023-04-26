@@ -3,8 +3,7 @@ import { z } from 'zod'
 
 const elementWithIdSchema = z.object({
   // TODO(HiDeoo) validation regex
-  // FIXME(HiDeoo)
-  id: z.string(), //.optional(),
+  id: z.string().optional(),
 })
 
 const elementWithRequiredValidationSchema = z.object({
@@ -100,9 +99,7 @@ const issueFormSchema = z.object({
 })
 
 export function parseIssueForm(content: string) {
-  // TODO(HiDeoo) error handling
   const yaml = parse(content)
 
-  // TODO(HiDeoo) error handling
   return issueFormSchema.parse(yaml)
 }
