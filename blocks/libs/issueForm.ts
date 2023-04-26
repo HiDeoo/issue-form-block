@@ -77,19 +77,9 @@ const textareaElementSchema = z
   .merge(elementWithIdSchema)
   .merge(elementWithRequiredValidationSchema)
 
-const issueFormSchema = z.object({
+const issueFormDetailsSchema = z.object({
   // TODO(HiDeoo)
   // assignees
-  // TODO(HiDeoo)
-  body: z.array(
-    z.discriminatedUnion('type', [
-      checkboxElementSchema,
-      dropdownElementSchema,
-      inputElementSchema,
-      markdownElementSchema,
-      textareaElementSchema,
-    ])
-  ),
   description: z.string(),
   // TODO(HiDeoo)
   // labels
@@ -98,8 +88,27 @@ const issueFormSchema = z.object({
   // title
 })
 
+const issueFormElementSchema = z.discriminatedUnion('type', [
+  checkboxElementSchema,
+  dropdownElementSchema,
+  inputElementSchema,
+  markdownElementSchema,
+  textareaElementSchema,
+])
+
+const issueFormSchema = z
+  .object({
+    body: z.array(issueFormElementSchema),
+  })
+  .merge(issueFormDetailsSchema)
+
 export function parseIssueForm(content: string) {
   const yaml = parse(content)
 
-  return issueFormSchema.parse(yaml)
+  const { body, ...others } = issueFormSchema.parse(yaml)
+
+  return { body, details: others }
 }
+
+export type IssueFormDetails = z.infer<typeof issueFormDetailsSchema>
+export type IssueFormElement = z.infer<typeof issueFormElementSchema>
