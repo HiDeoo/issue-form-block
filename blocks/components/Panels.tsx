@@ -1,7 +1,7 @@
 import { Box } from '@primer/react'
 import { useAtomValue } from 'jotai'
 
-import { selectedPanelAtom } from '../atoms'
+import { selectedPanelAtom } from '../atoms/ui'
 import { usePanels } from '../hooks/usePanels'
 
 import { Editor } from './editor/Editor'

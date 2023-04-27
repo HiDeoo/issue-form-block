@@ -1,6 +1,6 @@
-import { useAtom, type PrimitiveAtom } from 'jotai'
+import { useAtom } from 'jotai'
 
-import type { TextareaElement } from '../../libs/issueForm'
+import type { TextareaElementAtom } from '../../atoms/issueForm'
 import { Block } from '../Block'
 import { TextInput } from '../TextInput'
 
@@ -27,5 +27,5 @@ export function TextareaEditor({ atom }: TextareaEditorProps) {
 }
 
 interface TextareaEditorProps {
-  atom: PrimitiveAtom<TextareaElement>
+  atom: TextareaElementAtom
 }

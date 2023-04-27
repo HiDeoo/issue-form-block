@@ -1,6 +1,8 @@
 import { parse } from 'yaml'
 import { z } from 'zod'
 
+const elementTypes = ['checkboxes', 'dropdown', 'input', 'markdown', 'textarea'] as const
+
 const elementWithIdSchema = z.object({
   // TODO(HiDeoo) validation regex
   id: z.string().optional(),
@@ -110,6 +112,13 @@ export function parseIssueForm(content: string) {
   return { elements: body, metadata: others }
 }
 
+export type IssueFormElementType = (typeof elementTypes)[number]
+
 export type IssueFormMetadata = z.infer<typeof issueFormMetadataSchema>
 export type IssueFormElement = z.infer<typeof issueFormElementSchema>
+
+export type CheckboxElement = z.infer<typeof checkboxElementSchema>
+export type DropdownElement = z.infer<typeof dropdownElementSchema>
+export type InputElement = z.infer<typeof inputElementSchema>
+export type MarkdownElement = z.infer<typeof markdownElementSchema>
 export type TextareaElement = z.infer<typeof textareaElementSchema>

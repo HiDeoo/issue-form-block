@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { issueFormElementsAtom } from '../../atoms'
+import { issueFormElementsAtom } from '../../atoms/issueForm'
 
 import { ElementPreview } from './ElementPreview'
 

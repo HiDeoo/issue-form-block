@@ -1,7 +1,6 @@
-import { useAtomValue, type PrimitiveAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
-import { isTextareaAtom } from '../../atoms'
-import type { IssueFormElement } from '../../libs/issueForm'
+import { isTextareaAtom, type ElementAtom } from '../../atoms/issueForm'
 import { TextareaPreview } from '../preview/TextareaPreview'
 
 export function ElementPreview({ atom }: ElementEditorProps) {
@@ -16,5 +15,5 @@ export function ElementPreview({ atom }: ElementEditorProps) {
 }
 
 interface ElementEditorProps {
-  atom: PrimitiveAtom<IssueFormElement>
+  atom: ElementAtom
 }

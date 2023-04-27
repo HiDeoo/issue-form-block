@@ -1,6 +1,6 @@
-import { useAtomValue, type PrimitiveAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
-import type { TextareaElement } from '../../libs/issueForm'
+import type { TextareaElementAtom } from '../../atoms/issueForm'
 
 export function TextareaPreview({ atom }: TextareaPreviewProps) {
   const textarea = useAtomValue(atom)
@@ -9,5 +9,5 @@ export function TextareaPreview({ atom }: TextareaPreviewProps) {
 }
 
 interface TextareaPreviewProps {
-  atom: PrimitiveAtom<TextareaElement>
+  atom: TextareaElementAtom
 }

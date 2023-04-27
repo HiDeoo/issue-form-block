@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 
-import { issueFormMetadataAtom } from '../../atoms'
+import { issueFormMetadataAtom } from '../../atoms/issueForm'
 import { Block } from '../Block'
 import { TextInput } from '../TextInput'
 

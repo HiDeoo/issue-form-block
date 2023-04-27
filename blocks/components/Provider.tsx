@@ -1,9 +1,9 @@
-import { Provider as StateProvider, type PrimitiveAtom, atom } from 'jotai'
+import { Provider as StateProvider, atom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { useMemo } from 'react'
 
-import { issueFormElementsAtom, issueFormMetadataAtom } from '../atoms'
-import { parseIssueForm, type IssueFormElement, type IssueFormMetadata } from '../libs/issueForm'
+import { issueFormElementsAtom, issueFormMetadataAtom, type ElementAtom } from '../atoms/issueForm'
+import { parseIssueForm, type IssueFormMetadata } from '../libs/issueForm'
 
 export function Provider({ children, content }: ProviderProps) {
   const { elements, metadata } = useMemo(() => {
@@ -13,9 +13,7 @@ export function Provider({ children, content }: ProviderProps) {
     console.error('🚨 [Provider.tsx:13] issueForm:', issueForm)
 
     return {
-      elements: issueForm.elements.map((element) => {
-        return atom(element)
-      }),
+      elements: issueForm.elements.map((element) => atom(element)) as ElementAtom[],
       metadata: issueForm.metadata,
     }
   }, [content])
@@ -45,6 +43,6 @@ interface ProviderProps {
 
 interface HydrateProps {
   children: React.ReactNode
-  elements: PrimitiveAtom<IssueFormElement>[]
+  elements: ElementAtom[]
   metadata: IssueFormMetadata
 }
