@@ -83,11 +83,11 @@ function ErrorFallback({ error }: FallbackProps) {
                 p: 3,
               }}
             >
-              <div>Path:</div>
+              <Box>Path:</Box>
               <Text sx={{ fontFamily: 'mono' }}>{issue.path.join('.')}</Text>
-              <div>Code:</div>
+              <Box>Code:</Box>
               <Text sx={{ fontFamily: 'mono' }}>{issue.code}</Text>
-              <div>Message:</div>
+              <Box>Message:</Box>
               <Text sx={{ fontFamily: 'mono' }}>{issue.message}</Text>
             </Box>
           ))
