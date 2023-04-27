@@ -112,3 +112,4 @@ export function parseIssueForm(content: string) {
 
 export type IssueFormMetadata = z.infer<typeof issueFormMetadataSchema>
 export type IssueFormElement = z.infer<typeof issueFormElementSchema>
+export type TextareaElement = z.infer<typeof textareaElementSchema>

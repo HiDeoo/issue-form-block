@@ -1,24 +1,17 @@
-import { useIssueFormElements } from '../../hooks/useIssueFormElements'
+import { useAtomValue } from 'jotai'
+
+import { issueFormElementsAtom } from '../../atoms'
+
+import { ElementPreview } from './ElementPreview'
 
 export function ElementsPreview() {
-  const elements = useIssueFormElements()
+  const elements = useAtomValue(issueFormElementsAtom)
 
-  // FIXME(HiDeoo)
-  elements
-
-  return <div>ElementsPreview</div>
+  return (
+    <>
+      {elements.map((element) => (
+        <ElementPreview atom={element} key={element.toString()} />
+      ))}
+    </>
+  )
 }
-
-// FIXME(HiDeoo)
-// export function Elem({ atom }: ElemeProps) {
-//   const element = useAtomValue(atom)
-
-//   // FIXME(HiDeoo)
-//   console.error('🚨 [Preview.tsx:32] PREVIEW:', element.type)
-
-//   return <div>{element.type}</div>
-// }
-
-// interface ElemeProps {
-//   atom: PrimitiveAtom<IssueFormElement>
-// }

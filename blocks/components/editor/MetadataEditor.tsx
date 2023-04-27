@@ -7,16 +7,12 @@ import { TextInput } from '../TextInput'
 export function MetadataEditor() {
   const [metadata, setMetadata] = useAtom(issueFormMetadataAtom)
 
-  if (!metadata) {
-    throw new Error('Missing issue form metadata.')
-  }
-
   function handleNameChange(name: string) {
-    setMetadata((prevMetadata) => (prevMetadata ? { ...prevMetadata, name } : prevMetadata))
+    setMetadata((prevMetadata) => ({ ...prevMetadata, name }))
   }
 
   function handleDescriptionChange(description: string) {
-    setMetadata((prevMetadata) => (prevMetadata ? { ...prevMetadata, description } : prevMetadata))
+    setMetadata((prevMetadata) => ({ ...prevMetadata, description }))
   }
 
   return (
