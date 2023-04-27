@@ -2,6 +2,7 @@ import { useAtomValue, type PrimitiveAtom } from 'jotai'
 
 import { issueFormBodyAtom, issueFormDetailsAtom } from '../../atoms'
 import type { IssueFormElement } from '../../libs/issueForm'
+import { Panel } from '../Panel'
 
 export function Preview() {
   const details = useAtomValue(issueFormDetailsAtom)
@@ -14,14 +15,14 @@ export function Preview() {
   }
 
   return (
-    <div>
+    <Panel>
       <div>{details.name}</div>
       <ul>
         {body.map((elementAtom, index) => (
           <Elem atom={elementAtom} key={index} />
         ))}
       </ul>
-    </div>
+    </Panel>
   )
 }
 
