@@ -12,7 +12,7 @@ export function TextareaEditor({ atom }: TextareaEditorProps) {
   }
 
   return (
-    <Block>
+    <Block title="Textarea">
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={textarea.attributes.label.length === 0 && 'A label is required.'}

@@ -16,7 +16,7 @@ export function MetadataEditor() {
   }
 
   return (
-    <Block>
+    <Block title="Metadata">
       <TextInput
         caption="Must be unique from all other issue templates, including Markdown templates."
         errorMessage={metadata.name.length === 0 && 'A name is required.'}
