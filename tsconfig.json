@@ -1,6 +1,7 @@
 {
   "extends": "@hideoo/tsconfig",
   "compilerOptions": {
+    "exactOptionalPropertyTypes": false,
     "moduleResolution": "node"
   }
 }

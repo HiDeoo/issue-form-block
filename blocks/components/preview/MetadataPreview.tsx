@@ -1,7 +1,18 @@
-import { useIssueFormMetadata } from '../../hooks/useIssueFormMetadata'
+import { useAtomValue } from 'jotai'
+
+import { issueFormMetadataAtom } from '../../atoms'
 
 export function MetadataPreview() {
-  const metadata = useIssueFormMetadata()
+  const metadata = useAtomValue(issueFormMetadataAtom)
 
-  return <div>{metadata.name}</div>
+  if (!metadata) {
+    throw new Error('Missing issue form metadata.')
+  }
+
+  return (
+    <div>
+      <div>{metadata.name}</div>
+      <div>{metadata.description}</div>
+    </div>
+  )
 }

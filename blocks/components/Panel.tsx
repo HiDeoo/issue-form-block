@@ -1,7 +1,11 @@
 import { Box } from '@primer/react'
 
 export function Panel({ children }: PanelProps) {
-  return <Box overflow="auto">{children}</Box>
+  return (
+    <Box overflow="auto" p={2}>
+      {children}
+    </Box>
+  )
 }
 
 interface PanelProps {
