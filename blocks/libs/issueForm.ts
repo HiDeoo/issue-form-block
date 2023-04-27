@@ -77,7 +77,7 @@ const textareaElementSchema = z
   .merge(elementWithIdSchema)
   .merge(elementWithRequiredValidationSchema)
 
-const issueFormDetailsSchema = z.object({
+const issueFormMetadataSchema = z.object({
   // TODO(HiDeoo)
   // assignees
   description: z.string(),
@@ -100,15 +100,15 @@ const issueFormSchema = z
   .object({
     body: z.array(issueFormElementSchema),
   })
-  .merge(issueFormDetailsSchema)
+  .merge(issueFormMetadataSchema)
 
 export function parseIssueForm(content: string) {
   const yaml = parse(content)
 
   const { body, ...others } = issueFormSchema.parse(yaml)
 
-  return { body, details: others }
+  return { elements: body, metadata: others }
 }
 
-export type IssueFormDetails = z.infer<typeof issueFormDetailsSchema>
+export type IssueFormMetadata = z.infer<typeof issueFormMetadataSchema>
 export type IssueFormElement = z.infer<typeof issueFormElementSchema>

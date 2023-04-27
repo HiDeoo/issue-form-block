@@ -2,37 +2,37 @@ import { Provider as StateProvider, type PrimitiveAtom, atom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { useMemo } from 'react'
 
-import { issueFormBodyAtom, issueFormDetailsAtom } from '../atoms'
-import { parseIssueForm, type IssueFormDetails, type IssueFormElement } from '../libs/issueForm'
+import { issueFormElementsAtom, issueFormMetadataAtom } from '../atoms'
+import { parseIssueForm, type IssueFormElement, type IssueFormMetadata } from '../libs/issueForm'
 
 export function Provider({ children, content }: ProviderProps) {
-  const { body, details } = useMemo(() => {
+  const { elements, metadata } = useMemo(() => {
     const issueForm = parseIssueForm(content)
 
     // FIXME(HiDeoo)
     console.error('🚨 [Provider.tsx:13] issueForm:', issueForm)
 
     return {
-      body: issueForm.body.map((element) => {
+      elements: issueForm.elements.map((element) => {
         return atom(element)
       }),
-      details: issueForm.details,
+      metadata: issueForm.metadata,
     }
   }, [content])
 
   return (
     <StateProvider>
-      <Hydrate body={body} details={details}>
+      <Hydrate elements={elements} metadata={metadata}>
         {children}
       </Hydrate>
     </StateProvider>
   )
 }
 
-function Hydrate({ body, children, details }: HydrateProps) {
+function Hydrate({ children, elements, metadata }: HydrateProps) {
   useHydrateAtoms([
-    [issueFormBodyAtom, body],
-    [issueFormDetailsAtom, details],
+    [issueFormElementsAtom, elements],
+    [issueFormMetadataAtom, metadata],
   ])
 
   return <>{children}</>
@@ -44,7 +44,7 @@ interface ProviderProps {
 }
 
 interface HydrateProps {
-  body: PrimitiveAtom<IssueFormElement>[]
   children: React.ReactNode
-  details: IssueFormDetails
+  elements: PrimitiveAtom<IssueFormElement>[]
+  metadata: IssueFormMetadata
 }
