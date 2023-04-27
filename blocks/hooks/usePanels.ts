@@ -3,10 +3,10 @@ import { useSyncExternalStore } from 'react'
 
 const query = `(max-width: ${theme.breakpoints[1] ?? '768px'})`
 
-export function useLayout() {
+export function usePanels() {
   const matches = useSyncExternalStore(subscribe, getSnapshot)
 
-  return { isSingleColumn: matches }
+  return { isSinglePanel: matches }
 }
 
 function subscribe(onChange: () => void) {
