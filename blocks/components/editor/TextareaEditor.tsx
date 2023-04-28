@@ -1,10 +1,12 @@
 import { useAtom, useSetAtom } from 'jotai'
 
 import { issueFormElementsAtom, type TextareaElementAtom } from '../../atoms/issueForm'
-import { Block } from '../Block'
 import { TextInput } from '../TextInput'
 
-export function TextareaEditor({ atom }: TextareaEditorProps) {
+import { EditorBlock } from './EditorBlock'
+import type { DraggableProps } from './ElementDraggableEditor'
+
+export function TextareaEditor({ atom, ...others }: TextareaEditorProps) {
   const [textarea, setTextarea] = useAtom(atom)
   const setElements = useSetAtom(issueFormElementsAtom)
 
@@ -17,7 +19,7 @@ export function TextareaEditor({ atom }: TextareaEditorProps) {
   }
 
   return (
-    <Block onDelete={handleDeleteClick} title="Textarea">
+    <EditorBlock onDelete={handleDeleteClick} title="Textarea" {...others}>
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={textarea.attributes.label.length === 0 && 'A label is required.'}
@@ -27,10 +29,10 @@ export function TextareaEditor({ atom }: TextareaEditorProps) {
         required
         value={textarea.attributes.label}
       />
-    </Block>
+    </EditorBlock>
   )
 }
 
-interface TextareaEditorProps {
+interface TextareaEditorProps extends DraggableProps {
   atom: TextareaElementAtom
 }

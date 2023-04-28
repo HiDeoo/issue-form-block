@@ -7,7 +7,8 @@ export function Panel({ children }: PanelProps) {
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
-        overflow: 'auto',
+        overflowX: 'hidden',
+        overflowY: 'auto',
         p: 2,
       }}
     >

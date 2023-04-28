@@ -1,8 +1,9 @@
 import { useAtom } from 'jotai'
 
 import { issueFormMetadataAtom } from '../../atoms/issueForm'
-import { Block } from '../Block'
 import { TextInput } from '../TextInput'
+
+import { EditorBlock } from './EditorBlock'
 
 export function MetadataEditor() {
   const [metadata, setMetadata] = useAtom(issueFormMetadataAtom)
@@ -16,7 +17,7 @@ export function MetadataEditor() {
   }
 
   return (
-    <Block title="Metadata">
+    <EditorBlock title="Metadata">
       <TextInput
         caption="Must be unique from all other issue templates, including Markdown templates."
         errorMessage={metadata.name.length === 0 && 'A name is required.'}
@@ -35,6 +36,6 @@ export function MetadataEditor() {
         required
         value={metadata.description}
       />
-    </Block>
+    </EditorBlock>
   )
 }

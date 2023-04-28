@@ -12,6 +12,9 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@dnd-kit/core": "6.0.8",
+    "@dnd-kit/modifiers": "6.0.1",
+    "@dnd-kit/sortable": "7.0.2",
     "@githubnext/blocks": "2.3.5",
     "@primer/octicons-react": "18.3.0",
     "@primer/react": "35.25.1",
