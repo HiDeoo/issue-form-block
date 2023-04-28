@@ -1,6 +1,7 @@
-import { Box } from '@primer/react'
+import { XIcon } from '@primer/octicons-react'
+import { Box, IconButton } from '@primer/react'
 
-export function Block({ children, title }: BlockProps) {
+export function Block({ children, onDelete, title }: BlockProps) {
   return (
     <Box>
       <Box
@@ -16,10 +17,20 @@ export function Block({ children, title }: BlockProps) {
           fontSize: 1,
           fontWeight: 600,
           gap: 2,
+          justifyContent: 'space-between',
           p: 2,
         }}
       >
         {title}
+        {onDelete ? (
+          <IconButton
+            aria-label="Delete element"
+            icon={XIcon}
+            onClick={onDelete}
+            variant="danger"
+            sx={{ height: 22, width: 22 }}
+          />
+        ) : null}
       </Box>
       <Box
         sx={{
@@ -45,5 +56,6 @@ export function Block({ children, title }: BlockProps) {
 
 interface BlockProps {
   children: React.ReactNode
+  onDelete?: () => void
   title: string
 }
