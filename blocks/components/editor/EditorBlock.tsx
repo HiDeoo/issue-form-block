@@ -1,5 +1,5 @@
 import { GrabberIcon, XIcon } from '@primer/octicons-react'
-import { Box, IconButton } from '@primer/react'
+import { Box, IconButton, Tooltip } from '@primer/react'
 
 import type { DraggableProps } from './ElementDraggableEditor'
 
@@ -15,6 +15,35 @@ export function EditorBlock({
   style,
   title,
 }: EditorBlockProps) {
+  const dragHandle = (
+    <IconButton
+      aria-label="Reorder element"
+      icon={GrabberIcon}
+      ref={setActivatorNodeRef}
+      sx={{
+        border: 0,
+        boxShadow: 'none',
+        cursor: 'grab',
+        display: 'block',
+        height: 22,
+        width: 60,
+        ':hover,:focus': {
+          bg: 'unset',
+        },
+        '> svg': {
+          height: 22,
+          transform: 'rotate(90deg)',
+          width: 22,
+        },
+      }}
+      {...attributes}
+      {...listeners}
+    />
+  )
+
+  const isDragHandlevisible = isDragOverlay ?? listeners
+  const isDragHandleTooltipVisible = isDragOverlay ?? isDragging
+
   return (
     <Box ref={setNodeRef} style={style} sx={{ opacity: isDragging ? 0.5 : 1 }}>
       <Box
@@ -35,40 +64,27 @@ export function EditorBlock({
         }}
       >
         <Box flex={1}>{title}</Box>
-        {isDragOverlay || listeners ? (
-          <IconButton
-            aria-label="Reorder element"
-            icon={GrabberIcon}
-            ref={setActivatorNodeRef}
-            sx={{
-              border: 0,
-              boxShadow: 'none',
-              cursor: 'grab',
-              height: 22,
-              width: 60,
-              ':hover,:focus': {
-                bg: 'unset',
-              },
-              '> svg': {
-                height: 22,
-                transform: 'rotate(90deg)',
-                width: 22,
-              },
-            }}
-            {...attributes}
-            {...listeners}
-          />
+        {isDragHandlevisible ? (
+          isDragHandleTooltipVisible ? (
+            dragHandle
+          ) : (
+            <Tooltip aria-label="Reorder element" direction="n">
+              {dragHandle}
+            </Tooltip>
+          )
         ) : null}
         {onDelete ? (
           <Box display="flex" flex={1} justifyContent="flex-end">
-            <IconButton
-              aria-label="Delete element"
-              disabled={isDragOverlay}
-              icon={XIcon}
-              onClick={onDelete}
-              variant="danger"
-              sx={{ height: 22, width: 22 }}
-            />
+            <Tooltip aria-label="Delete element" direction="w">
+              <IconButton
+                aria-label="Delete element"
+                disabled={isDragOverlay}
+                icon={XIcon}
+                onClick={onDelete}
+                variant="danger"
+                sx={{ display: 'block', height: 22, width: 22 }}
+              />
+            </Tooltip>
           </Box>
         ) : null}
       </Box>
