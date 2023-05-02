@@ -97,7 +97,7 @@ export function TextareaEditor({ atom, ...others }: TextareaEditorProps) {
         value={textarea.id}
       />
       <Checkbox
-        caption="Prevents form submission for public repositories until element is completed."
+        caption="Prevents form submission for public repositories until the textarea is completed."
         checked={textarea.validations?.required}
         label="Required"
         onChange={handleRequiredChange}

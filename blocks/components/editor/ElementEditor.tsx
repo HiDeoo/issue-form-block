@@ -1,8 +1,9 @@
 import { useAtomValue } from 'jotai'
 
-import { isTextareaAtom, type ElementAtom } from '../../atoms/issueForm'
+import { isTextareaAtom, type ElementAtom, isInputAtom } from '../../atoms/issueForm'
 
 import type { DraggableProps } from './ElementDraggableEditor'
+import { InputEditor } from './InputEditor'
 import { TextareaEditor } from './TextareaEditor'
 
 export function ElementEditor({ atom, ...others }: ElementEditorProps) {
@@ -10,6 +11,8 @@ export function ElementEditor({ atom, ...others }: ElementEditorProps) {
 
   if (isTextareaAtom(atom, element)) {
     return <TextareaEditor atom={atom} {...others} />
+  } else if (isInputAtom(atom, element)) {
+    return <InputEditor atom={atom} {...others} />
   }
 
   // TODO(HiDeoo)
