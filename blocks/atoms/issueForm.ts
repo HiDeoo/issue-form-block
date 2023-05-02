@@ -26,6 +26,10 @@ export function isInputAtom(_atom: ElementAtom, element: IssueFormElement): _ato
   return element.type === 'input'
 }
 
+export function isMarkdownAtom(_atom: ElementAtom, element: IssueFormElement): _atom is MarkdownElementAtom {
+  return element.type === 'markdown'
+}
+
 export function isTextareaAtom(_atom: ElementAtom, element: IssueFormElement): _atom is TextareaElementAtom {
   return element.type === 'textarea'
 }

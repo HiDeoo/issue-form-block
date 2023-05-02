@@ -8,7 +8,7 @@ const descriptionStyle = {
   mb: 2,
   '>div>div': {
     a: { color: 'accent.fg' },
-    p: { fontSize: 12, m: 0 },
+    p: { fontSize: 0, m: 0 },
   },
 }
 
