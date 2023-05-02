@@ -1,9 +1,9 @@
 import { useAtom } from 'jotai'
 
 import { issueFormMetadataAtom } from '../../atoms/issueForm'
-import { TextInput } from '../TextInput'
 
 import { EditorBlock } from './EditorBlock'
+import { TextInput } from './TextInput'
 
 export function MetadataEditor() {
   const [metadata, setMetadata] = useAtom(issueFormMetadataAtom)
@@ -23,7 +23,6 @@ export function MetadataEditor() {
         errorMessage={metadata.name.length === 0 && 'A name is required.'}
         label="Name"
         onChange={handleNameChange}
-        placeholder="Bug report"
         required
         value={metadata.name}
       />
@@ -32,7 +31,6 @@ export function MetadataEditor() {
         errorMessage={metadata.description.length === 0 && 'A description is required.'}
         label="Description"
         onChange={handleDescriptionChange}
-        placeholder="File a bug/issue"
         required
         value={metadata.description}
       />

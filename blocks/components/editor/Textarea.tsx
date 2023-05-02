@@ -1,31 +1,24 @@
-import { FormControl, TextInput as PrimerTextInput } from '@primer/react'
+import { FormControl, Textarea as PrimerTextarea } from '@primer/react'
 
-const textInputStyle = { bg: 'canvas.inset' }
+const textareaStyle = { bg: 'canvas.inset' }
 
-export function TextInput({
-  caption,
-  errorMessage,
-  label,
-  onChange,
-  placeholder,
-  required = false,
-  value,
-}: TextInputProps) {
+export function Textarea({ caption, errorMessage, label, onChange, required = false, value }: TextareaProps) {
   const isInvalid = errorMessage !== undefined && errorMessage !== false
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     onChange(event.target.value)
   }
 
   return (
     <FormControl required={required}>
       <FormControl.Label>{label}</FormControl.Label>
-      <PrimerTextInput
+      <PrimerTextarea
         aria-label={label}
         block
         onChange={handleChange}
-        placeholder={placeholder}
-        sx={textInputStyle}
+        resize="vertical"
+        rows={2}
+        sx={textareaStyle}
         validationStatus={isInvalid ? 'error' : undefined}
         value={value}
       />
@@ -35,12 +28,11 @@ export function TextInput({
   )
 }
 
-interface TextInputProps {
-  caption?: string
+interface TextareaProps {
+  caption?: React.ReactNode
   errorMessage?: string | false
   label: string
   onChange: (newValue: string) => void
-  placeholder: string
   required?: boolean
-  value: string
+  value?: string
 }

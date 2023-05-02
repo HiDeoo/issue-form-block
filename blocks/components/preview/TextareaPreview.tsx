@@ -18,11 +18,12 @@ export function TextareaPreview({ atom }: TextareaPreviewProps) {
     >
       <Textarea
         aria-describedby={`${textareaId}-caption`}
+        block
         id={textareaId}
         placeholder={textarea.attributes.placeholder}
         readOnly
         resize="vertical"
-        sx={{ bg: 'canvas.inset', width: '100%' }}
+        sx={{ bg: 'canvas.inset' }}
         value={textarea.attributes.value}
       />
     </PreviewBlock>

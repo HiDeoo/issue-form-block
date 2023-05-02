@@ -21,12 +21,18 @@ const requiredMarkStyle = {
 }
 
 export function PreviewBlock({ children, description, id, required, title }: PreviewBlockProps) {
+  const showDescription = description && description.trim().length > 0
+
   return (
     <Box fontSize={1}>
-      <Text as="label" htmlFor={id} sx={{ fontWeight: 600, ...(required ? requiredMarkStyle : {}) }}>
+      <Text
+        as="label"
+        htmlFor={id}
+        sx={{ display: 'block', fontWeight: 600, mb: showDescription ? 0 : 2, ...(required ? requiredMarkStyle : {}) }}
+      >
         {title}
       </Text>
-      {description && description.trim().length > 0 ? (
+      {showDescription ? (
         <Box id={`${id}-caption`} sx={descriptionStyle}>
           <MarkdownViewer dangerousRenderedHTML={{ __html: getMarkdownHtml(description) }} />
         </Box>
