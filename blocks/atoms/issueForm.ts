@@ -22,6 +22,10 @@ export function createTextareaAtom(): TextareaElementAtom {
   })
 }
 
+export function isDropdownAtom(_atom: ElementAtom, element: IssueFormElement): _atom is DropdownElementAtom {
+  return element.type === 'dropdown'
+}
+
 export function isInputAtom(_atom: ElementAtom, element: IssueFormElement): _atom is InputElementAtom {
   return element.type === 'input'
 }
