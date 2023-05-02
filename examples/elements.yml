@@ -1,0 +1,53 @@
+name: Elements
+description: An issue form with all supported elements.
+body:
+  - type: checkboxes
+    id: checkbox-id
+    attributes:
+      label: checkbox-label
+      description: checkbox-description
+      options:
+        - label: checkbox-option-1
+        - label: checkbox-option-2
+        - label: checkbox-option-3
+    validations:
+      required: true
+  - type: dropdown
+    id: dropdown-id
+    attributes:
+      label: dropdown-label
+      description: dropdown-description
+      multiple: true
+      options:
+        - dropdown-option-1
+        - dropdown-option-2
+        - dropdown-option-3
+        - dropdown-option-4
+    validations:
+      required: true
+  - type: input
+    id: input-id
+    attributes:
+      label: input-label
+      description: input-description
+      placeholder: input-placeholder
+      value: input-value
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: markdown-value
+  - type: textarea
+    id: textarea-id
+    attributes:
+      label: textarea-label
+      description: textarea-description
+      placeholder: textarea-placeholder
+      value: |
+        textarea-value-line-1
+        textarea-value-line-2
+        textarea-value-line-3
+        …
+      render: bash
+    validations:
+      required: true
