@@ -10,6 +10,7 @@ export function MetadataPreview() {
     <Box
       sx={{
         alignItems: 'center',
+        bg: 'canvas.inset',
         border: 1,
         borderColor: 'border.default',
         borderRadius: 2,

@@ -1,6 +1,6 @@
 import { FormControl, TextInput as PrimerTextInput } from '@primer/react'
 
-const textInputStyles = { bg: 'canvas.inset' }
+const textInputStyle = { bg: 'canvas.inset' }
 
 export function TextInput({
   caption,
@@ -25,7 +25,7 @@ export function TextInput({
         block
         onChange={handleChange}
         placeholder={placeholder}
-        sx={textInputStyles}
+        sx={textInputStyle}
         validationStatus={isInvalid ? 'error' : undefined}
         value={value}
       />
