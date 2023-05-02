@@ -7,6 +7,8 @@ import { Header } from './components/Header'
 import { Panels } from './components/Panels'
 import { Provider } from './components/Provider'
 
+import './styles.css'
+
 const baseStyles: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
