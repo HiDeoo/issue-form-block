@@ -5,10 +5,11 @@ import type { BetterSystemStyleObject } from '@primer/react/lib/sx'
 import { getMarkdownHtml } from '../../libs/markdown'
 
 const markdownStyle = {
-  fontWeight: '400',
+  fontWeight: 400,
   '>div>div': {
     a: { color: 'accent.fg' },
-    p: { fontSize: 1, m: 0 },
+    li: { strong: { fontWeight: 400 } },
+    p: { fontSize: 1, mt: 0 },
   },
 }
 
