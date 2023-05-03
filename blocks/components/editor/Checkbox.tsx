@@ -1,6 +1,15 @@
 import { FormControl, Checkbox as PrimerCheckbox } from '@primer/react'
 
-const checkboxStyle = { bg: 'canvas.inset', borderColor: 'border.default' }
+const checkboxStyle = {
+  bg: 'canvas.inset',
+  borderColor: 'border.default',
+  '&&::before': {
+    animation: 'none',
+  },
+  '&&:checked::before': {
+    clipPath: 'inset(0 0 0 0)',
+  },
+}
 
 export function Checkbox({ caption, checked = false, label, onChange, required = false }: CheckboxProps) {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
