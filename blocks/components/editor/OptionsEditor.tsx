@@ -197,12 +197,12 @@ function OptionEditor({
   }
 
   const isEmpty = option.label.trim().length === 0
-  const isDragHandleTooltipHidden = isDragOverlay ?? isDragging
+  const isDragged = isDragOverlay ?? isDragging
 
   return (
     <Box ref={setNodeRef} style={style} sx={{ opacity: isDragging ? 0.5 : 1 }}>
       <Box sx={{ alignItems: 'center', display: 'flex', gap: 2 }}>
-        {isDragHandleTooltipHidden ? (
+        {isDragged ? (
           <Box>{dragHandle}</Box>
         ) : (
           <Tooltip aria-label="Reorder option" direction="e">

@@ -44,11 +44,22 @@ export function EditorBlock({
     />
   )
 
+  const isDragged = isDragOverlay ?? isDragging
   const isDragHandlevisible = isDragOverlay ?? listeners
-  const isDragHandleTooltipHidden = isDragOverlay ?? isDragging
 
   return (
-    <Box ref={setNodeRef} style={style} sx={{ opacity: isDragging ? 0.5 : 1 }}>
+    <Box
+      ref={setNodeRef}
+      style={style}
+      sx={{
+        borderRadius: 2,
+        opacity: isDragging ? 0.5 : 1,
+        outlineColor: isDragging ? 'accent.fg' : undefined,
+        outlineOffset: isDragging ? 1 : undefined,
+        outlineStyle: isDragging ? 'dashed' : undefined,
+        outlineWidth: isDragging ? 3 : undefined,
+      }}
+    >
       <Box
         sx={{
           alignItems: 'center',
@@ -68,7 +79,7 @@ export function EditorBlock({
       >
         <Box flex={1}>{title}</Box>
         {isDragHandlevisible ? (
-          isDragHandleTooltipHidden ? (
+          isDragged ? (
             dragHandle
           ) : (
             <Tooltip aria-label="Reorder element" direction="n">
