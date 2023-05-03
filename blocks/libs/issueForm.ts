@@ -19,7 +19,7 @@ const elementWithRequiredValidationSchema = z.object({
     .optional(),
 })
 
-const checkboxElementSchema = z
+const checkboxesElementSchema = z
   .object({
     attributes: z.object({
       description: z.string().optional(),
@@ -28,7 +28,9 @@ const checkboxElementSchema = z
         .object({
           label: zNonEmptyString,
         })
-        .array(),
+        .array()
+        // TODO(HiDeoo) Handle serialization
+        .transform((value) => value.map((option) => ({ ...option, id: nanoid() }))),
     }),
     type: z.literal('checkboxes'),
   })
@@ -97,7 +99,7 @@ const issueFormMetadataSchema = z.object({
 })
 
 const issueFormElementSchema = z.discriminatedUnion('type', [
-  checkboxElementSchema,
+  checkboxesElementSchema,
   dropdownElementSchema,
   inputElementSchema,
   markdownElementSchema,
@@ -123,7 +125,7 @@ export type IssueFormElementType = (typeof elementTypes)[number]
 export type IssueFormMetadata = z.infer<typeof issueFormMetadataSchema>
 export type IssueFormElement = z.infer<typeof issueFormElementSchema>
 
-export type CheckboxElement = z.infer<typeof checkboxElementSchema>
+export type CheckboxesElement = z.infer<typeof checkboxesElementSchema>
 export type DropdownElement = z.infer<typeof dropdownElementSchema>
 export type InputElement = z.infer<typeof inputElementSchema>
 export type MarkdownElement = z.infer<typeof markdownElementSchema>

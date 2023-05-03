@@ -1,7 +1,7 @@
 import { atom, type PrimitiveAtom } from 'jotai'
 
 import type {
-  CheckboxElement,
+  CheckboxesElement,
   DropdownElement,
   InputElement,
   IssueFormElement,
@@ -22,6 +22,10 @@ export function createTextareaAtom(): TextareaElementAtom {
   })
 }
 
+export function isCheckboxesAtom(_atom: ElementAtom, element: IssueFormElement): _atom is CheckboxesElementAtom {
+  return element.type === 'checkboxes'
+}
+
 export function isDropdownAtom(_atom: ElementAtom, element: IssueFormElement): _atom is DropdownElementAtom {
   return element.type === 'dropdown'
 }
@@ -38,14 +42,14 @@ export function isTextareaAtom(_atom: ElementAtom, element: IssueFormElement): _
   return element.type === 'textarea'
 }
 
-export type CheckboxElementAtom = PrimitiveAtom<CheckboxElement>
+export type CheckboxesElementAtom = PrimitiveAtom<CheckboxesElement>
 export type DropdownElementAtom = PrimitiveAtom<DropdownElement>
 export type InputElementAtom = PrimitiveAtom<InputElement>
 export type MarkdownElementAtom = PrimitiveAtom<MarkdownElement>
 export type TextareaElementAtom = PrimitiveAtom<TextareaElement>
 
 export type ElementAtom =
-  | PrimitiveAtom<CheckboxElement>
+  | PrimitiveAtom<CheckboxesElement>
   | PrimitiveAtom<DropdownElement>
   | PrimitiveAtom<InputElement>
   | PrimitiveAtom<MarkdownElement>

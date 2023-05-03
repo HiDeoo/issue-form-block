@@ -1,7 +1,15 @@
 import { useAtomValue } from 'jotai'
 
-import { isTextareaAtom, type ElementAtom, isInputAtom, isMarkdownAtom, isDropdownAtom } from '../../atoms/issueForm'
+import {
+  isTextareaAtom,
+  type ElementAtom,
+  isInputAtom,
+  isMarkdownAtom,
+  isDropdownAtom,
+  isCheckboxesAtom,
+} from '../../atoms/issueForm'
 
+import { CheckboxesPreview } from './CheckboxesPreview'
 import { DropdownPreview } from './DropdownPreview'
 import { InputPreview } from './InputPreview'
 import { MarkdownPreview } from './MarkdownPreview'
@@ -10,7 +18,9 @@ import { TextareaPreview } from './TextareaPreview'
 export function ElementPreview({ atom }: ElementEditorProps) {
   const element = useAtomValue(atom)
 
-  if (isDropdownAtom(atom, element)) {
+  if (isCheckboxesAtom(atom, element)) {
+    return <CheckboxesPreview atom={atom} />
+  } else if (isDropdownAtom(atom, element)) {
     return <DropdownPreview atom={atom} />
   } else if (isInputAtom(atom, element)) {
     return <InputPreview atom={atom} />
@@ -20,8 +30,7 @@ export function ElementPreview({ atom }: ElementEditorProps) {
     return <TextareaPreview atom={atom} />
   }
 
-  // TODO(HiDeoo)
-  return <div>UNSUPPORTED ELEMENT</div>
+  throw new Error(`Unsupported preview element '${element.type}'.`)
 }
 
 interface ElementEditorProps {
