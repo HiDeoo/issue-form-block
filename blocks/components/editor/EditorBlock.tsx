@@ -1,7 +1,25 @@
 import { GrabberIcon, XIcon } from '@primer/octicons-react'
 import { Box, IconButton, Tooltip } from '@primer/react'
 
-import type { DraggableProps } from './ElementDraggableEditor'
+import type { DraggableProps } from '../../libs/dnd'
+
+const dragHandleStyle = {
+  border: 0,
+  boxShadow: 'none',
+  cursor: 'grab',
+  display: 'block',
+  height: 22,
+  touchAction: 'none',
+  width: 60,
+  ':hover,:focus': {
+    bg: 'unset',
+  },
+  '> svg': {
+    height: 22,
+    transform: 'rotate(90deg)',
+    width: 22,
+  },
+}
 
 export function EditorBlock({
   attributes,
@@ -20,29 +38,14 @@ export function EditorBlock({
       aria-label="Reorder element"
       icon={GrabberIcon}
       ref={setActivatorNodeRef}
-      sx={{
-        border: 0,
-        boxShadow: 'none',
-        cursor: 'grab',
-        display: 'block',
-        height: 22,
-        width: 60,
-        ':hover,:focus': {
-          bg: 'unset',
-        },
-        '> svg': {
-          height: 22,
-          transform: 'rotate(90deg)',
-          width: 22,
-        },
-      }}
+      sx={dragHandleStyle}
       {...attributes}
       {...listeners}
     />
   )
 
   const isDragHandlevisible = isDragOverlay ?? listeners
-  const isDragHandleTooltipVisible = isDragOverlay ?? isDragging
+  const isDragHandleTooltipHidden = isDragOverlay ?? isDragging
 
   return (
     <Box ref={setNodeRef} style={style} sx={{ opacity: isDragging ? 0.5 : 1 }}>
@@ -65,7 +68,7 @@ export function EditorBlock({
       >
         <Box flex={1}>{title}</Box>
         {isDragHandlevisible ? (
-          isDragHandleTooltipVisible ? (
+          isDragHandleTooltipHidden ? (
             dragHandle
           ) : (
             <Tooltip aria-label="Reorder element" direction="n">

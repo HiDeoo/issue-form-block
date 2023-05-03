@@ -1,6 +1,5 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import type { CSSProperties } from 'react'
 
 import type { ElementAtom } from '../../atoms/issueForm'
 
@@ -27,11 +26,6 @@ export function ElementDraggableEditor({ atom }: ElementDraggableEditorProps) {
   )
 }
 
-interface ElementDraggableEditorProps {
+export interface ElementDraggableEditorProps {
   atom: ElementAtom
-}
-
-export type DraggableProps = Partial<ReturnType<typeof useSortable>> & {
-  isDragOverlay?: boolean
-  style?: CSSProperties
 }

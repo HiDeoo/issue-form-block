@@ -2,10 +2,10 @@ import { Link } from '@primer/react'
 import { useAtom, useSetAtom } from 'jotai'
 
 import { issueFormElementsAtom, type TextareaElementAtom } from '../../atoms/issueForm'
+import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
-import type { DraggableProps } from './ElementDraggableEditor'
 import { Textarea } from './Textarea'
 import { TextInput } from './TextInput'
 

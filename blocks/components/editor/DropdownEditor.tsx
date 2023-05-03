@@ -1,15 +1,15 @@
+import { arrayMove } from '@dnd-kit/sortable'
 import { useAtom, useSetAtom } from 'jotai'
 import { nanoid } from 'nanoid'
 
 import { issueFormElementsAtom, type DropdownElementAtom } from '../../atoms/issueForm'
+import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
-import type { DraggableProps } from './ElementDraggableEditor'
 import { type Option, OptionsEditor } from './OptionsEditor'
 import { TextInput } from './TextInput'
 
-// TODO(HiDeoo) options reordering
 export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
   const [dropdown, setDropdown] = useAtom(atom)
   const setElements = useSetAtom(issueFormElementsAtom)
@@ -78,6 +78,16 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
     }))
   }
 
+  function handleOptionReorder(fromIndex: number, toIndex: number) {
+    setDropdown((prevDropdown) => ({
+      ...prevDropdown,
+      attributes: {
+        ...prevDropdown.attributes,
+        options: arrayMove(prevDropdown.attributes.options, fromIndex, toIndex),
+      },
+    }))
+  }
+
   return (
     <EditorBlock onDelete={handleDeleteClick} title="Dropdown" {...others}>
       <TextInput
@@ -100,6 +110,7 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
         onAdd={handleOptionAddition}
         onChange={handleOptionChange}
         onDelete={handleOptionDeletion}
+        onReorder={handleOptionReorder}
         options={dropdown.attributes.options}
       />
       <Checkbox

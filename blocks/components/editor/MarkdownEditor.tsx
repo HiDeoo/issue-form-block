@@ -3,9 +3,9 @@ import { MarkdownEditor as PrimerMarkdownEditor } from '@primer/react/drafts'
 import { useAtom, useSetAtom } from 'jotai'
 
 import { issueFormElementsAtom, type MarkdownElementAtom } from '../../atoms/issueForm'
+import type { DraggableProps } from '../../libs/dnd'
 
 import { EditorBlock } from './EditorBlock'
-import type { DraggableProps } from './ElementDraggableEditor'
 
 const markdownStyle = {
   '>fieldset': {

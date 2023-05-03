@@ -1,10 +1,10 @@
 import { useAtom, useSetAtom } from 'jotai'
 
 import { issueFormElementsAtom, type InputElementAtom } from '../../atoms/issueForm'
+import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
-import type { DraggableProps } from './ElementDraggableEditor'
 import { TextInput } from './TextInput'
 
 export function InputEditor({ atom, ...others }: InputEditorProps) {
