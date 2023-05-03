@@ -25,6 +25,7 @@ const dragHandleStyle = {
   boxShadow: 'none',
   cursor: 'grab',
   touchAction: 'none',
+  width: 16,
   ':hover,:focus': {
     bg: 'unset',
   },
