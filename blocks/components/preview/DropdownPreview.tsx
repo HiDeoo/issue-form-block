@@ -1,4 +1,6 @@
+import { ActionList, ActionMenu } from '@primer/react'
 import { useAtomValue } from 'jotai'
+import { Fragment } from 'react'
 
 import type { DropdownElementAtom } from '../../atoms/issueForm'
 
@@ -15,7 +17,19 @@ export function DropdownPreview({ atom }: DropdownPreviewProps) {
       required={dropdown.validations?.required}
       title={dropdown.attributes.label}
     >
-      <div># // TODO </div>
+      <ActionMenu>
+        <ActionMenu.Button>Selections:</ActionMenu.Button>
+        <ActionMenu.Overlay>
+          <ActionList>
+            {dropdown.attributes.options.map((option, index) => (
+              <Fragment key={option.id}>
+                <ActionList.Item>{option.label}</ActionList.Item>
+                {index < dropdown.attributes.options.length - 1 && <ActionList.Divider />}
+              </Fragment>
+            ))}
+          </ActionList>
+        </ActionMenu.Overlay>
+      </ActionMenu>
     </PreviewBlock>
   )
 }

@@ -1,5 +1,8 @@
+import { nanoid } from 'nanoid'
 import { parse } from 'yaml'
 import { z } from 'zod'
+
+const zNonEmptyString = z.string().trim().min(1)
 
 const elementTypes = ['checkboxes', 'dropdown', 'input', 'markdown', 'textarea'] as const
 
@@ -20,10 +23,10 @@ const checkboxElementSchema = z
   .object({
     attributes: z.object({
       description: z.string().optional(),
-      label: z.string(),
+      label: zNonEmptyString,
       options: z
         .object({
-          label: z.string(),
+          label: zNonEmptyString,
         })
         .array(),
     }),
@@ -36,9 +39,12 @@ const dropdownElementSchema = z
   .object({
     attributes: z.object({
       description: z.string().optional(),
-      label: z.string(),
+      label: zNonEmptyString,
       multiple: z.boolean().optional(),
-      options: z.string().array(),
+      options: zNonEmptyString
+        .array()
+        // TODO(HiDeoo) Handle serialization
+        .transform((value) => value.map((option) => ({ id: nanoid(), label: option }))),
     }),
     type: z.literal('dropdown'),
   })
@@ -49,7 +55,7 @@ const inputElementSchema = z
   .object({
     attributes: z.object({
       description: z.string().optional(),
-      label: z.string(),
+      label: zNonEmptyString,
       placeholder: z.string().optional(),
       value: z.string().optional(),
     }),
@@ -69,7 +75,7 @@ const textareaElementSchema = z
   .object({
     attributes: z.object({
       description: z.string().optional(),
-      label: z.string(),
+      label: zNonEmptyString,
       placeholder: z.string().optional(),
       render: z.string().optional(),
       value: z.string().optional(),

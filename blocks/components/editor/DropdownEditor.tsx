@@ -1,15 +1,14 @@
 import { useAtom, useSetAtom } from 'jotai'
+import { nanoid } from 'nanoid'
 
 import { issueFormElementsAtom, type DropdownElementAtom } from '../../atoms/issueForm'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
 import type { DraggableProps } from './ElementDraggableEditor'
+import { type Option, OptionsEditor } from './OptionsEditor'
 import { TextInput } from './TextInput'
 
-// TODO(HiDeoo) options add
-// TODO(HiDeoo) options remove
-// TODO(HiDeoo) options edit
 // TODO(HiDeoo) options reordering
 export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
   const [dropdown, setDropdown] = useAtom(atom)
@@ -39,6 +38,46 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
     setElements((elements) => elements.filter((element) => element !== atom))
   }
 
+  function handleOptionAddition() {
+    const newOption = { id: nanoid(), label: 'New option' }
+
+    setDropdown((prevDropdown) => ({
+      ...prevDropdown,
+      attributes: {
+        ...prevDropdown.attributes,
+        options: [...prevDropdown.attributes.options, newOption],
+      },
+    }))
+
+    return newOption.id
+  }
+
+  function handleOptionChange(updatedId: Option['id'], newLabel: Option['label']) {
+    setDropdown((prevDropdown) => ({
+      ...prevDropdown,
+      attributes: {
+        ...prevDropdown.attributes,
+        options: prevDropdown.attributes.options.map((option) => {
+          if (option.id !== updatedId) {
+            return option
+          }
+
+          return { ...option, label: newLabel }
+        }),
+      },
+    }))
+  }
+
+  function handleOptionDeletion(deletedId: Option['id']) {
+    setDropdown((prevDropdown) => ({
+      ...prevDropdown,
+      attributes: {
+        ...prevDropdown.attributes,
+        options: prevDropdown.attributes.options.filter((option) => option.id !== deletedId),
+      },
+    }))
+  }
+
   return (
     <EditorBlock onDelete={handleDeleteClick} title="Dropdown" {...others}>
       <TextInput
@@ -55,7 +94,14 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
         onChange={handleDescriptionChange}
         value={dropdown.attributes.description}
       />
-      <div># // TODO </div>
+      <OptionsEditor
+        label="The list of options the user can choose from."
+        name="dropdown-options"
+        onAdd={handleOptionAddition}
+        onChange={handleOptionChange}
+        onDelete={handleOptionDeletion}
+        options={dropdown.attributes.options}
+      />
       <Checkbox
         caption="Determines if the user can select more than one option."
         checked={dropdown.attributes.multiple}
