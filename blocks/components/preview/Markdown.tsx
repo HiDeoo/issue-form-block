@@ -13,9 +13,9 @@ const markdownStyle = {
   },
 }
 
-export function Markdown({ children, sx }: MarkdownProps) {
+export function Markdown({ children, id, sx }: MarkdownProps) {
   return (
-    <Box sx={sx ? merge<BetterSystemStyleObject>(markdownStyle, sx) : markdownStyle}>
+    <Box id={id} sx={sx ? merge<BetterSystemStyleObject>(markdownStyle, sx) : markdownStyle}>
       <MarkdownViewer
         dangerousRenderedHTML={{
           __html: getMarkdownHtml(children),
@@ -27,5 +27,6 @@ export function Markdown({ children, sx }: MarkdownProps) {
 
 interface MarkdownProps {
   children: string
+  id?: string
   sx?: BetterSystemStyleObject
 }

@@ -20,7 +20,7 @@ export function DropdownPreview({ atom }: DropdownPreviewProps) {
       <ActionMenu>
         <ActionMenu.Button>Selections:</ActionMenu.Button>
         <ActionMenu.Overlay>
-          <ActionList>
+          <ActionList aria-labelledby={`${dropdownId}-caption`}>
             {dropdown.attributes.options.map((option, index) => (
               <Fragment key={option.id}>
                 <ActionList.Item>{option.label}</ActionList.Item>

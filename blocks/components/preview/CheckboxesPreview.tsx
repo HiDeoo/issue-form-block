@@ -22,7 +22,7 @@ export function CheckboxesPreview({ atom }: CheckboxesPreviewProps) {
       required={checkboxes.validations?.required}
       title={checkboxes.attributes.label}
     >
-      <CheckboxGroup>
+      <CheckboxGroup aria-labelledby={`${checkboxesId}-caption`}>
         {checkboxes.attributes.options.map((option) => (
           <FormControl key={option.id}>
             <Checkbox checked={false} readOnly sx={checkboxStyle} />

@@ -30,7 +30,11 @@ export function PreviewBlock({ children, description, id, required, title }: Pre
       >
         {title}
       </Text>
-      {showDescription ? <Markdown sx={descriptionStyle}>{description}</Markdown> : null}
+      {showDescription ? (
+        <Markdown id={`${id}-caption`} sx={descriptionStyle}>
+          {description}
+        </Markdown>
+      ) : null}
       {children}
     </Box>
   )
