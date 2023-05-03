@@ -1,14 +1,12 @@
 import { Box, Text } from '@primer/react'
-import { MarkdownViewer } from '@primer/react/drafts'
 
-import { getMarkdownHtml } from '../../libs/markdown'
+import { Markdown } from './Markdown'
 
 const descriptionStyle = {
   color: 'fg.muted',
   mb: 2,
   '>div>div': {
-    a: { color: 'accent.fg' },
-    p: { fontSize: 0, m: 0 },
+    p: { fontSize: 0 },
   },
 }
 
@@ -32,11 +30,7 @@ export function PreviewBlock({ children, description, id, required, title }: Pre
       >
         {title}
       </Text>
-      {showDescription ? (
-        <Box id={`${id}-caption`} sx={descriptionStyle}>
-          <MarkdownViewer dangerousRenderedHTML={{ __html: getMarkdownHtml(description) }} />
-        </Box>
-      ) : null}
+      {showDescription ? <Markdown sx={descriptionStyle}>{description}</Markdown> : null}
       {children}
     </Box>
   )

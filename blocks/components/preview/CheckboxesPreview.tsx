@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai'
 
 import type { CheckboxesElementAtom } from '../../atoms/issueForm'
 
+import { Markdown } from './Markdown'
 import { PreviewBlock } from './PreviewBlock'
 
 const checkboxStyle = {
@@ -10,7 +11,6 @@ const checkboxStyle = {
   borderColor: 'border.default',
 }
 
-// TODO(HiDeoo) markdown label
 export function CheckboxesPreview({ atom }: CheckboxesPreviewProps) {
   const checkboxes = useAtomValue(atom)
   const checkboxesId = atom.toString()
@@ -26,7 +26,9 @@ export function CheckboxesPreview({ atom }: CheckboxesPreviewProps) {
         {checkboxes.attributes.options.map((option) => (
           <FormControl key={option.id}>
             <Checkbox checked={false} readOnly sx={checkboxStyle} />
-            <FormControl.Label sx={{ fontWeight: 400 }}>{option.label}</FormControl.Label>
+            <FormControl.Label>
+              <Markdown>{option.label}</Markdown>
+            </FormControl.Label>
           </FormControl>
         ))}
       </CheckboxGroup>
