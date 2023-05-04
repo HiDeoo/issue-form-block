@@ -1,4 +1,4 @@
-import { DashIcon, GrabberIcon, PlusIcon, XIcon } from '@primer/octicons-react'
+import { FoldIcon, GrabberIcon, UnfoldIcon, XIcon } from '@primer/octicons-react'
 import { Box, IconButton, Tooltip } from '@primer/react'
 import { useSetAtom } from 'jotai'
 
@@ -131,7 +131,7 @@ export function EditorBlock({
                 <IconButton
                   aria-label={expandCollapseButtonTooltip}
                   disabled={isDragOverlay}
-                  icon={collapsed ? PlusIcon : DashIcon}
+                  icon={collapsed ? UnfoldIcon : FoldIcon}
                   onClick={handleToggleCollapsedClick}
                   sx={iconButtonStyle}
                 />

@@ -1,8 +1,13 @@
-import { PlusIcon } from '@primer/octicons-react'
-import { ActionList, ActionMenu, Box } from '@primer/react'
+import { FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
+import { ActionList, ActionMenu, Box, IconButton, Tooltip } from '@primer/react'
 import { useSetAtom } from 'jotai'
 
-import { createTextareaAtom, issueFormElementsAtom, type ElementAtom } from '../atoms/issueForm'
+import {
+  createTextareaAtom,
+  issueFormElementsAtom,
+  type ElementAtom,
+  setCollapsedIssueFormElementsAtom,
+} from '../atoms/issueForm'
 import type { IssueFormElementType } from '../libs/issueForm'
 
 const elementAtomCreatorMap: Record<IssueFormElementType, () => ElementAtom> = {
@@ -17,13 +22,25 @@ const elementAtomCreatorMap: Record<IssueFormElementType, () => ElementAtom> = {
   textarea: createTextareaAtom,
 }
 
+const collapseButtonTooltip = 'Collapse all elements'
+const expandButtonTooltip = 'Expand all elements'
+
 export function Header() {
   const setElements = useSetAtom(issueFormElementsAtom)
+  const setCollapsedIssueFormElements = useSetAtom(setCollapsedIssueFormElementsAtom)
 
   function createNewElementHandler(type: IssueFormElementType) {
     return function handleNewElement() {
       setElements((elements) => [...elements, elementAtomCreatorMap[type]()])
     }
+  }
+
+  function handleCollapseClick() {
+    setCollapsedIssueFormElements(true)
+  }
+
+  function handleExpandClick() {
+    setCollapsedIssueFormElements(false)
   }
 
   return (
@@ -51,6 +68,13 @@ export function Header() {
           </ActionList>
         </ActionMenu.Overlay>
       </ActionMenu>
+      <Box flex={1} />
+      <Tooltip aria-label={collapseButtonTooltip} direction="w">
+        <IconButton aria-label={collapseButtonTooltip} icon={FoldIcon} onClick={handleCollapseClick} />
+      </Tooltip>
+      <Tooltip aria-label={expandButtonTooltip} direction="w">
+        <IconButton aria-label={expandButtonTooltip} icon={UnfoldIcon} onClick={handleExpandClick} />
+      </Tooltip>
     </Box>
   )
 }

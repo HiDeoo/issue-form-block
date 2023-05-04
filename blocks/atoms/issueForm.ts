@@ -18,8 +18,17 @@ export const deleteIssueFormElementAtom = atom(null, (_get, set, elementAtom: El
 })
 
 export const toggleCollapsedIssueFormElementAtom = atom(null, (_get, set, elementAtom: ElementAtom) => {
-  // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all element.
+  // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all elements.
   set(elementAtom, (prevElement) => ({ ...prevElement, _collapsed: !prevElement._collapsed }))
+})
+
+export const setCollapsedIssueFormElementsAtom = atom(null, (get, set, collapased: boolean) => {
+  const elementAtoms = get(issueFormElementsAtom)
+
+  for (const elementAtom of elementAtoms) {
+    // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all elements.
+    set(elementAtom, (prevElement) => ({ ...prevElement, _collapsed: collapased }))
+  }
 })
 
 export function createTextareaAtom(): TextareaElementAtom {
