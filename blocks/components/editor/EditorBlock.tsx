@@ -85,6 +85,7 @@ export function EditorBlock({
 
   return (
     <Box
+      id={atom ? `editor-block-${atom.toString()}` : atom}
       ref={setNodeRef}
       style={style}
       sx={{

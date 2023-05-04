@@ -62,7 +62,7 @@ export function OptionsEditor({ label, onAdd, onReorder, options, ...others }: O
     }
 
     optionIdToFocus.current = undefined
-  })
+  }, [options.length, others.name])
 
   function handleNewOptionClick() {
     const newOptionId = onAdd()

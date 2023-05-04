@@ -1,6 +1,7 @@
 import { FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
 import { ActionList, ActionMenu, Box, IconButton, Tooltip } from '@primer/react'
-import { useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
+import { useEffect, useRef } from 'react'
 
 import {
   createTextareaAtom,
@@ -26,12 +27,35 @@ const collapseButtonTooltip = 'Collapse all elements'
 const expandButtonTooltip = 'Expand all elements'
 
 export function Header() {
-  const setElements = useSetAtom(issueFormElementsAtom)
+  const [elements, setElements] = useAtom(issueFormElementsAtom)
   const setCollapsedIssueFormElements = useSetAtom(setCollapsedIssueFormElementsAtom)
+
+  const editorBlockIdToFocus = useRef<string | undefined>(undefined)
+
+  useEffect(() => {
+    if (editorBlockIdToFocus.current === undefined) {
+      return
+    }
+
+    const newEditBlockFirstInput = document.querySelector<HTMLInputElement>(
+      `#editor-block-${editorBlockIdToFocus.current} input`
+    )
+
+    if (newEditBlockFirstInput) {
+      newEditBlockFirstInput.focus()
+    }
+
+    editorBlockIdToFocus.current = undefined
+  }, [elements.length])
 
   function createNewElementHandler(type: IssueFormElementType) {
     return function handleNewElement() {
-      setElements((elements) => [...elements, elementAtomCreatorMap[type]()])
+      const newElement = elementAtomCreatorMap[type]()
+      const newElementId = newElement.toString()
+
+      editorBlockIdToFocus.current = newElementId
+
+      setElements((elements) => [...elements, newElement])
     }
   }
 
