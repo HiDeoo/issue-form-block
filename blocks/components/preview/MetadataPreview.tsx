@@ -30,7 +30,9 @@ export function MetadataPreview() {
             {metadata.description}
           </Text>
         </Box>
-        <Button variant="primary">Get started</Button>
+        <Button disabled variant="primary">
+          Get started
+        </Button>
       </Box>
       <Box
         sx={{

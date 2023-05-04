@@ -1,5 +1,5 @@
 import { FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
-import { ActionList, ActionMenu, Box, IconButton, Tooltip } from '@primer/react'
+import { ActionList, ActionMenu, Box, Button, IconButton, Tooltip } from '@primer/react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
@@ -8,6 +8,7 @@ import {
   issueFormElementsAtom,
   type ElementAtom,
   setCollapsedIssueFormElementsAtom,
+  resetIssueFormAtom,
 } from '../atoms/issueForm'
 import type { IssueFormElementType } from '../libs/issueForm'
 
@@ -29,6 +30,7 @@ const expandButtonTooltip = 'Expand all elements'
 export function Header() {
   const [elements, setElements] = useAtom(issueFormElementsAtom)
   const setCollapsedIssueFormElements = useSetAtom(setCollapsedIssueFormElementsAtom)
+  const resetIssueForm = useSetAtom(resetIssueFormAtom)
 
   const editorBlockIdToFocus = useRef<string | undefined>(undefined)
 
@@ -67,6 +69,10 @@ export function Header() {
     setCollapsedIssueFormElements(false)
   }
 
+  function handleResetClick() {
+    resetIssueForm()
+  }
+
   return (
     <Box
       sx={{
@@ -81,7 +87,9 @@ export function Header() {
       }}
     >
       <ActionMenu>
-        <ActionMenu.Button leadingIcon={PlusIcon}>New element</ActionMenu.Button>
+        <ActionMenu.Button leadingIcon={PlusIcon} variant="primary">
+          New element
+        </ActionMenu.Button>
         <ActionMenu.Overlay>
           <ActionList>
             <ActionList.Item onSelect={createNewElementHandler('checkboxes')}>Checkboxes</ActionList.Item>
@@ -92,6 +100,9 @@ export function Header() {
           </ActionList>
         </ActionMenu.Overlay>
       </ActionMenu>
+      <Button onClick={handleResetClick} variant="danger">
+        Reset
+      </Button>
       <Box flex={1} />
       <Tooltip aria-label={collapseButtonTooltip} direction="w">
         <IconButton aria-label={collapseButtonTooltip} icon={FoldIcon} onClick={handleCollapseClick} />

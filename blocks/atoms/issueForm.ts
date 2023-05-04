@@ -4,14 +4,28 @@ import type {
   CheckboxesElement,
   DropdownElement,
   InputElement,
+  IssueForm,
   IssueFormElement,
   IssueFormMetadata,
   MarkdownElement,
   TextareaElement,
 } from '../libs/issueForm'
 
-export const issueFormMetadataAtom = atom<IssueFormMetadata>({ description: '', name: '' })
-export const issueFormElementsAtom = atom<ElementAtom[]>([])
+const issueFormDefaultState: IssueForm = { elements: [], metadata: { description: '', name: '' } }
+
+const issueFormInitialStateAtom = atom(issueFormDefaultState)
+
+export const issueFormAtom = atom(
+  () => issueFormDefaultState,
+  (_get, set, issueForm: IssueForm) => {
+    set(issueFormInitialStateAtom, issueForm)
+    set(issueFormMetadataAtom, issueForm.metadata)
+    set(issueFormElementsAtom, issueForm.elements.map(mapElementToElementAtom))
+  }
+)
+
+export const issueFormMetadataAtom = atom<IssueFormMetadata>(issueFormDefaultState.metadata)
+export const issueFormElementsAtom = atom<ElementAtom[]>(issueFormDefaultState.elements.map(mapElementToElementAtom))
 
 export const deleteIssueFormElementAtom = atom(null, (_get, set, elementAtom: ElementAtom) => {
   set(issueFormElementsAtom, (prevElements) => prevElements.filter((element) => element !== elementAtom))
@@ -29,6 +43,13 @@ export const setCollapsedIssueFormElementsAtom = atom(null, (get, set, collapase
     // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all elements.
     set(elementAtom, (prevElement) => ({ ...prevElement, _collapsed: collapased }))
   }
+})
+
+export const resetIssueFormAtom = atom(null, (get, set) => {
+  const issueForm = get(issueFormInitialStateAtom)
+
+  set(issueFormMetadataAtom, issueForm.metadata)
+  set(issueFormElementsAtom, issueForm.elements.map(mapElementToElementAtom))
 })
 
 export function createTextareaAtom(): TextareaElementAtom {
@@ -58,6 +79,10 @@ export function isMarkdownAtom(_atom: ElementAtom, element: IssueFormElement): _
 
 export function isTextareaAtom(_atom: ElementAtom, element: IssueFormElement): _atom is TextareaElementAtom {
   return element.type === 'textarea'
+}
+
+function mapElementToElementAtom(element: IssueFormElement): ElementAtom {
+  return atom(element) as ElementAtom
 }
 
 export type CheckboxesElementAtom = PrimitiveAtom<CheckboxesElement>

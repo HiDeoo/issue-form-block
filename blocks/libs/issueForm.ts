@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid'
 import { parse } from 'yaml'
 import { z } from 'zod'
 
-export function parseIssueForm(content: string) {
+export function parseIssueForm(content: string): IssueForm {
   const yaml = parse(content)
 
   const { body, ...others } = issueFormSchema.parse(yaml)
@@ -115,6 +115,11 @@ const issueFormSchema = z
     body: z.array(issueFormElementSchema),
   })
   .merge(issueFormMetadataSchema)
+
+export interface IssueForm {
+  elements: IssueFormElement[]
+  metadata: IssueFormMetadata
+}
 
 export type IssueFormElementType = (typeof elementTypes)[number]
 
