@@ -5,6 +5,7 @@ import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
+import { IdInput } from './IdInput'
 import { TextInput } from './TextInput'
 
 export function InputEditor({ atom, ...others }: InputEditorProps) {
@@ -62,12 +63,7 @@ export function InputEditor({ atom, ...others }: InputEditorProps) {
         onChange={handleValueChange}
         value={input.attributes.value}
       />
-      <TextInput
-        caption="Unique in the form definition and can only use alpha-numeric characters, -, and _."
-        label="Identifier"
-        onChange={handleIdChange}
-        value={input.id}
-      />
+      <IdInput onChange={handleIdChange} value={input.id} />
       <Checkbox
         caption="Prevents form submission for public repositories until the input is completed."
         checked={input.validations?.required}

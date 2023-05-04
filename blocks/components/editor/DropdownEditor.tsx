@@ -7,6 +7,7 @@ import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
+import { IdInput } from './IdInput'
 import { type Option, OptionsEditor } from './OptionsEditor'
 import { TextInput } from './TextInput'
 
@@ -120,12 +121,7 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
         label="Multiple"
         onChange={handleMultipleChange}
       />
-      <TextInput
-        caption="Unique in the form definition and can only use alpha-numeric characters, -, and _."
-        label="Identifier"
-        onChange={handleIdChange}
-        value={dropdown.id}
-      />
+      <IdInput onChange={handleIdChange} value={dropdown.id} />
       <Checkbox
         caption="Prevents form submission for public repositories until the dropdown is completed."
         checked={dropdown.validations?.required}

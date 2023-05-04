@@ -2,6 +2,8 @@ import { nanoid } from 'nanoid'
 import { parse } from 'yaml'
 import { z } from 'zod'
 
+export const ID_VALIDATION_REGEX = /^[\w-_]+$/
+
 export function parseIssueForm(content: string): IssueForm {
   const yaml = parse(content)
 
@@ -13,7 +15,7 @@ export function parseIssueForm(content: string): IssueForm {
 const elementTypes = ['checkboxes', 'dropdown', 'input', 'markdown', 'textarea'] as const
 
 const zNonEmptyString = z.string().trim().min(1)
-const zIdProperty = { id: z.string().optional() } // TODO(HiDeoo) validation regex
+const zIdProperty = { id: z.string().regex(ID_VALIDATION_REGEX).optional() }
 const zCollapasedProperty = { _collapsed: z.boolean().optional() } // TODO(HiDeoo) handle serialization
 const zValidationsProperty = { validations: z.object({ required: z.boolean() }).optional() }
 

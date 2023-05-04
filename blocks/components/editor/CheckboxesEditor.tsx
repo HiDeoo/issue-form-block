@@ -7,6 +7,7 @@ import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
+import { IdInput } from './IdInput'
 import { type Option, OptionsEditor } from './OptionsEditor'
 import { TextInput } from './TextInput'
 
@@ -113,12 +114,7 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
         onReorder={handleOptionReorder}
         options={checkboxes.attributes.options}
       />
-      <TextInput
-        caption="Unique in the form definition and can only use alpha-numeric characters, -, and _."
-        label="Identifier"
-        onChange={handleIdChange}
-        value={checkboxes.id}
-      />
+      <IdInput onChange={handleIdChange} value={checkboxes.id} />
       <Checkbox
         caption="Prevents form submission for public repositories until the set of checkboxes is completed."
         checked={checkboxes.validations?.required}

@@ -6,6 +6,7 @@ import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
+import { IdInput } from './IdInput'
 import { Textarea } from './Textarea'
 import { TextInput } from './TextInput'
 
@@ -91,12 +92,7 @@ export function TextareaEditor({ atom, ...others }: TextareaEditorProps) {
         onChange={handleRenderChange}
         value={textarea.attributes.render}
       />
-      <TextInput
-        caption="Unique in the form definition and can only use alpha-numeric characters, -, and _."
-        label="Identifier"
-        onChange={handleIdChange}
-        value={textarea.id}
-      />
+      <IdInput onChange={handleIdChange} value={textarea.id} />
       <Checkbox
         caption="Prevents form submission for public repositories until the textarea is completed."
         checked={textarea.validations?.required}
