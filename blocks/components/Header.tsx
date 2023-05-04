@@ -1,5 +1,5 @@
-import { FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
-import { ActionList, ActionMenu, Box, Button, IconButton, Tooltip } from '@primer/react'
+import { EyeIcon, FileCodeIcon, FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
+import { ActionList, ActionMenu, Box, Button, FormControl, IconButton, SegmentedControl, Tooltip } from '@primer/react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
@@ -10,6 +10,8 @@ import {
   setCollapsedIssueFormElementsAtom,
   resetIssueFormAtom,
 } from '../atoms/issueForm'
+import { selectedPanelAtom } from '../atoms/ui'
+import { usePanels } from '../hooks/usePanels'
 import type { IssueFormElementType } from '../libs/issueForm'
 
 const elementAtomCreatorMap: Record<IssueFormElementType, () => ElementAtom> = {
@@ -28,6 +30,9 @@ const collapseButtonTooltip = 'Collapse all elements'
 const expandButtonTooltip = 'Expand all elements'
 
 export function Header() {
+  const { isSinglePanel } = usePanels()
+  const [selectedPanel, setSelectedPanel] = useAtom(selectedPanelAtom)
+
   const [elements, setElements] = useAtom(issueFormElementsAtom)
   const setCollapsedIssueFormElements = useSetAtom(setCollapsedIssueFormElementsAtom)
   const resetIssueForm = useSetAtom(resetIssueFormAtom)
@@ -73,6 +78,13 @@ export function Header() {
     resetIssueForm()
   }
 
+  function handleSelectedPanelChange(selectedIndex: number) {
+    setSelectedPanel(selectedIndex === 0 ? 'editor' : 'preview')
+  }
+
+  const showPanelSelector = isSinglePanel
+  const showExpandCollapseButtons = !showPanelSelector || selectedPanel === 'editor'
+
   return (
     <Box
       sx={{
@@ -104,12 +116,33 @@ export function Header() {
         Reset
       </Button>
       <Box flex={1} />
-      <Tooltip aria-label={collapseButtonTooltip} direction="w">
-        <IconButton aria-label={collapseButtonTooltip} icon={FoldIcon} onClick={handleCollapseClick} />
-      </Tooltip>
-      <Tooltip aria-label={expandButtonTooltip} direction="w">
-        <IconButton aria-label={expandButtonTooltip} icon={UnfoldIcon} onClick={handleExpandClick} />
-      </Tooltip>
+      {showExpandCollapseButtons ? (
+        <>
+          <Tooltip aria-label={collapseButtonTooltip} direction="w">
+            <IconButton aria-label={collapseButtonTooltip} icon={FoldIcon} onClick={handleCollapseClick} />
+          </Tooltip>
+          <Tooltip aria-label={expandButtonTooltip} direction="w">
+            <IconButton aria-label={expandButtonTooltip} icon={UnfoldIcon} onClick={handleExpandClick} />
+          </Tooltip>
+        </>
+      ) : null}
+      {showPanelSelector ? (
+        <FormControl>
+          <SegmentedControl
+            aria-label={`Show ${selectedPanel === 'editor' ? 'preview' : 'editor'}`}
+            onChange={handleSelectedPanelChange}
+            variant={{ narrow: 'hideLabels', regular: 'default' }}
+          >
+            <SegmentedControl.IconButton
+              aria-label="Editor"
+              icon={FileCodeIcon}
+              selected={selectedPanel === 'editor'}
+              value="orioyut"
+            />
+            <SegmentedControl.IconButton aria-label="Preview" icon={EyeIcon} selected={selectedPanel === 'preview'} />
+          </SegmentedControl>
+        </FormControl>
+      ) : null}
     </Box>
   )
 }
