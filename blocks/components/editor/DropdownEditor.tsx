@@ -1,8 +1,8 @@
 import { arrayMove } from '@dnd-kit/sortable'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { nanoid } from 'nanoid'
 
-import { issueFormElementsAtom, type DropdownElementAtom } from '../../atoms/issueForm'
+import type { DropdownElementAtom } from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
@@ -12,7 +12,6 @@ import { TextInput } from './TextInput'
 
 export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
   const [dropdown, setDropdown] = useAtom(atom)
-  const setElements = useSetAtom(issueFormElementsAtom)
 
   function handleDescriptionChange(description: string) {
     setDropdown((prevDropdown) => ({ ...prevDropdown, attributes: { ...prevDropdown.attributes, description } }))
@@ -34,12 +33,8 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
     setDropdown((prevDropdown) => ({ ...prevDropdown, validations: { ...prevDropdown.validations, required } }))
   }
 
-  function handleDeleteClick() {
-    setElements((elements) => elements.filter((element) => element !== atom))
-  }
-
   function handleOptionAddition() {
-    const newOption = { id: nanoid(), label: 'New option' }
+    const newOption = { _id: nanoid(), label: 'New option' }
 
     setDropdown((prevDropdown) => ({
       ...prevDropdown,
@@ -49,16 +44,16 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
       },
     }))
 
-    return newOption.id
+    return newOption._id
   }
 
-  function handleOptionChange(updatedId: Option['id'], newLabel: Option['label']) {
+  function handleOptionChange(updatedId: Option['_id'], newLabel: Option['label']) {
     setDropdown((prevDropdown) => ({
       ...prevDropdown,
       attributes: {
         ...prevDropdown.attributes,
         options: prevDropdown.attributes.options.map((option) => {
-          if (option.id !== updatedId) {
+          if (option._id !== updatedId) {
             return option
           }
 
@@ -68,12 +63,12 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
     }))
   }
 
-  function handleOptionDeletion(deletedId: Option['id']) {
+  function handleOptionDeletion(deletedId: Option['_id']) {
     setDropdown((prevDropdown) => ({
       ...prevDropdown,
       attributes: {
         ...prevDropdown.attributes,
-        options: prevDropdown.attributes.options.filter((option) => option.id !== deletedId),
+        options: prevDropdown.attributes.options.filter((option) => option._id !== deletedId),
       },
     }))
   }
@@ -89,7 +84,7 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
   }
 
   return (
-    <EditorBlock onDelete={handleDeleteClick} title="Dropdown" {...others}>
+    <EditorBlock atom={atom} collapsed={dropdown._collapsed} title="Dropdown" {...others}>
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={dropdown.attributes.label.length === 0 && 'A label is required.'}

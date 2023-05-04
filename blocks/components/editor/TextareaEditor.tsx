@@ -1,7 +1,7 @@
 import { Link } from '@primer/react'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 
-import { issueFormElementsAtom, type TextareaElementAtom } from '../../atoms/issueForm'
+import type { TextareaElementAtom } from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
@@ -11,7 +11,6 @@ import { TextInput } from './TextInput'
 
 export function TextareaEditor({ atom, ...others }: TextareaEditorProps) {
   const [textarea, setTextarea] = useAtom(atom)
-  const setElements = useSetAtom(issueFormElementsAtom)
 
   function handleDescriptionChange(description: string) {
     setTextarea((prevTextarea) => ({ ...prevTextarea, attributes: { ...prevTextarea.attributes, description } }))
@@ -41,12 +40,8 @@ export function TextareaEditor({ atom, ...others }: TextareaEditorProps) {
     setTextarea((prevTextarea) => ({ ...prevTextarea, attributes: { ...prevTextarea.attributes, value } }))
   }
 
-  function handleDeleteClick() {
-    setElements((elements) => elements.filter((element) => element !== atom))
-  }
-
   return (
-    <EditorBlock onDelete={handleDeleteClick} title="Textarea" {...others}>
+    <EditorBlock atom={atom} collapsed={textarea._collapsed} title="Textarea" {...others}>
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={textarea.attributes.label.length === 0 && 'A label is required.'}

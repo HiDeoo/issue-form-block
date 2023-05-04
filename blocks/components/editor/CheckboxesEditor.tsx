@@ -1,8 +1,8 @@
 import { arrayMove } from '@dnd-kit/sortable'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { nanoid } from 'nanoid'
 
-import { issueFormElementsAtom, type CheckboxesElementAtom } from '../../atoms/issueForm'
+import type { CheckboxesElementAtom } from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
@@ -12,7 +12,6 @@ import { TextInput } from './TextInput'
 
 export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
   const [checkboxes, setCheckboxes] = useAtom(atom)
-  const setElements = useSetAtom(issueFormElementsAtom)
 
   function handleDescriptionChange(description: string) {
     setCheckboxes((prevCheckboxes) => ({
@@ -33,12 +32,8 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
     setCheckboxes((prevCheckboxes) => ({ ...prevCheckboxes, validations: { ...prevCheckboxes.validations, required } }))
   }
 
-  function handleDeleteClick() {
-    setElements((elements) => elements.filter((element) => element !== atom))
-  }
-
   function handleOptionAddition() {
-    const newOption = { id: nanoid(), label: 'New option' }
+    const newOption = { _id: nanoid(), label: 'New option' }
 
     setCheckboxes((prevCheckboxes) => ({
       ...prevCheckboxes,
@@ -48,16 +43,16 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
       },
     }))
 
-    return newOption.id
+    return newOption._id
   }
 
-  function handleOptionChange(updatedId: Option['id'], newLabel: Option['label']) {
+  function handleOptionChange(updatedId: Option['_id'], newLabel: Option['label']) {
     setCheckboxes((prevCheckboxes) => ({
       ...prevCheckboxes,
       attributes: {
         ...prevCheckboxes.attributes,
         options: prevCheckboxes.attributes.options.map((option) => {
-          if (option.id !== updatedId) {
+          if (option._id !== updatedId) {
             return option
           }
 
@@ -67,12 +62,12 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
     }))
   }
 
-  function handleOptionDeletion(deletedId: Option['id']) {
+  function handleOptionDeletion(deletedId: Option['_id']) {
     setCheckboxes((prevCheckboxes) => ({
       ...prevCheckboxes,
       attributes: {
         ...prevCheckboxes.attributes,
-        options: prevCheckboxes.attributes.options.filter((option) => option.id !== deletedId),
+        options: prevCheckboxes.attributes.options.filter((option) => option._id !== deletedId),
       },
     }))
   }
@@ -88,7 +83,7 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
   }
 
   return (
-    <EditorBlock onDelete={handleDeleteClick} title="Checkboxes" {...others}>
+    <EditorBlock atom={atom} collapsed={checkboxes._collapsed} title="Checkboxes" {...others}>
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={checkboxes.attributes.label.length === 0 && 'A label is required.'}

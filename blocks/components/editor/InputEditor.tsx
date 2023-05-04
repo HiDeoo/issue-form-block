@@ -1,6 +1,6 @@
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 
-import { issueFormElementsAtom, type InputElementAtom } from '../../atoms/issueForm'
+import type { InputElementAtom } from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
 
 import { Checkbox } from './Checkbox'
@@ -9,7 +9,6 @@ import { TextInput } from './TextInput'
 
 export function InputEditor({ atom, ...others }: InputEditorProps) {
   const [input, setInput] = useAtom(atom)
-  const setElements = useSetAtom(issueFormElementsAtom)
 
   function handleDescriptionChange(description: string) {
     setInput((prevInput) => ({ ...prevInput, attributes: { ...prevInput.attributes, description } }))
@@ -35,12 +34,8 @@ export function InputEditor({ atom, ...others }: InputEditorProps) {
     setInput((prevInput) => ({ ...prevInput, attributes: { ...prevInput.attributes, value } }))
   }
 
-  function handleDeleteClick() {
-    setElements((elements) => elements.filter((element) => element !== atom))
-  }
-
   return (
-    <EditorBlock onDelete={handleDeleteClick} title="Input" {...others}>
+    <EditorBlock atom={atom} collapsed={input._collapsed} title="Input" {...others}>
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={input.attributes.label.length === 0 && 'A label is required.'}

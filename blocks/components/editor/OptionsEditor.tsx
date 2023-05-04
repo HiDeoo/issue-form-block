@@ -36,13 +36,13 @@ const dragHandleStyle = {
 }
 
 export function OptionsEditor({ label, onAdd, onReorder, options, ...others }: OptionsEditorProps) {
-  const optionIds = useMemo(() => options.map((option) => option.id), [options])
+  const optionIds = useMemo(() => options.map((option) => option._id), [options])
 
-  const optionIdToFocus = useRef<Option['id'] | undefined>(undefined)
+  const optionIdToFocus = useRef<Option['_id'] | undefined>(undefined)
 
   const [draggedOptionId, setDraggedOptionId] = useState<UniqueIdentifier | undefined>(undefined)
   const draggedOption = useMemo(
-    () => options.find((option) => option.id === draggedOptionId),
+    () => options.find((option) => option._id === draggedOptionId),
     [draggedOptionId, options]
   )
 
@@ -116,7 +116,7 @@ export function OptionsEditor({ label, onAdd, onReorder, options, ...others }: O
           {options.map((option, index) => (
             <OptionDraggableEditor
               deletable={options.length > 1}
-              key={option.id}
+              key={option._id}
               index={index}
               option={option}
               {...others}
@@ -127,7 +127,7 @@ export function OptionsEditor({ label, onAdd, onReorder, options, ...others }: O
           {draggedOption ? (
             <OptionEditor
               deletable={false}
-              index={getUniqueIdentifierIndex(optionIds, draggedOption.id)}
+              index={getUniqueIdentifierIndex(optionIds, draggedOption._id)}
               isDragOverlay
               option={draggedOption}
               {...others}
@@ -144,7 +144,7 @@ export function OptionsEditor({ label, onAdd, onReorder, options, ...others }: O
 
 function OptionDraggableEditor(props: OptionDraggableEditorProps) {
   const { attributes, isDragging, listeners, setActivatorNodeRef, setNodeRef, transform, transition } = useSortable({
-    id: props.option.id,
+    id: props.option._id,
   })
 
   return (
@@ -190,11 +190,11 @@ function OptionEditor({
   )
 
   function handleDeleteClick() {
-    onDelete(option.id)
+    onDelete(option._id)
   }
 
   function handleLabelChange(event: React.ChangeEvent<HTMLInputElement>) {
-    onChange(option.id, event.target.value)
+    onChange(option._id, event.target.value)
   }
 
   const isEmpty = option.label.trim().length === 0
@@ -213,7 +213,7 @@ function OptionEditor({
         <TextInput
           aria-label={`Option at index ${index} named ${option.label}`}
           block
-          id={getOptionTextInputId(name, option.id)}
+          id={getOptionTextInputId(name, option._id)}
           onChange={handleLabelChange}
           sx={textInputStyle}
           validationStatus={isEmpty ? 'error' : undefined}
@@ -234,16 +234,16 @@ function OptionEditor({
   )
 }
 
-function getOptionTextInputId(name: OptionsEditorProps['name'], optionId: Option['id']) {
+function getOptionTextInputId(name: OptionsEditorProps['name'], optionId: Option['_id']) {
   return `${name}-option-${optionId}`
 }
 
 interface OptionsEditorProps {
   label: string
   name: string
-  onAdd: () => Option['id']
-  onChange: (updatedId: Option['id'], newLabel: Option['label']) => void
-  onDelete: (deletedId: Option['id']) => void
+  onAdd: () => Option['_id']
+  onChange: (updatedId: Option['_id'], newLabel: Option['label']) => void
+  onDelete: (deletedId: Option['_id']) => void
   onReorder: (fromIndex: number, toIndex: number) => void
   options: Option[]
 }
@@ -261,6 +261,6 @@ interface OptionDraggableEditorProps {
 type OptionEditorProps = OptionDraggableEditorProps & DraggableProps
 
 export interface Option {
-  id: string
+  _id: string
   label: string
 }

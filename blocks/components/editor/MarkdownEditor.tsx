@@ -1,8 +1,8 @@
 import { Box, Text } from '@primer/react'
 import { MarkdownEditor as PrimerMarkdownEditor } from '@primer/react/drafts'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 
-import { issueFormElementsAtom, type MarkdownElementAtom } from '../../atoms/issueForm'
+import type { MarkdownElementAtom } from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
 
 import { EditorBlock } from './EditorBlock'
@@ -24,18 +24,13 @@ const markdownStyle = {
 
 export function MarkdownEditor({ atom, ...others }: MarkdownEditorProps) {
   const [markdown, setMarkdown] = useAtom(atom)
-  const setElements = useSetAtom(issueFormElementsAtom)
 
   function handleValueChange(value: string) {
     setMarkdown((prevMarkdown) => ({ ...prevMarkdown, attributes: { ...prevMarkdown.attributes, value } }))
   }
 
-  function handleDeleteClick() {
-    setElements((elements) => elements.filter((element) => element !== atom))
-  }
-
   return (
-    <EditorBlock onDelete={handleDeleteClick} title="Markdown" {...others}>
+    <EditorBlock atom={atom} collapsed={markdown._collapsed} title="Markdown" {...others}>
       <Box sx={markdownStyle}>
         <PrimerMarkdownEditor
           minHeightLines={3}

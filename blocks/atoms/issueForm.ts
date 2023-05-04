@@ -13,6 +13,15 @@ import type {
 export const issueFormMetadataAtom = atom<IssueFormMetadata>({ description: '', name: '' })
 export const issueFormElementsAtom = atom<ElementAtom[]>([])
 
+export const deleteIssueFormElementAtom = atom(null, (_get, set, elementAtom: ElementAtom) => {
+  set(issueFormElementsAtom, (prevElements) => prevElements.filter((element) => element !== elementAtom))
+})
+
+export const toggleCollapsedIssueFormElementAtom = atom(null, (_get, set, elementAtom: ElementAtom) => {
+  // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all element.
+  set(elementAtom, (prevElement) => ({ ...prevElement, _collapsed: !prevElement._collapsed }))
+})
+
 export function createTextareaAtom(): TextareaElementAtom {
   return atom({
     attributes: {

@@ -2,21 +2,30 @@ import { nanoid } from 'nanoid'
 import { parse } from 'yaml'
 import { z } from 'zod'
 
-const zNonEmptyString = z.string().trim().min(1)
+export function parseIssueForm(content: string) {
+  const yaml = parse(content)
+
+  const { body, ...others } = issueFormSchema.parse(yaml)
+
+  return { elements: body, metadata: others }
+}
 
 const elementTypes = ['checkboxes', 'dropdown', 'input', 'markdown', 'textarea'] as const
 
-const elementWithIdSchema = z.object({
-  // TODO(HiDeoo) validation regex
-  id: z.string().optional(),
-})
+const zNonEmptyString = z.string().trim().min(1)
+const zIdProperty = { id: z.string().optional() } // TODO(HiDeoo) validation regex
+const zCollapasedProperty = { _collapsed: z.boolean().optional() } // TODO(HiDeoo) handle serialization
+const zValidationsProperty = { validations: z.object({ required: z.boolean() }).optional() }
 
-const elementWithRequiredValidationSchema = z.object({
-  validations: z
-    .object({
-      required: z.boolean(),
-    })
-    .optional(),
+const issueFormMetadataSchema = z.object({
+  // TODO(HiDeoo)
+  // assignees
+  description: z.string(),
+  // TODO(HiDeoo)
+  // labels
+  name: z.string(),
+  // TODO(HiDeoo)
+  // title
 })
 
 const checkboxesElementSchema = z
@@ -30,12 +39,13 @@ const checkboxesElementSchema = z
         })
         .array()
         // TODO(HiDeoo) Handle serialization
-        .transform((value) => value.map((option) => ({ ...option, id: nanoid() }))),
+        .transform((value) => value.map((option) => ({ ...option, _id: nanoid() }))),
     }),
     type: z.literal('checkboxes'),
   })
-  .merge(elementWithIdSchema)
-  .merge(elementWithRequiredValidationSchema)
+  .extend(zIdProperty)
+  .extend(zCollapasedProperty)
+  .extend(zValidationsProperty)
 
 const dropdownElementSchema = z
   .object({
@@ -46,12 +56,13 @@ const dropdownElementSchema = z
       options: zNonEmptyString
         .array()
         // TODO(HiDeoo) Handle serialization
-        .transform((value) => value.map((option) => ({ id: nanoid(), label: option }))),
+        .transform((value) => value.map((option) => ({ _id: nanoid(), label: option }))),
     }),
     type: z.literal('dropdown'),
   })
-  .merge(elementWithIdSchema)
-  .merge(elementWithRequiredValidationSchema)
+  .extend(zIdProperty)
+  .extend(zCollapasedProperty)
+  .extend(zValidationsProperty)
 
 const inputElementSchema = z
   .object({
@@ -63,15 +74,18 @@ const inputElementSchema = z
     }),
     type: z.literal('input'),
   })
-  .merge(elementWithIdSchema)
-  .merge(elementWithRequiredValidationSchema)
+  .extend(zIdProperty)
+  .extend(zCollapasedProperty)
+  .extend(zValidationsProperty)
 
-const markdownElementSchema = z.object({
-  attributes: z.object({
-    value: z.string(),
-  }),
-  type: z.literal('markdown'),
-})
+const markdownElementSchema = z
+  .object({
+    attributes: z.object({
+      value: z.string(),
+    }),
+    type: z.literal('markdown'),
+  })
+  .extend(zCollapasedProperty)
 
 const textareaElementSchema = z
   .object({
@@ -84,19 +98,9 @@ const textareaElementSchema = z
     }),
     type: z.literal('textarea'),
   })
-  .merge(elementWithIdSchema)
-  .merge(elementWithRequiredValidationSchema)
-
-const issueFormMetadataSchema = z.object({
-  // TODO(HiDeoo)
-  // assignees
-  description: z.string(),
-  // TODO(HiDeoo)
-  // labels
-  name: z.string(),
-  // TODO(HiDeoo)
-  // title
-})
+  .extend(zIdProperty)
+  .extend(zCollapasedProperty)
+  .extend(zValidationsProperty)
 
 const issueFormElementSchema = z.discriminatedUnion('type', [
   checkboxesElementSchema,
@@ -111,14 +115,6 @@ const issueFormSchema = z
     body: z.array(issueFormElementSchema),
   })
   .merge(issueFormMetadataSchema)
-
-export function parseIssueForm(content: string) {
-  const yaml = parse(content)
-
-  const { body, ...others } = issueFormSchema.parse(yaml)
-
-  return { elements: body, metadata: others }
-}
 
 export type IssueFormElementType = (typeof elementTypes)[number]
 

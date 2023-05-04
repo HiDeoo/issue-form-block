@@ -1,6 +1,12 @@
-import { GrabberIcon, XIcon } from '@primer/octicons-react'
+import { DashIcon, GrabberIcon, PlusIcon, XIcon } from '@primer/octicons-react'
 import { Box, IconButton, Tooltip } from '@primer/react'
+import { useSetAtom } from 'jotai'
 
+import {
+  type ElementAtom,
+  deleteIssueFormElementAtom,
+  toggleCollapsedIssueFormElementAtom,
+} from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
 
 const dragHandleStyle = {
@@ -21,18 +27,44 @@ const dragHandleStyle = {
   },
 }
 
+const iconButtonStyle = {
+  display: 'block',
+  height: 22,
+  width: 22,
+}
+
 export function EditorBlock({
+  atom,
   attributes,
   children,
+  collapsed,
   isDragging,
   isDragOverlay,
   listeners,
-  onDelete,
   setActivatorNodeRef,
   setNodeRef,
   style,
   title,
 }: EditorBlockProps) {
+  const deleteIssueFormElement = useSetAtom(deleteIssueFormElementAtom)
+  const toggleCollapsedIssueFormElement = useSetAtom(toggleCollapsedIssueFormElementAtom)
+
+  function handleToggleCollapsedClick() {
+    if (!atom) {
+      return
+    }
+
+    toggleCollapsedIssueFormElement(atom)
+  }
+
+  function handleDeleteClick() {
+    if (!atom) {
+      return
+    }
+
+    deleteIssueFormElement(atom)
+  }
+
   const dragHandle = (
     <IconButton
       aria-label="Reorder element"
@@ -44,8 +76,11 @@ export function EditorBlock({
     />
   )
 
+  const isElementBlock = atom !== undefined
   const isDragged = isDragOverlay ?? isDragging
   const isDragHandlevisible = isDragOverlay ?? listeners
+
+  const expandCollapseButtonTooltip = `${collapsed ? 'Expand' : 'Collapse'} element`
 
   return (
     <Box
@@ -67,6 +102,8 @@ export function EditorBlock({
           border: 1,
           borderColor: 'border.default',
           borderStyle: 'solid',
+          borderBottomLeftRadius: collapsed ? 2 : 0,
+          borderBottomRightRadius: collapsed ? 2 : 0,
           borderTopLeftRadius: 2,
           borderTopRightRadius: 2,
           display: 'flex',
@@ -87,46 +124,60 @@ export function EditorBlock({
             </Tooltip>
           )
         ) : null}
-        {onDelete ? (
-          <Box display="flex" flex={1} justifyContent="flex-end">
-            <Tooltip aria-label="Delete element" direction="w">
-              <IconButton
-                aria-label="Delete element"
-                disabled={isDragOverlay}
-                icon={XIcon}
-                onClick={onDelete}
-                variant="danger"
-                sx={{ display: 'block', height: 22, width: 22 }}
-              />
-            </Tooltip>
+        {isElementBlock ? (
+          <Box sx={{ display: 'flex', flex: 1, gap: 1, justifyContent: 'flex-end' }}>
+            <>
+              <Tooltip aria-label={expandCollapseButtonTooltip} direction="w">
+                <IconButton
+                  aria-label={expandCollapseButtonTooltip}
+                  disabled={isDragOverlay}
+                  icon={collapsed ? PlusIcon : DashIcon}
+                  onClick={handleToggleCollapsedClick}
+                  sx={iconButtonStyle}
+                />
+              </Tooltip>
+              <Tooltip aria-label="Delete element" direction="w">
+                <IconButton
+                  aria-label="Delete element"
+                  disabled={isDragOverlay}
+                  icon={XIcon}
+                  onClick={handleDeleteClick}
+                  variant="danger"
+                  sx={iconButtonStyle}
+                />
+              </Tooltip>
+            </>
           </Box>
         ) : null}
       </Box>
-      <Box
-        sx={{
-          bg: 'canvas.default',
-          border: 1,
-          borderColor: 'border.default',
-          borderRadius: 2,
-          borderStyle: 'solid',
-          borderTop: 0,
-          borderTopLeftRadius: 0,
-          borderTopRightRadius: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          overflow: 'hidden',
-          p: 2,
-        }}
-      >
-        {children}
-      </Box>
+      {collapsed ? null : (
+        <Box
+          sx={{
+            bg: 'canvas.default',
+            border: 1,
+            borderColor: 'border.default',
+            borderRadius: 2,
+            borderStyle: 'solid',
+            borderTop: 0,
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            overflow: 'hidden',
+            p: 2,
+          }}
+        >
+          {children}
+        </Box>
+      )}
     </Box>
   )
 }
 
 export interface EditorBlockProps extends DraggableProps {
+  atom?: ElementAtom
   children: React.ReactNode
-  onDelete?: () => void
+  collapsed?: boolean
   title: string
 }
