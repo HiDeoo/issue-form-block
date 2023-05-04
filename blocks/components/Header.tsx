@@ -1,5 +1,5 @@
 import { EyeIcon, FileCodeIcon, FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
-import { ActionList, ActionMenu, Box, Button, FormControl, IconButton, SegmentedControl, Tooltip } from '@primer/react'
+import { ActionList, ActionMenu, Box, Button, IconButton, SegmentedControl, Tooltip } from '@primer/react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
@@ -127,21 +127,19 @@ export function Header() {
         </>
       ) : null}
       {showPanelSelector ? (
-        <FormControl>
-          <SegmentedControl
-            aria-label={`Show ${selectedPanel === 'editor' ? 'preview' : 'editor'}`}
-            onChange={handleSelectedPanelChange}
-            variant={{ narrow: 'hideLabels', regular: 'default' }}
-          >
-            <SegmentedControl.IconButton
-              aria-label="Editor"
-              icon={FileCodeIcon}
-              selected={selectedPanel === 'editor'}
-              value="orioyut"
-            />
-            <SegmentedControl.IconButton aria-label="Preview" icon={EyeIcon} selected={selectedPanel === 'preview'} />
-          </SegmentedControl>
-        </FormControl>
+        <SegmentedControl
+          aria-label={`Show ${selectedPanel === 'editor' ? 'preview' : 'editor'}`}
+          onChange={handleSelectedPanelChange}
+          variant={{ narrow: 'hideLabels', regular: 'default' }}
+        >
+          <SegmentedControl.IconButton
+            aria-label="Editor"
+            icon={FileCodeIcon}
+            selected={selectedPanel === 'editor'}
+            value="orioyut"
+          />
+          <SegmentedControl.IconButton aria-label="Preview" icon={EyeIcon} selected={selectedPanel === 'preview'} />
+        </SegmentedControl>
       ) : null}
     </Box>
   )
