@@ -83,7 +83,13 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
   }
 
   return (
-    <EditorBlock atom={atom} collapsed={checkboxes._collapsed} title="Checkboxes" {...others}>
+    <EditorBlock
+      atom={atom}
+      collapsed={checkboxes._collapsed}
+      excerpt={checkboxes.attributes.label}
+      title="Checkboxes"
+      {...others}
+    >
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={checkboxes.attributes.label.length === 0 && 'A label is required.'}

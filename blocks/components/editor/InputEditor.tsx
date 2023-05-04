@@ -35,7 +35,7 @@ export function InputEditor({ atom, ...others }: InputEditorProps) {
   }
 
   return (
-    <EditorBlock atom={atom} collapsed={input._collapsed} title="Input" {...others}>
+    <EditorBlock atom={atom} collapsed={input._collapsed} excerpt={input.attributes.label} title="Input" {...others}>
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={input.attributes.label.length === 0 && 'A label is required.'}

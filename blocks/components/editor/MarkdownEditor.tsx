@@ -30,7 +30,13 @@ export function MarkdownEditor({ atom, ...others }: MarkdownEditorProps) {
   }
 
   return (
-    <EditorBlock atom={atom} collapsed={markdown._collapsed} title="Markdown" {...others}>
+    <EditorBlock
+      atom={atom}
+      collapsed={markdown._collapsed}
+      excerpt={markdown.attributes.value}
+      title="Markdown"
+      {...others}
+    >
       <Box sx={markdownStyle}>
         <PrimerMarkdownEditor
           minHeightLines={3}

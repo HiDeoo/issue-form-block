@@ -41,7 +41,13 @@ export function TextareaEditor({ atom, ...others }: TextareaEditorProps) {
   }
 
   return (
-    <EditorBlock atom={atom} collapsed={textarea._collapsed} title="Textarea" {...others}>
+    <EditorBlock
+      atom={atom}
+      collapsed={textarea._collapsed}
+      excerpt={textarea.attributes.label}
+      title="Textarea"
+      {...others}
+    >
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={textarea.attributes.label.length === 0 && 'A label is required.'}

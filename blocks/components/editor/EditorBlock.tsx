@@ -1,5 +1,5 @@
 import { FoldIcon, GrabberIcon, UnfoldIcon, XIcon } from '@primer/octicons-react'
-import { Box, IconButton, Tooltip } from '@primer/react'
+import { Box, IconButton, Text, Tooltip } from '@primer/react'
 import { useSetAtom } from 'jotai'
 
 import {
@@ -38,6 +38,7 @@ export function EditorBlock({
   attributes,
   children,
   collapsed,
+  excerpt,
   isDragging,
   isDragOverlay,
   listeners,
@@ -97,7 +98,6 @@ export function EditorBlock({
     >
       <Box
         sx={{
-          alignItems: 'center',
           bg: 'canvas.subtle',
           border: 1,
           borderColor: 'border.default',
@@ -106,24 +106,41 @@ export function EditorBlock({
           borderBottomRightRadius: collapsed ? 2 : 0,
           borderTopLeftRadius: 2,
           borderTopRightRadius: 2,
-          display: 'flex',
+          display: 'grid',
           fontSize: 1,
           fontWeight: 600,
-          gap: 2,
-          justifyContent: 'space-between',
+          gridTemplateColumns: 'minmax(0, 1fr) 4rem minmax(0, 1fr)',
           p: 2,
         }}
       >
-        <Box flex={1}>{title}</Box>
-        {isDragHandlevisible ? (
-          isDragged ? (
-            dragHandle
-          ) : (
-            <Tooltip aria-label="Reorder element" direction="n">
-              {dragHandle}
-            </Tooltip>
-          )
-        ) : null}
+        <Box alignItems="center" display="flex">
+          {title}
+          {collapsed && excerpt ? (
+            <Text
+              sx={{
+                fontSize: 0,
+                fontWeight: 400,
+                ml: '0.4em',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {excerpt}
+            </Text>
+          ) : null}
+        </Box>
+        <Box display="flex">
+          {isDragHandlevisible ? (
+            isDragged ? (
+              dragHandle
+            ) : (
+              <Tooltip aria-label="Reorder element" direction="n">
+                {dragHandle}
+              </Tooltip>
+            )
+          ) : null}
+        </Box>
         {isElementBlock ? (
           <Box sx={{ display: 'flex', flex: 1, gap: 1, justifyContent: 'flex-end' }}>
             <>
@@ -179,5 +196,6 @@ export interface EditorBlockProps extends DraggableProps {
   atom?: ElementAtom
   children: React.ReactNode
   collapsed?: boolean
+  excerpt?: string
   title: string
 }

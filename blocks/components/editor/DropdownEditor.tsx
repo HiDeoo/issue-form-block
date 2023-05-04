@@ -84,7 +84,13 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
   }
 
   return (
-    <EditorBlock atom={atom} collapsed={dropdown._collapsed} title="Dropdown" {...others}>
+    <EditorBlock
+      atom={atom}
+      collapsed={dropdown._collapsed}
+      excerpt={dropdown.attributes.label}
+      title="Dropdown"
+      {...others}
+    >
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={dropdown.attributes.label.length === 0 && 'A label is required.'}
