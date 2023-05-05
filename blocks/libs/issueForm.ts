@@ -20,6 +20,8 @@ export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueF
   return stringify(issueForm, { lineWidth: 0 })
 }
 
+// TODO(HiDeoo) Empty optional string
+// TODO(HiDeoo) Empty ID issue
 function normalizeIssueFormElements(elements: IssueFormElement[]) {
   return elements.map((element) => {
     const { _collapsed, ...others } = element
@@ -57,12 +59,11 @@ const zValidationsProperty = { validations: z.object({ required: z.boolean() }).
 const issueFormMetadataSchema = z.object({
   name: zNonEmptyString,
   description: zNonEmptyString,
+  title: z.string().optional(),
   // TODO(HiDeoo)
   // assignees
   // TODO(HiDeoo)
   // labels
-  // TODO(HiDeoo)
-  // title
 })
 
 const checkboxesElementSchema = z

@@ -16,6 +16,10 @@ export function MetadataEditor() {
     setMetadata((prevMetadata) => ({ ...prevMetadata, description }))
   }
 
+  function handleTitleChange(title: string) {
+    setMetadata((prevMetadata) => ({ ...prevMetadata, title }))
+  }
+
   return (
     <EditorBlock title="Metadata">
       <TextInput
@@ -34,6 +38,7 @@ export function MetadataEditor() {
         required
         value={metadata.description}
       />
+      <TextInput caption="The issue default title." label="Title" onChange={handleTitleChange} value={metadata.title} />
     </EditorBlock>
   )
 }

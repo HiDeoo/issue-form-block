@@ -1,7 +1,9 @@
-import { Box, Button, Heading, Text } from '@primer/react'
+import { Box, Button, Heading, Text, TextInput } from '@primer/react'
 import { useAtomValue } from 'jotai'
 
 import { issueFormMetadataAtom } from '../../atoms/issueForm'
+
+import { PreviewSeparator } from './PreviewSeparator'
 
 export function MetadataPreview() {
   const metadata = useAtomValue(issueFormMetadataAtom)
@@ -34,15 +36,9 @@ export function MetadataPreview() {
           Get started
         </Button>
       </Box>
-      <Box
-        sx={{
-          border: 0,
-          borderTop: 1,
-          borderColor: 'border.default',
-          borderStyle: 'dashed',
-          mt: 1,
-        }}
-      />
+      <PreviewSeparator />
+      <TextInput placeholder="Title" sx={{ bg: 'canvas.inset' }} value={metadata.title ?? ''} />
+      <PreviewSeparator />
     </>
   )
 }
