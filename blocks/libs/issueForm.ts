@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid'
 import { parse, stringify } from 'yaml'
 import { z } from 'zod'
 
-export const ID_VALIDATION_REGEX = /^[\w-_]+$/
+export const ID_VALIDATION_REGEX = /^$|[\w-_]+$/
 
 export function parseIssueForm(content: string): IssueForm {
   const yaml = parse(content)
@@ -30,7 +30,6 @@ export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueF
   )
 }
 
-// TODO(HiDeoo) Empty ID issue
 function normalizeIssueFormElements(elements: IssueFormElement[]) {
   return elements.map((element) => {
     const { _collapsed, ...others } = element
@@ -52,7 +51,6 @@ function normalizeIssueFormElements(elements: IssueFormElement[]) {
 
           return optionOthers.label
         }),
-        //
       },
     }
   })
