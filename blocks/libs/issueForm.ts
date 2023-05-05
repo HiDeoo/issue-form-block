@@ -13,18 +13,45 @@ export function parseIssueForm(content: string): IssueForm {
 }
 
 export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[]) {
-  const issueForm = { ...metadata, body: elements }
+  const issueForm = { ...metadata, body: normalizeIssueFormElements(elements) }
 
   issueFormSchema.parse(issueForm)
 
   return stringify(issueForm, { lineWidth: 0 })
 }
 
+function normalizeIssueFormElements(elements: IssueFormElement[]) {
+  return elements.map((element) => {
+    const { _collapsed, ...others } = element
+
+    if (others.type !== 'checkboxes' && others.type !== 'dropdown') {
+      return others
+    }
+
+    return {
+      ...others,
+      attributes: {
+        ...others.attributes,
+        options: others.attributes.options.map((option) => {
+          const { _id, ...optionOthers } = option
+
+          if (others.type === 'checkboxes') {
+            return optionOthers
+          }
+
+          return optionOthers.label
+        }),
+        //
+      },
+    }
+  })
+}
+
 const elementTypes = ['checkboxes', 'dropdown', 'input', 'markdown', 'textarea'] as const
 
 const zNonEmptyString = z.string().trim().min(1)
 const zIdProperty = { id: z.string().regex(ID_VALIDATION_REGEX).optional() }
-const zCollapasedProperty = { _collapsed: z.boolean().optional() } // TODO(HiDeoo) handle serialization
+const zCollapasedProperty = { _collapsed: z.boolean().optional() }
 const zValidationsProperty = { validations: z.object({ required: z.boolean() }).optional() }
 
 const issueFormMetadataSchema = z.object({
@@ -53,7 +80,6 @@ const checkboxesElementSchema = z
           label: zNonEmptyString,
         })
         .array()
-        // TODO(HiDeoo) Handle serialization
         .transform((value) => value.map((option) => ({ ...option, _id: nanoid() }))),
     }),
   })
@@ -70,10 +96,7 @@ const dropdownElementSchema = z
       label: zNonEmptyString,
       description: z.string().optional(),
       multiple: z.boolean().optional(),
-      options: zNonEmptyString
-        .array()
-        // TODO(HiDeoo) Handle serialization
-        .transform((value) => value.map((option) => ({ _id: nanoid(), label: option }))),
+      options: zNonEmptyString.array().transform((value) => value.map((option) => ({ _id: nanoid(), label: option }))),
     }),
   })
   .extend(zCollapasedProperty)
