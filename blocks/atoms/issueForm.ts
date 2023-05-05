@@ -20,6 +20,7 @@ export const issueFormMetadataAtom = atom<IssueFormMetadata>(issueFormDefaultSta
 export const issueFormElementsAtom = atom<ElementAtom[]>(issueFormDefaultState.elements.map(mapElementToElementAtom))
 
 export const issueFormAtom = atom((get) => {
+  // @ts-expect-error -- jotai does not like the union type even though it is valid.
   const elements = get(issueFormElementsAtom).map((elementAtom) => get(elementAtom))
   const metadata = get(issueFormMetadataAtom)
 
@@ -37,7 +38,8 @@ export const deleteIssueFormElementAtom = atom(null, (_get, set, elementAtom: El
 })
 
 export const toggleCollapsedIssueFormElementAtom = atom(null, (_get, set, elementAtom: ElementAtom) => {
-  // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all elements.
+  // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all elements but not
+  // inferred by the union type.
   set(elementAtom, (prevElement) => ({ ...prevElement, _collapsed: !prevElement._collapsed }))
 })
 
@@ -45,7 +47,8 @@ export const setCollapsedIssueFormElementsAtom = atom(null, (get, set, collapase
   const elementAtoms = get(issueFormElementsAtom)
 
   for (const elementAtom of elementAtoms) {
-    // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all elements.
+    // @ts-expect-error -- we are only updating the internal _collapsed property which is shared by all elements but not
+    // inferred by the union type.
     set(elementAtom, (prevElement) => ({ ...prevElement, _collapsed: collapased }))
   }
 })
