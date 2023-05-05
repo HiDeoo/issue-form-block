@@ -17,10 +17,19 @@ export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueF
 
   issueFormSchema.parse(issueForm)
 
-  return stringify(issueForm, { lineWidth: 0 })
+  return stringify(
+    issueForm,
+    (_key, value) => {
+      if (typeof value === 'string' && value.trim().length === 0) {
+        return undefined
+      }
+
+      return value
+    },
+    { lineWidth: 0 }
+  )
 }
 
-// TODO(HiDeoo) Empty optional string
 // TODO(HiDeoo) Empty ID issue
 function normalizeIssueFormElements(elements: IssueFormElement[]) {
   return elements.map((element) => {
