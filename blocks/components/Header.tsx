@@ -1,4 +1,4 @@
-import { EyeIcon, FileCodeIcon, FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
+import { EyeIcon, FileDiffIcon, FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
 import { ActionList, ActionMenu, Box, Button, IconButton, SegmentedControl, Tooltip } from '@primer/react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
@@ -17,6 +17,8 @@ import {
 import { selectedPanelAtom } from '../atoms/ui'
 import { usePanels } from '../hooks/usePanels'
 import type { IssueFormElementType } from '../libs/issueForm'
+
+import { YamlDialog } from './yaml/YamlDialog'
 
 const elementAtomCreatorMap: Record<IssueFormElementType, () => ElementAtom> = {
   checkboxes: createCheckboxesAtom,
@@ -126,6 +128,7 @@ export function Header() {
           </Tooltip>
         </>
       ) : null}
+      <YamlDialog />
       {showPanelSelector ? (
         <SegmentedControl
           aria-label={`Show ${selectedPanel === 'editor' ? 'preview' : 'editor'}`}
@@ -134,7 +137,7 @@ export function Header() {
         >
           <SegmentedControl.IconButton
             aria-label="Editor"
-            icon={FileCodeIcon}
+            icon={FileDiffIcon}
             selected={selectedPanel === 'editor'}
             value="orioyut"
           />

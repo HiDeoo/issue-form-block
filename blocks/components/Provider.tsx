@@ -1,11 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { issueFormAtom } from '../atoms/issueForm'
+import { setIssueFormAtom } from '../atoms/issueForm'
 import { parseIssueForm } from '../libs/issueForm'
 
 export function Provider({ children, content }: ProviderProps) {
-  const setIssueForm = useSetAtom(issueFormAtom)
+  const setIssueForm = useSetAtom(setIssueFormAtom)
 
   useMemo(() => {
     const issueForm = parseIssueForm(content)

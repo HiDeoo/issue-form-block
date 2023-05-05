@@ -16,17 +16,21 @@ const issueFormDefaultState: IssueForm = { elements: [], metadata: { description
 
 const issueFormInitialStateAtom = atom(issueFormDefaultState)
 
-export const issueFormAtom = atom(
-  () => issueFormDefaultState,
-  (_get, set, issueForm: IssueForm) => {
-    set(issueFormInitialStateAtom, issueForm)
-    set(issueFormMetadataAtom, issueForm.metadata)
-    set(issueFormElementsAtom, issueForm.elements.map(mapElementToElementAtom))
-  }
-)
-
 export const issueFormMetadataAtom = atom<IssueFormMetadata>(issueFormDefaultState.metadata)
 export const issueFormElementsAtom = atom<ElementAtom[]>(issueFormDefaultState.elements.map(mapElementToElementAtom))
+
+export const issueFormAtom = atom((get) => {
+  const elements = get(issueFormElementsAtom).map((elementAtom) => get(elementAtom))
+  const metadata = get(issueFormMetadataAtom)
+
+  return { elements, metadata }
+})
+
+export const setIssueFormAtom = atom(null, (_get, set, issueForm: IssueForm) => {
+  set(issueFormInitialStateAtom, issueForm)
+  set(issueFormMetadataAtom, issueForm.metadata)
+  set(issueFormElementsAtom, issueForm.elements.map(mapElementToElementAtom))
+})
 
 export const deleteIssueFormElementAtom = atom(null, (_get, set, elementAtom: ElementAtom) => {
   set(issueFormElementsAtom, (prevElements) => prevElements.filter((element) => element !== elementAtom))

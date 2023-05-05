@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { parse } from 'yaml'
+import { parse, stringify } from 'yaml'
 import { z } from 'zod'
 
 export const ID_VALIDATION_REGEX = /^[\w-_]+$/
@@ -12,6 +12,12 @@ export function parseIssueForm(content: string): IssueForm {
   return { elements: body, metadata: others }
 }
 
+export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[]) {
+  const issueForm = { ...metadata, body: elements }
+
+  return stringify(issueForm, { lineWidth: 0 })
+}
+
 const elementTypes = ['checkboxes', 'dropdown', 'input', 'markdown', 'textarea'] as const
 
 const zNonEmptyString = z.string().trim().min(1)
@@ -20,21 +26,26 @@ const zCollapasedProperty = { _collapsed: z.boolean().optional() } // TODO(HiDeo
 const zValidationsProperty = { validations: z.object({ required: z.boolean() }).optional() }
 
 const issueFormMetadataSchema = z.object({
-  // TODO(HiDeoo)
-  // assignees
+  name: z.string(),
   description: z.string(),
   // TODO(HiDeoo)
+  // assignees
+  // TODO(HiDeoo)
   // labels
-  name: z.string(),
   // TODO(HiDeoo)
   // title
 })
 
 const checkboxesElementSchema = z
   .object({
+    type: z.literal('checkboxes'),
+  })
+  .extend(zIdProperty)
+  .extend(zValidationsProperty)
+  .extend({
     attributes: z.object({
-      description: z.string().optional(),
       label: zNonEmptyString,
+      description: z.string().optional(),
       options: z
         .object({
           label: zNonEmptyString,
@@ -43,66 +54,69 @@ const checkboxesElementSchema = z
         // TODO(HiDeoo) Handle serialization
         .transform((value) => value.map((option) => ({ ...option, _id: nanoid() }))),
     }),
-    type: z.literal('checkboxes'),
   })
-  .extend(zIdProperty)
   .extend(zCollapasedProperty)
-  .extend(zValidationsProperty)
 
 const dropdownElementSchema = z
   .object({
+    type: z.literal('dropdown'),
+  })
+  .extend(zIdProperty)
+  .extend(zValidationsProperty)
+  .extend({
     attributes: z.object({
-      description: z.string().optional(),
       label: zNonEmptyString,
+      description: z.string().optional(),
       multiple: z.boolean().optional(),
       options: zNonEmptyString
         .array()
         // TODO(HiDeoo) Handle serialization
         .transform((value) => value.map((option) => ({ _id: nanoid(), label: option }))),
     }),
-    type: z.literal('dropdown'),
   })
-  .extend(zIdProperty)
   .extend(zCollapasedProperty)
-  .extend(zValidationsProperty)
 
 const inputElementSchema = z
   .object({
-    attributes: z.object({
-      description: z.string().optional(),
-      label: zNonEmptyString,
-      placeholder: z.string().optional(),
-      value: z.string().optional(),
-    }),
     type: z.literal('input'),
   })
   .extend(zIdProperty)
-  .extend(zCollapasedProperty)
   .extend(zValidationsProperty)
+  .extend({
+    attributes: z.object({
+      label: zNonEmptyString,
+      description: z.string().optional(),
+      placeholder: z.string().optional(),
+      value: z.string().optional(),
+    }),
+  })
+  .extend(zCollapasedProperty)
 
 const markdownElementSchema = z
   .object({
+    type: z.literal('markdown'),
     attributes: z.object({
       value: z.string(),
     }),
-    type: z.literal('markdown'),
   })
   .extend(zCollapasedProperty)
 
 const textareaElementSchema = z
   .object({
+    type: z.literal('textarea'),
+  })
+  .extend(zIdProperty)
+  .extend(zValidationsProperty)
+  .extend({
     attributes: z.object({
-      description: z.string().optional(),
       label: zNonEmptyString,
+      description: z.string().optional(),
       placeholder: z.string().optional(),
       render: z.string().optional(),
       value: z.string().optional(),
     }),
-    type: z.literal('textarea'),
   })
-  .extend(zIdProperty)
   .extend(zCollapasedProperty)
-  .extend(zValidationsProperty)
 
 const issueFormElementSchema = z.discriminatedUnion('type', [
   checkboxesElementSchema,

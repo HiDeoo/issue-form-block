@@ -19,6 +19,9 @@ dependencies:
   '@primer/react':
     specifier: 35.25.1
     version: 35.25.1(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.10)
+  highlight.js:
+    specifier: 11.8.0
+    version: 11.8.0
   jotai:
     specifier: 2.0.4
     version: 2.0.4(react@18.2.0)
@@ -2923,6 +2926,11 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+
+  /highlight.js@11.8.0:
+    resolution: {integrity: sha512-MedQhoqVdr0U6SSnWPzfiadUcDHfN/Wzq25AkXiQv9oiOO/sG0S7XkvpFIqWBl9Yq1UYyYOOVORs5UW2XlPyzg==}
+    engines: {node: '>=12.0.0'}
+    dev: false
 
   /history@5.3.0:
     resolution: {integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==}
