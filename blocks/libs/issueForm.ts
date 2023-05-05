@@ -15,6 +15,8 @@ export function parseIssueForm(content: string): IssueForm {
 export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[]) {
   const issueForm = { ...metadata, body: elements }
 
+  issueFormSchema.parse(issueForm)
+
   return stringify(issueForm, { lineWidth: 0 })
 }
 

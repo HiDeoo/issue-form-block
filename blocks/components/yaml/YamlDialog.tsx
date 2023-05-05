@@ -2,6 +2,7 @@ import { FileCodeIcon } from '@primer/octicons-react'
 import { Box, Dialog, IconButton, Portal, Tooltip } from '@primer/react'
 import { useRef, useState } from 'react'
 
+import { YamlErrorBoundary } from './YamlErrorBoundary'
 import { YamlPreview } from './YamlPreview'
 
 const triggerButtonTooltip = 'Preview yaml'
@@ -26,11 +27,13 @@ export function YamlDialog() {
           isOpen={isOpen}
           onDismiss={toggleOpened}
           returnFocusRef={trigger}
-          sx={{ width: '75vw' }}
+          sx={{ display: 'flex', flexDirection: 'column', width: '75vw' }}
         >
           <Dialog.Header id="yaml-dialog-header">Yaml</Dialog.Header>
-          <Box p={3}>
-            <YamlPreview />
+          <Box display="flex" flexDirection="column" minHeight={0} p={3}>
+            <YamlErrorBoundary>
+              <YamlPreview />
+            </YamlErrorBoundary>
           </Box>
         </Dialog>
       </Portal>

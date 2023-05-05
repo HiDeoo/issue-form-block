@@ -10,7 +10,6 @@ import { serializeIssueForm } from '../../libs/issueForm'
 
 hljs.registerLanguage('yaml', yaml)
 
-// TODO(HiDeoo) Handle errors
 export function YamlPreview() {
   const issueForm = useAtomValue(issueFormAtom)
   const issueFormYaml = useMemo(() => {
@@ -21,7 +20,6 @@ export function YamlPreview() {
   return (
     <Box
       dangerouslySetInnerHTML={{ __html: issueFormYaml.value }}
-      overflow="auto"
       sx={{
         bg: 'canvas.inset',
         border: 1,
@@ -30,7 +28,8 @@ export function YamlPreview() {
         borderStyle: 'solid',
         fontFamily: 'mono',
         fontSize: 1,
-        maxHeight: '70vh',
+        height: '100%',
+        overflow: 'auto',
         p: 2,
         whiteSpace: 'pre',
       }}
