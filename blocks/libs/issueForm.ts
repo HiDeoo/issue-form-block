@@ -28,8 +28,8 @@ const zCollapasedProperty = { _collapsed: z.boolean().optional() } // TODO(HiDeo
 const zValidationsProperty = { validations: z.object({ required: z.boolean() }).optional() }
 
 const issueFormMetadataSchema = z.object({
-  name: z.string(),
-  description: z.string(),
+  name: zNonEmptyString,
+  description: zNonEmptyString,
   // TODO(HiDeoo)
   // assignees
   // TODO(HiDeoo)
