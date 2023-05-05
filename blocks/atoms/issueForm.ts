@@ -1,4 +1,5 @@
 import { atom, type PrimitiveAtom } from 'jotai'
+import { nanoid } from 'nanoid'
 
 import type {
   CheckboxesElement,
@@ -52,13 +53,30 @@ export const resetIssueFormAtom = atom(null, (get, set) => {
   set(issueFormElementsAtom, issueForm.elements.map(mapElementToElementAtom))
 })
 
-export function createTextareaAtom(): TextareaElementAtom {
+export function createCheckboxesAtom(): CheckboxesElementAtom {
   return atom({
-    attributes: {
-      label: 'New textarea',
-    },
-    type: 'textarea',
+    type: 'checkboxes',
+    attributes: { label: 'New checkboxes', options: [{ _id: nanoid(), label: 'New option' }] },
   })
+}
+
+export function createDropdownAtom(): DropdownElementAtom {
+  return atom({
+    type: 'dropdown',
+    attributes: { label: 'New dropdown', options: [{ _id: nanoid(), label: 'New option' }] },
+  })
+}
+
+export function createInputAtom(): InputElementAtom {
+  return atom({ type: 'input', attributes: { label: 'New input' } })
+}
+
+export function createMarkdownAtom(): MarkdownElementAtom {
+  return atom({ type: 'markdown', attributes: { value: 'New markdown' } })
+}
+
+export function createTextareaAtom(): TextareaElementAtom {
+  return atom({ type: 'textarea', attributes: { label: 'New textarea' } })
 }
 
 export function isCheckboxesAtom(_atom: ElementAtom, element: IssueFormElement): _atom is CheckboxesElementAtom {

@@ -9,20 +9,20 @@ import {
   type ElementAtom,
   setCollapsedIssueFormElementsAtom,
   resetIssueFormAtom,
+  createCheckboxesAtom,
+  createDropdownAtom,
+  createInputAtom,
+  createMarkdownAtom,
 } from '../atoms/issueForm'
 import { selectedPanelAtom } from '../atoms/ui'
 import { usePanels } from '../hooks/usePanels'
 import type { IssueFormElementType } from '../libs/issueForm'
 
 const elementAtomCreatorMap: Record<IssueFormElementType, () => ElementAtom> = {
-  // TODO(HiDeoo)
-  checkboxes: createTextareaAtom,
-  // TODO(HiDeoo)
-  dropdown: createTextareaAtom,
-  // TODO(HiDeoo)
-  input: createTextareaAtom,
-  // TODO(HiDeoo)
-  markdown: createTextareaAtom,
+  checkboxes: createCheckboxesAtom,
+  dropdown: createDropdownAtom,
+  input: createInputAtom,
+  markdown: createMarkdownAtom,
   textarea: createTextareaAtom,
 }
 
