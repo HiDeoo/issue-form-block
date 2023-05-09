@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import { parse, stringify } from 'yaml'
 import { z } from 'zod'
 
@@ -88,7 +87,7 @@ const checkboxesElementSchema = z
           label: zNonEmptyString,
         })
         .array()
-        .transform((value) => value.map((option) => ({ ...option, _id: nanoid() }))),
+        .transform((value) => value.map((option) => ({ ...option, _id: crypto.randomUUID() }))),
     }),
   })
   .extend(zCollapasedProperty)
@@ -104,7 +103,9 @@ const dropdownElementSchema = z
       label: zNonEmptyString,
       description: z.string().optional(),
       multiple: z.boolean().optional(),
-      options: zNonEmptyString.array().transform((value) => value.map((option) => ({ _id: nanoid(), label: option }))),
+      options: zNonEmptyString
+        .array()
+        .transform((value) => value.map((option) => ({ _id: crypto.randomUUID(), label: option }))),
     }),
   })
   .extend(zCollapasedProperty)

@@ -1,6 +1,5 @@
 import { arrayMove } from '@dnd-kit/sortable'
 import { useAtom } from 'jotai'
-import { nanoid } from 'nanoid'
 
 import type { DropdownElementAtom } from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
@@ -35,7 +34,7 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
   }
 
   function handleOptionAddition() {
-    const newOption = { _id: nanoid(), label: 'New option' }
+    const newOption = { _id: crypto.randomUUID(), label: 'New option' }
 
     setDropdown((prevDropdown) => ({
       ...prevDropdown,

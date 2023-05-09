@@ -1,6 +1,5 @@
 import { arrayMove } from '@dnd-kit/sortable'
 import { useAtom } from 'jotai'
-import { nanoid } from 'nanoid'
 
 import type { CheckboxesElementAtom } from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
@@ -34,7 +33,7 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
   }
 
   function handleOptionAddition() {
-    const newOption = { _id: nanoid(), label: 'New option' }
+    const newOption = { _id: crypto.randomUUID(), label: 'New option' }
 
     setCheckboxes((prevCheckboxes) => ({
       ...prevCheckboxes,
