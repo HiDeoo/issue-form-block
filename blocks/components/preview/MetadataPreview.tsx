@@ -37,7 +37,7 @@ export function MetadataPreview() {
         </Button>
       </Box>
       <PreviewSeparator />
-      <TextInput placeholder="Title" sx={{ bg: 'canvas.inset' }} value={metadata.title ?? ''} />
+      <TextInput placeholder="Title" readOnly sx={{ bg: 'canvas.inset' }} value={metadata.title ?? ''} />
       <PreviewSeparator />
     </>
   )

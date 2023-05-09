@@ -18,7 +18,7 @@ export function TextInput({ caption, errorMessage, label, onChange, required = f
         onChange={handleChange}
         sx={textInputStyle}
         validationStatus={isInvalid ? 'error' : undefined}
-        value={value}
+        value={value ?? ''}
       />
       {isInvalid ? <FormControl.Validation variant="error">{errorMessage}</FormControl.Validation> : null}
       {caption ? <FormControl.Caption>{caption}</FormControl.Caption> : null}
