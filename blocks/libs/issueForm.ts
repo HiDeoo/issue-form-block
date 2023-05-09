@@ -166,6 +166,8 @@ const issueFormSchema = z
   })
   .merge(issueFormMetadataSchema)
 
+export type RawIssueForm = z.infer<typeof issueFormSchema>
+
 export interface IssueForm {
   elements: IssueFormElement[]
   metadata: IssueFormMetadata
