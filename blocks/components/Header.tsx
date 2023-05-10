@@ -38,28 +38,40 @@ export function Header() {
   const { addElement, setElementsCollapsed } = useElementsActions()
   const { resetIssueForm } = useResetActions()
 
-  const editorBlockIdToFocus = useRef<string | undefined>(undefined)
+  const editorBlockToFocus = useRef<{ id: string; type: IssueFormElementType } | undefined>(undefined)
 
   useEffect(() => {
-    if (editorBlockIdToFocus.current === undefined) {
-      return
+    const focusTimeout = setTimeout(() => {
+      if (editorBlockToFocus.current === undefined) {
+        return
+      }
+
+      const newEditBlockFirstInput = document.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+        `#editor-block-${editorBlockToFocus.current.id} ${
+          editorBlockToFocus.current.type === 'markdown' ? 'textarea' : 'input'
+        }`
+      )
+
+      if (newEditBlockFirstInput) {
+        newEditBlockFirstInput.focus()
+        newEditBlockFirstInput.setSelectionRange(
+          newEditBlockFirstInput.value.length,
+          newEditBlockFirstInput.value.length
+        )
+      }
+
+      editorBlockToFocus.current = undefined
+    }, 150)
+
+    return () => {
+      clearTimeout(focusTimeout)
     }
-
-    const newEditBlockFirstInput = document.querySelector<HTMLInputElement>(
-      `#editor-block-${editorBlockIdToFocus.current} input`
-    )
-
-    if (newEditBlockFirstInput) {
-      newEditBlockFirstInput.focus()
-    }
-
-    editorBlockIdToFocus.current = undefined
   }, [elements.length])
 
   function createNewElementHandler(type: IssueFormElementType) {
     return function handleNewElement() {
       const newElement = elementCreatorMap[type]()
-      editorBlockIdToFocus.current = newElement._id
+      editorBlockToFocus.current = { id: newElement._id, type }
 
       addElement(newElement)
     }
