@@ -1,7 +1,7 @@
 import { type Pair, type Scalar, parse, stringify } from 'yaml'
 import { z } from 'zod'
 
-export const ID_VALIDATION_REGEX = /^$|[\w-_]+$/
+export const ID_VALIDATION_REGEX = /^$|^[\w-_]+$/
 
 export function parseIssueForm(content: string) {
   const yaml = parse(content)
