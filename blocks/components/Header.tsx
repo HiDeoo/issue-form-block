@@ -3,6 +3,7 @@ import {
   EyeIcon,
   FileDiffIcon,
   FileDirectoryOpenFillIcon,
+  FileIcon,
   FoldIcon,
   PlusIcon,
   RepoLockedIcon,
@@ -40,7 +41,7 @@ const elementCreatorMap: Record<IssueFormElementType, () => IssueFormElement> = 
 const collapseButtonTooltip = 'Collapse all elements'
 const expandButtonTooltip = 'Expand all elements'
 
-export function Header({ isEditable, isValidPath }: HeaderProps) {
+export function Header({ isEditable, isValidExtension, isValidPath }: HeaderProps) {
   const { isSinglePanel, selectedPanel } = usePanels()
   const { setSelectedPanel } = usePanelsActions()
 
@@ -175,11 +176,17 @@ export function Header({ isEditable, isValidPath }: HeaderProps) {
           Issue forms must be located in the <code>.github/ISSUE_TEMPLATE</code> directory to be used.
         </HeaderFlash>
       )}
+      {isValidExtension ? null : (
+        <HeaderFlash icon={FileIcon}>
+          Issue forms must have the <code>.yml</code> or <code>.yaml</code> extension to be used.
+        </HeaderFlash>
+      )}
     </Box>
   )
 }
 
 interface HeaderProps {
   isEditable: FileBlockProps['isEditable']
+  isValidExtension: boolean
   isValidPath: boolean
 }

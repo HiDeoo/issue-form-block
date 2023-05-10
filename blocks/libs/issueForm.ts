@@ -71,6 +71,10 @@ export function isValidIssueFormPath(path: string, file: string) {
   return path.replace(file, '') === '.github/ISSUE_TEMPLATE'
 }
 
+export function isValidIssueFormExtension(file: string) {
+  return file.endsWith('.yml') || file.endsWith('.yaml')
+}
+
 function normalizeIssueFormElements(elements: IssueFormElement[]) {
   return elements.map((element) => {
     const { _collapsed, _id, ...others } = element
