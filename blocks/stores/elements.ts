@@ -5,7 +5,6 @@ import type { IssueFormElement } from '../libs/issueForm'
 export const useElementsStore = create<ElementsState>()((set) => ({
   baseElements: [],
   byId: {},
-  original: [],
   actions: {
     addElement: (element) =>
       set((state) => ({
@@ -17,7 +16,6 @@ export const useElementsStore = create<ElementsState>()((set) => ({
         baseElements: state.baseElements.filter((element) => element._id !== elementId),
         byId: { ...state.byId, [elementId]: undefined },
       })),
-    resetElements: () => set((state) => ({ ...getStoreElements(state.original) })),
     setElement: (element) => set((state) => ({ byId: { ...state.byId, [element._id]: element } })),
     setElementsCollapsed: (collapsed) =>
       set((state) => ({
@@ -26,7 +24,19 @@ export const useElementsStore = create<ElementsState>()((set) => ({
         ),
       })),
     setElementsOrder: (baseElements) => set({ baseElements }),
-    setOriginalElements: (elements) => set({ ...getStoreElements(elements), original: elements }),
+    setOriginalElements: (elements) => {
+      const baseElements: ElementsState['baseElements'] = []
+
+      const byId = Object.fromEntries(
+        elements.map((element) => {
+          baseElements.push({ _id: element._id, type: element.type })
+
+          return [element._id, element]
+        })
+      )
+
+      return set({ baseElements, byId })
+    },
     toggleCollapseElement: (elementId) =>
       set((state) => {
         const element = state.byId[elementId]
@@ -48,28 +58,12 @@ export const useElementsStore = create<ElementsState>()((set) => ({
   },
 }))
 
-function getStoreElements(elements: IssueFormElement[]) {
-  const baseElements: ElementsState['baseElements'] = []
-
-  const byId = Object.fromEntries(
-    elements.map((element) => {
-      baseElements.push({ _id: element._id, type: element.type })
-
-      return [element._id, element]
-    })
-  )
-
-  return { baseElements, byId }
-}
-
 export interface ElementsState {
   baseElements: BaseElement[]
   byId: Record<IssueFormElement['_id'], IssueFormElement>
-  original: IssueFormElement[]
   actions: {
     addElement: (elementId: IssueFormElement) => void
     deleteElement: (elementId: IssueFormElement['_id']) => void
-    resetElements: () => void
     setElement: (element: IssueFormElement) => void
     setElementsCollapsed: (collapased: boolean) => void
     setElementsOrder: (baseElements: BaseElement[]) => void

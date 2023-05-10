@@ -9,14 +9,13 @@ import {
   RepoLockedIcon,
   UnfoldIcon,
 } from '@primer/octicons-react'
-import { ActionList, ActionMenu, Box, Button, IconButton, SegmentedControl, Tooltip } from '@primer/react'
+import { ActionList, ActionMenu, Box, IconButton, SegmentedControl, Tooltip } from '@primer/react'
 import { useEffect, useRef } from 'react'
 
 import { useElements } from '../hooks/useElements'
 import { useElementsActions } from '../hooks/useElementsActions'
 import { usePanels } from '../hooks/usePanels'
 import { usePanelsActions } from '../hooks/usePanelsActions'
-import { useResetActions } from '../hooks/useResetActions'
 import {
   createCheckboxesElement,
   createDropdownElement,
@@ -47,7 +46,6 @@ export function Header({ isEditable, isValidExtension, isValidPath }: HeaderProp
 
   const elements = useElements()
   const { addElement, setElementsCollapsed } = useElementsActions()
-  const { resetIssueForm } = useResetActions()
 
   const editorBlockToFocus = useRef<{ id: string; type: IssueFormElementType } | undefined>(undefined)
 
@@ -96,10 +94,6 @@ export function Header({ isEditable, isValidExtension, isValidPath }: HeaderProp
     setElementsCollapsed(false)
   }
 
-  function handleResetClick() {
-    resetIssueForm()
-  }
-
   function handleSelectedPanelChange(selectedIndex: number) {
     setSelectedPanel(selectedIndex === 0 ? 'editor' : 'preview')
   }
@@ -135,9 +129,6 @@ export function Header({ isEditable, isValidExtension, isValidPath }: HeaderProp
             </ActionList>
           </ActionMenu.Overlay>
         </ActionMenu>
-        <Button onClick={handleResetClick} variant="danger">
-          Reset
-        </Button>
         <Box flex={1} />
         {showExpandCollapseButtons ? (
           <>

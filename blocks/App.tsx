@@ -19,17 +19,31 @@ const baseStyles: CSSProperties = {
   overflow: 'hidden',
 }
 
-export default function App({ context, isEditable, onUpdateContent, originalContent }: FileBlockProps) {
+export default function App({ content, context, isEditable, onUpdateContent, originalContent }: FileBlockProps) {
+  const [didEditContent, setDidEditContent] = useState(false)
   const [shouldParseContent, setShouldParseContent] = useState(true)
+
+  useEffect(() => {
+    if (content !== originalContent) {
+      setDidEditContent(true)
+    }
+  }, [content, originalContent])
+
+  useEffect(() => {
+    if (didEditContent && !shouldParseContent && content === originalContent) {
+      setDidEditContent(false)
+      setShouldParseContent(true)
+    }
+  }, [content, didEditContent, originalContent, shouldParseContent])
 
   useEffect(
     () => useMetadataStore.subscribe(() => (isEditable ? reportChanges(onUpdateContent) : undefined)),
-    [isEditable, onUpdateContent]
+    [didEditContent, isEditable, onUpdateContent]
   )
 
   useEffect(
     () => useElementsStore.subscribe(() => (isEditable ? reportChanges(onUpdateContent) : undefined)),
-    [isEditable, onUpdateContent]
+    [didEditContent, isEditable, onUpdateContent]
   )
 
   const handleContentParse = useCallback(() => {
@@ -58,7 +72,7 @@ export default function App({ context, isEditable, onUpdateContent, originalCont
 }
 
 const reportChanges = debounce(250, (reporter: FileBlockProps['onUpdateContent']) => {
-  const { actions, original, ...metadata } = useMetadataStore.getState()
+  const { actions, ...metadata } = useMetadataStore.getState()
   const elements = issueFormElementsSelector(useElementsStore.getState())
 
   const { yaml } = serializeIssueForm(metadata, elements)
