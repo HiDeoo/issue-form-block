@@ -5,14 +5,11 @@ import { useMetadata } from './useMetadata'
 
 export function useIssueForm() {
   const metadata = useMetadata()
-  const { baseElements, byId } = useElementsStore(selector)
+  const elements = useElementsStore(issueFormElementsSelector)
 
-  return {
-    elements: baseElements.map((element) => byId[element._id]) as IssueFormElement[],
-    metadata,
-  }
+  return { elements, metadata }
 }
 
-function selector(state: ElementsState) {
-  return { baseElements: state.baseElements, byId: state.byId }
+export function issueFormElementsSelector(state: ElementsState) {
+  return state.baseElements.map((element) => state.byId[element._id]) as IssueFormElement[]
 }

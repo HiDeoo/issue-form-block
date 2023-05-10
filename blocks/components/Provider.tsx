@@ -1,10 +1,15 @@
-import { useMemo } from 'react'
+import type { FileBlockProps } from '@githubnext/blocks'
+import { useEffect, useMemo } from 'react'
+import { debounce } from 'throttle-debounce'
 
 import { useElementsActions } from '../hooks/useElementsActions'
+import { issueFormElementsSelector } from '../hooks/useIssueForm'
 import { useMetadataActions } from '../hooks/useMetadataActions'
-import { parseIssueForm } from '../libs/issueForm'
+import { parseIssueForm, serializeIssueForm } from '../libs/issueForm'
+import { useElementsStore } from '../stores/elements'
+import { useMetadataStore } from '../stores/metadata'
 
-export function Provider({ children, content }: ProviderProps) {
+export function Provider({ children, content, updateContent }: ProviderProps) {
   const { setOriginalMetadata } = useMetadataActions()
   const { setOriginalElements } = useElementsActions()
 
@@ -18,10 +23,23 @@ export function Provider({ children, content }: ProviderProps) {
     setOriginalElements(issueForm.elements)
   }, [content, setOriginalElements, setOriginalMetadata])
 
+  useEffect(() => useMetadataStore.subscribe(() => reportChanges(updateContent)), [updateContent])
+  useEffect(() => useElementsStore.subscribe(() => reportChanges(updateContent)), [updateContent])
+
   return <>{children}</>
 }
+
+const reportChanges = debounce(250, (updater: FileBlockProps['onUpdateContent']) => {
+  const { actions, original, ...metadata } = useMetadataStore.getState()
+  const elements = issueFormElementsSelector(useElementsStore.getState())
+
+  const yaml = serializeIssueForm(metadata, elements, false)
+
+  updater(yaml)
+})
 
 interface ProviderProps {
   content: string
   children: React.ReactNode
+  updateContent: FileBlockProps['onUpdateContent']
 }

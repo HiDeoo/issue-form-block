@@ -1,4 +1,4 @@
-import { parse, stringify } from 'yaml'
+import { type Pair, type Scalar, parse, stringify } from 'yaml'
 import { z } from 'zod'
 
 export const ID_VALIDATION_REGEX = /^$|[\w-_]+$/
@@ -11,10 +11,12 @@ export function parseIssueForm(content: string) {
   return { elements: body, metadata: others }
 }
 
-export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[]) {
+export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[], validate = true) {
   const issueForm = { ...metadata, body: normalizeIssueFormElements(elements) }
 
-  issueFormSchema.parse(issueForm)
+  if (validate) {
+    issueFormSchema.parse(issueForm)
+  }
 
   return stringify(
     issueForm,
@@ -25,7 +27,15 @@ export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueF
 
       return value
     },
-    { lineWidth: 0 }
+    {
+      lineWidth: 0,
+      sortMapEntries: (a, b) => {
+        return (
+          serializationKeyOrder.indexOf((a as Pair<Scalar<string>>).key.value) -
+          serializationKeyOrder.indexOf((b as Pair<Scalar<string>>).key.value)
+        )
+      },
+    }
   )
 }
 
@@ -82,6 +92,24 @@ function normalizeIssueFormElements(elements: IssueFormElement[]) {
     }
   })
 }
+
+const serializationKeyOrder = [
+  'name',
+  'label',
+  'description',
+  'title',
+  'body',
+  'type',
+  'id',
+  'attributes',
+  'validations',
+  'description',
+  'placeholder',
+  'value',
+  'render',
+  'multiple',
+  'options',
+]
 
 const elementTypes = ['checkboxes', 'dropdown', 'input', 'markdown', 'textarea'] as const
 
