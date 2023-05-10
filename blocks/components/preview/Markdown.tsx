@@ -9,7 +9,7 @@ const markdownStyle = {
   '>div>div': {
     a: { color: 'accent.fg' },
     li: { strong: { fontWeight: 400 } },
-    p: { fontSize: 1, mt: 0 },
+    p: { fontSize: 1, mt: 0, overflowWrap: 'anywhere' },
   },
 }
 
