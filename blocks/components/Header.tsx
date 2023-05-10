@@ -1,5 +1,16 @@
-import { EyeIcon, FileDiffIcon, FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
-import { ActionList, ActionMenu, Box, Button, IconButton, SegmentedControl, Tooltip } from '@primer/react'
+import type { FileBlockProps } from '@githubnext/blocks'
+import { EyeIcon, FileDiffIcon, FoldIcon, PlusIcon, RepoLockedIcon, UnfoldIcon } from '@primer/octicons-react'
+import {
+  ActionList,
+  ActionMenu,
+  Box,
+  Button,
+  Flash,
+  IconButton,
+  SegmentedControl,
+  StyledOcticon,
+  Tooltip,
+} from '@primer/react'
 import { useEffect, useRef } from 'react'
 
 import { useElements } from '../hooks/useElements'
@@ -30,7 +41,7 @@ const elementCreatorMap: Record<IssueFormElementType, () => IssueFormElement> = 
 const collapseButtonTooltip = 'Collapse all elements'
 const expandButtonTooltip = 'Expand all elements'
 
-export function Header() {
+export function Header({ isEditable }: HeaderProps) {
   const { isSinglePanel, selectedPanel } = usePanels()
   const { setSelectedPanel } = usePanelsActions()
 
@@ -99,60 +110,72 @@ export function Header() {
   return (
     <Box
       sx={{
-        alignItems: 'center',
         bg: 'canvas.subtle',
         borderBottomColor: 'border.default',
         borderBottomStyle: 'solid',
         borderBottomWidth: 1,
         display: 'flex',
+        flexDirection: 'column',
         gap: 2,
         p: 2,
       }}
     >
-      <ActionMenu>
-        <ActionMenu.Button leadingIcon={PlusIcon} variant="primary">
-          New element
-        </ActionMenu.Button>
-        <ActionMenu.Overlay>
-          <ActionList>
-            <ActionList.Item onSelect={createNewElementHandler('checkboxes')}>Checkboxes</ActionList.Item>
-            <ActionList.Item onSelect={createNewElementHandler('dropdown')}>Dropdown</ActionList.Item>
-            <ActionList.Item onSelect={createNewElementHandler('input')}>Input</ActionList.Item>
-            <ActionList.Item onSelect={createNewElementHandler('markdown')}>Markdown</ActionList.Item>
-            <ActionList.Item onSelect={createNewElementHandler('textarea')}>Textarea</ActionList.Item>
-          </ActionList>
-        </ActionMenu.Overlay>
-      </ActionMenu>
-      <Button onClick={handleResetClick} variant="danger">
-        Reset
-      </Button>
-      <Box flex={1} />
-      {showExpandCollapseButtons ? (
-        <>
-          <Tooltip aria-label={collapseButtonTooltip} direction="w">
-            <IconButton aria-label={collapseButtonTooltip} icon={FoldIcon} onClick={handleCollapseClick} />
-          </Tooltip>
-          <Tooltip aria-label={expandButtonTooltip} direction="w">
-            <IconButton aria-label={expandButtonTooltip} icon={UnfoldIcon} onClick={handleExpandClick} />
-          </Tooltip>
-        </>
-      ) : null}
-      <YamlDialog />
-      {showPanelSelector ? (
-        <SegmentedControl
-          aria-label={`Show ${selectedPanel === 'editor' ? 'preview' : 'editor'}`}
-          onChange={handleSelectedPanelChange}
-          variant={{ narrow: 'hideLabels', regular: 'default' }}
-        >
-          <SegmentedControl.IconButton
-            aria-label="Editor"
-            icon={FileDiffIcon}
-            selected={selectedPanel === 'editor'}
-            value="orioyut"
-          />
-          <SegmentedControl.IconButton aria-label="Preview" icon={EyeIcon} selected={selectedPanel === 'preview'} />
-        </SegmentedControl>
+      <Box sx={{ alignItems: 'center', display: 'flex', gap: 2 }}>
+        <ActionMenu>
+          <ActionMenu.Button leadingIcon={PlusIcon} variant="primary">
+            New element
+          </ActionMenu.Button>
+          <ActionMenu.Overlay>
+            <ActionList>
+              <ActionList.Item onSelect={createNewElementHandler('checkboxes')}>Checkboxes</ActionList.Item>
+              <ActionList.Item onSelect={createNewElementHandler('dropdown')}>Dropdown</ActionList.Item>
+              <ActionList.Item onSelect={createNewElementHandler('input')}>Input</ActionList.Item>
+              <ActionList.Item onSelect={createNewElementHandler('markdown')}>Markdown</ActionList.Item>
+              <ActionList.Item onSelect={createNewElementHandler('textarea')}>Textarea</ActionList.Item>
+            </ActionList>
+          </ActionMenu.Overlay>
+        </ActionMenu>
+        <Button onClick={handleResetClick} variant="danger">
+          Reset
+        </Button>
+        <Box flex={1} />
+        {showExpandCollapseButtons ? (
+          <>
+            <Tooltip aria-label={collapseButtonTooltip} direction="w">
+              <IconButton aria-label={collapseButtonTooltip} icon={FoldIcon} onClick={handleCollapseClick} />
+            </Tooltip>
+            <Tooltip aria-label={expandButtonTooltip} direction="w">
+              <IconButton aria-label={expandButtonTooltip} icon={UnfoldIcon} onClick={handleExpandClick} />
+            </Tooltip>
+          </>
+        ) : null}
+        <YamlDialog />
+        {showPanelSelector ? (
+          <SegmentedControl
+            aria-label={`Show ${selectedPanel === 'editor' ? 'preview' : 'editor'}`}
+            onChange={handleSelectedPanelChange}
+            variant={{ narrow: 'hideLabels', regular: 'default' }}
+          >
+            <SegmentedControl.IconButton
+              aria-label="Editor"
+              icon={FileDiffIcon}
+              selected={selectedPanel === 'editor'}
+              value="orioyut"
+            />
+            <SegmentedControl.IconButton aria-label="Preview" icon={EyeIcon} selected={selectedPanel === 'preview'} />
+          </SegmentedControl>
+        ) : null}
+      </Box>
+      {isEditable ? (
+        <Flash sx={{ fontSize: 1, fontWeight: 500, p: 2 }} variant="warning">
+          <StyledOcticon icon={RepoLockedIcon} />
+          You do not have the permissions to save changes to this issue form.
+        </Flash>
       ) : null}
     </Box>
   )
+}
+
+interface HeaderProps {
+  isEditable: FileBlockProps['isEditable']
 }

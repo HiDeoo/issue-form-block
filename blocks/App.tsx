@@ -22,7 +22,7 @@ export default function App({ isEditable, onUpdateContent, originalContent }: Fi
       <ThemeProvider>
         <BaseStyles style={baseStyles}>
           <Provider content={originalContent} isEditable={isEditable} updateContent={onUpdateContent}>
-            <Header />
+            <Header isEditable={true} />
             <Panels />
           </Provider>
         </BaseStyles>
