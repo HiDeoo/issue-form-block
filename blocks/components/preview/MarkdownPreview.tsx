@@ -1,15 +1,14 @@
-import { useAtomValue } from 'jotai'
-
-import type { MarkdownElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import type { MarkdownElement } from '../../libs/issueForm'
 
 import { Markdown } from './Markdown'
 
-export function MarkdownPreview({ atom }: MarkdownPreviewProps) {
-  const markdown = useAtomValue(atom)
+export function MarkdownPreview({ _id }: MarkdownPreviewProps) {
+  const markdown = useElement(_id, 'markdown')
 
   return <Markdown>{markdown.attributes.value}</Markdown>
 }
 
 interface MarkdownPreviewProps {
-  atom: MarkdownElementAtom
+  _id: MarkdownElement['_id']
 }

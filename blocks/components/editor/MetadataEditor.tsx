@@ -1,23 +1,23 @@
-import { useAtom } from 'jotai'
-
-import { issueFormMetadataAtom } from '../../atoms/issueForm'
+import { useMetadata } from '../../hooks/useMetadata'
+import { useMetadataActions } from '../../hooks/useMetadataActions'
 
 import { EditorBlock } from './EditorBlock'
 import { TextInput } from './TextInput'
 
 export function MetadataEditor() {
-  const [metadata, setMetadata] = useAtom(issueFormMetadataAtom)
+  const metadata = useMetadata()
+  const { setMetadata } = useMetadataActions()
 
   function handleNameChange(name: string) {
-    setMetadata((prevMetadata) => ({ ...prevMetadata, name }))
+    setMetadata({ name })
   }
 
   function handleDescriptionChange(description: string) {
-    setMetadata((prevMetadata) => ({ ...prevMetadata, description }))
+    setMetadata({ description })
   }
 
   function handleTitleChange(title: string) {
-    setMetadata((prevMetadata) => ({ ...prevMetadata, title }))
+    setMetadata({ title })
   }
 
   return (

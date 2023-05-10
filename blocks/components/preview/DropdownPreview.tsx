@@ -1,26 +1,25 @@
 import { ActionList, ActionMenu } from '@primer/react'
-import { useAtomValue } from 'jotai'
 import { Fragment } from 'react'
 
-import type { DropdownElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import type { DropdownElement } from '../../libs/issueForm'
 
 import { PreviewBlock } from './PreviewBlock'
 
-export function DropdownPreview({ atom }: DropdownPreviewProps) {
-  const dropdown = useAtomValue(atom)
-  const dropdownId = atom.toString()
+export function DropdownPreview({ _id }: DropdownPreviewProps) {
+  const dropdown = useElement(_id, 'dropdown')
 
   return (
     <PreviewBlock
       description={dropdown.attributes.description}
-      id={dropdownId}
+      id={dropdown._id}
       required={dropdown.validations?.required}
       title={dropdown.attributes.label}
     >
       <ActionMenu>
         <ActionMenu.Button>Selections:</ActionMenu.Button>
         <ActionMenu.Overlay>
-          <ActionList aria-labelledby={`${dropdownId}-caption`}>
+          <ActionList aria-labelledby={`${dropdown._id}-caption`}>
             {dropdown.attributes.options.map((option, index) => (
               <Fragment key={option._id}>
                 <ActionList.Item>{option.label}</ActionList.Item>
@@ -35,5 +34,5 @@ export function DropdownPreview({ atom }: DropdownPreviewProps) {
 }
 
 interface DropdownPreviewProps {
-  atom: DropdownElementAtom
+  _id: DropdownElement['_id']
 }

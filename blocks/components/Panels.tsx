@@ -1,15 +1,12 @@
 import { Box } from '@primer/react'
-import { useAtomValue } from 'jotai'
 
-import { selectedPanelAtom } from '../atoms/ui'
 import { usePanels } from '../hooks/usePanels'
 
 import { Editor } from './editor/Editor'
 import { Preview } from './preview/Preview'
 
 export function Panels() {
-  const { isSinglePanel } = usePanels()
-  const selectedPanel = useAtomValue(selectedPanelAtom)
+  const { isSinglePanel, selectedPanel } = usePanels()
 
   return (
     <Box display="grid" gridTemplateColumns={['1fr', '1fr', '1fr 1px 1fr']} height="100%" overflow="hidden">

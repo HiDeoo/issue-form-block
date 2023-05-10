@@ -1,8 +1,9 @@
 import { Link } from '@primer/react'
-import { useAtom } from 'jotai'
 
-import type { TextareaElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
+import type { TextareaElement } from '../../libs/issueForm'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
@@ -10,42 +11,43 @@ import { IdInput } from './IdInput'
 import { Textarea } from './Textarea'
 import { TextInput } from './TextInput'
 
-export function TextareaEditor({ atom, ...others }: TextareaEditorProps) {
-  const [textarea, setTextarea] = useAtom(atom)
+export function TextareaEditor({ _id, ...others }: TextareaEditorProps) {
+  const textarea = useElement(_id, 'textarea')
+  const { setElement } = useElementsActions()
 
   function handleDescriptionChange(description: string) {
-    setTextarea((prevTextarea) => ({ ...prevTextarea, attributes: { ...prevTextarea.attributes, description } }))
+    setElement({ ...textarea, attributes: { ...textarea.attributes, description } })
   }
 
   function handleIdChange(id: string) {
-    setTextarea((prevTextarea) => ({ ...prevTextarea, id }))
+    setElement({ ...textarea, id })
   }
 
   function handleLabelChange(label: string) {
-    setTextarea((prevTextarea) => ({ ...prevTextarea, attributes: { ...prevTextarea.attributes, label } }))
+    setElement({ ...textarea, attributes: { ...textarea.attributes, label } })
   }
 
   function handlePlaceholderChange(placeholder: string) {
-    setTextarea((prevTextarea) => ({ ...prevTextarea, attributes: { ...prevTextarea.attributes, placeholder } }))
+    setElement({ ...textarea, attributes: { ...textarea.attributes, placeholder } })
   }
 
   function handleRenderChange(render: string) {
-    setTextarea((prevTextarea) => ({ ...prevTextarea, attributes: { ...prevTextarea.attributes, render } }))
+    setElement({ ...textarea, attributes: { ...textarea.attributes, render } })
   }
 
   function handleRequiredChange(required: boolean) {
-    setTextarea((prevTextarea) => ({ ...prevTextarea, validations: { ...prevTextarea.validations, required } }))
+    setElement({ ...textarea, validations: { ...textarea.validations, required } })
   }
 
   function handleValueChange(value: string) {
-    setTextarea((prevTextarea) => ({ ...prevTextarea, attributes: { ...prevTextarea.attributes, value } }))
+    setElement({ ...textarea, attributes: { ...textarea.attributes, value } })
   }
 
   return (
     <EditorBlock
-      atom={atom}
       collapsed={textarea._collapsed}
       excerpt={textarea.attributes.label}
+      _id={_id}
       title="Textarea"
       {...others}
     >
@@ -104,5 +106,5 @@ export function TextareaEditor({ atom, ...others }: TextareaEditorProps) {
 }
 
 interface TextareaEditorProps extends DraggableProps {
-  atom: TextareaElementAtom
+  _id: TextareaElement['_id']
 }

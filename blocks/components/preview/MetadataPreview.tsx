@@ -1,12 +1,11 @@
 import { Box, Button, Heading, Text, TextInput } from '@primer/react'
-import { useAtomValue } from 'jotai'
 
-import { issueFormMetadataAtom } from '../../atoms/issueForm'
+import { useMetadata } from '../../hooks/useMetadata'
 
 import { PreviewSeparator } from './PreviewSeparator'
 
 export function MetadataPreview() {
-  const metadata = useAtomValue(issueFormMetadataAtom)
+  const metadata = useMetadata()
 
   return (
     <>

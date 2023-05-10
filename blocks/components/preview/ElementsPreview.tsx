@@ -1,16 +1,14 @@
-import { useAtomValue } from 'jotai'
-
-import { issueFormElementsAtom } from '../../atoms/issueForm'
+import { useElements } from '../../hooks/useElements'
 
 import { ElementPreview } from './ElementPreview'
 
 export function ElementsPreview() {
-  const elements = useAtomValue(issueFormElementsAtom)
+  const elements = useElements()
 
   return (
     <>
       {elements.map((element) => (
-        <ElementPreview atom={element} key={element.toString()} />
+        <ElementPreview _id={element._id} key={element._id} type={element.type} />
       ))}
     </>
   )

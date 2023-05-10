@@ -1,13 +1,9 @@
 import { FoldIcon, GrabberIcon, UnfoldIcon, XIcon } from '@primer/octicons-react'
 import { Box, IconButton, Text, Tooltip } from '@primer/react'
-import { useSetAtom } from 'jotai'
 
-import {
-  type ElementAtom,
-  deleteIssueFormElementAtom,
-  toggleCollapsedIssueFormElementAtom,
-} from '../../atoms/issueForm'
+import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
+import type { IssueFormElement } from '../../libs/issueForm'
 
 const dragHandleStyle = {
   border: 0,
@@ -34,11 +30,11 @@ const iconButtonStyle = {
 }
 
 export function EditorBlock({
-  atom,
   attributes,
   children,
   collapsed,
   excerpt,
+  _id,
   isDragging,
   isDragOverlay,
   listeners,
@@ -47,23 +43,22 @@ export function EditorBlock({
   style,
   title,
 }: EditorBlockProps) {
-  const deleteIssueFormElement = useSetAtom(deleteIssueFormElementAtom)
-  const toggleCollapsedIssueFormElement = useSetAtom(toggleCollapsedIssueFormElementAtom)
+  const { deleteElement, toggleCollapseElement } = useElementsActions()
 
   function handleToggleCollapsedClick() {
-    if (!atom) {
+    if (!_id) {
       return
     }
 
-    toggleCollapsedIssueFormElement(atom)
+    toggleCollapseElement(_id)
   }
 
   function handleDeleteClick() {
-    if (!atom) {
+    if (!_id) {
       return
     }
 
-    deleteIssueFormElement(atom)
+    deleteElement(_id)
   }
 
   const dragHandle = (
@@ -77,7 +72,7 @@ export function EditorBlock({
     />
   )
 
-  const isElementBlock = atom !== undefined
+  const isElementBlock = _id !== undefined
   const isDragged = isDragOverlay ?? isDragging
   const isDragHandlevisible = isDragOverlay ?? listeners
 
@@ -85,7 +80,7 @@ export function EditorBlock({
 
   return (
     <Box
-      id={atom ? `editor-block-${atom.toString()}` : atom}
+      id={_id ? `editor-block-${_id}` : undefined}
       ref={setNodeRef}
       style={style}
       sx={{
@@ -194,7 +189,7 @@ export function EditorBlock({
 }
 
 export interface EditorBlockProps extends DraggableProps {
-  atom?: ElementAtom
+  _id?: IssueFormElement['_id']
   children: React.ReactNode
   collapsed?: boolean
   excerpt?: string

@@ -16,12 +16,12 @@ const baseStyles: CSSProperties = {
   overflow: 'hidden',
 }
 
-export default function App({ content }: FileBlockProps) {
+export default function App({ originalContent }: FileBlockProps) {
   return (
     <ErrorBoundary>
       <ThemeProvider>
         <BaseStyles style={baseStyles}>
-          <Provider content={content}>
+          <Provider content={originalContent}>
             <Header />
             <Panels />
           </Provider>

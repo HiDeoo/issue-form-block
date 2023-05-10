@@ -1,43 +1,42 @@
 import { EyeIcon, FileDiffIcon, FoldIcon, PlusIcon, UnfoldIcon } from '@primer/octicons-react'
 import { ActionList, ActionMenu, Box, Button, IconButton, SegmentedControl, Tooltip } from '@primer/react'
-import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import {
-  createTextareaAtom,
-  issueFormElementsAtom,
-  type ElementAtom,
-  setCollapsedIssueFormElementsAtom,
-  resetIssueFormAtom,
-  createCheckboxesAtom,
-  createDropdownAtom,
-  createInputAtom,
-  createMarkdownAtom,
-} from '../atoms/issueForm'
-import { selectedPanelAtom } from '../atoms/ui'
+import { useElements } from '../hooks/useElements'
+import { useElementsActions } from '../hooks/useElementsActions'
 import { usePanels } from '../hooks/usePanels'
-import type { IssueFormElementType } from '../libs/issueForm'
+import { usePanelsActions } from '../hooks/usePanelsActions'
+import { useResetActions } from '../hooks/useResetActions'
+import {
+  createCheckboxesElement,
+  createDropdownElement,
+  createInputElement,
+  createMarkdownElement,
+  createTextareaElement,
+  type IssueFormElement,
+  type IssueFormElementType,
+} from '../libs/issueForm'
 
 import { YamlDialog } from './yaml/YamlDialog'
 
-const elementAtomCreatorMap: Record<IssueFormElementType, () => ElementAtom> = {
-  checkboxes: createCheckboxesAtom,
-  dropdown: createDropdownAtom,
-  input: createInputAtom,
-  markdown: createMarkdownAtom,
-  textarea: createTextareaAtom,
+const elementCreatorMap: Record<IssueFormElementType, () => IssueFormElement> = {
+  checkboxes: createCheckboxesElement,
+  dropdown: createDropdownElement,
+  input: createInputElement,
+  markdown: createMarkdownElement,
+  textarea: createTextareaElement,
 }
 
 const collapseButtonTooltip = 'Collapse all elements'
 const expandButtonTooltip = 'Expand all elements'
 
 export function Header() {
-  const { isSinglePanel } = usePanels()
-  const [selectedPanel, setSelectedPanel] = useAtom(selectedPanelAtom)
+  const { isSinglePanel, selectedPanel } = usePanels()
+  const { setSelectedPanel } = usePanelsActions()
 
-  const [elements, setElements] = useAtom(issueFormElementsAtom)
-  const setCollapsedIssueFormElements = useSetAtom(setCollapsedIssueFormElementsAtom)
-  const resetIssueForm = useSetAtom(resetIssueFormAtom)
+  const elements = useElements()
+  const { addElement, setElementsCollapsed } = useElementsActions()
+  const { resetIssueForm } = useResetActions()
 
   const editorBlockIdToFocus = useRef<string | undefined>(undefined)
 
@@ -59,21 +58,19 @@ export function Header() {
 
   function createNewElementHandler(type: IssueFormElementType) {
     return function handleNewElement() {
-      const newElement = elementAtomCreatorMap[type]()
-      const newElementId = newElement.toString()
+      const newElement = elementCreatorMap[type]()
+      editorBlockIdToFocus.current = newElement._id
 
-      editorBlockIdToFocus.current = newElementId
-
-      setElements((elements) => [...elements, newElement])
+      addElement(newElement)
     }
   }
 
   function handleCollapseClick() {
-    setCollapsedIssueFormElements(true)
+    setElementsCollapsed(true)
   }
 
   function handleExpandClick() {
-    setCollapsedIssueFormElements(false)
+    setElementsCollapsed(false)
   }
 
   function handleResetClick() {

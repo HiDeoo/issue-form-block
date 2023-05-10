@@ -1,9 +1,10 @@
 import { Box, Text } from '@primer/react'
 import { MarkdownEditor as PrimerMarkdownEditor } from '@primer/react/drafts'
-import { useAtom } from 'jotai'
 
-import type { MarkdownElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
+import type { MarkdownElement } from '../../libs/issueForm'
 
 import { EditorBlock } from './EditorBlock'
 
@@ -22,18 +23,19 @@ const markdownStyle = {
   },
 }
 
-export function MarkdownEditor({ atom, ...others }: MarkdownEditorProps) {
-  const [markdown, setMarkdown] = useAtom(atom)
+export function MarkdownEditor({ _id, ...others }: MarkdownEditorProps) {
+  const markdown = useElement(_id, 'markdown')
+  const { setElement } = useElementsActions()
 
   function handleValueChange(value: string) {
-    setMarkdown((prevMarkdown) => ({ ...prevMarkdown, attributes: { ...prevMarkdown.attributes, value } }))
+    setElement({ ...markdown, attributes: { ...markdown.attributes, value } })
   }
 
   return (
     <EditorBlock
-      atom={atom}
       collapsed={markdown._collapsed}
       excerpt={markdown.attributes.value}
+      _id={_id}
       title="Markdown"
       {...others}
     >
@@ -57,5 +59,5 @@ export function MarkdownEditor({ atom, ...others }: MarkdownEditorProps) {
 }
 
 interface MarkdownEditorProps extends DraggableProps {
-  atom: MarkdownElementAtom
+  _id: MarkdownElement['_id']
 }

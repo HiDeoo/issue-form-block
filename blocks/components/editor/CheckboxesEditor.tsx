@@ -1,8 +1,9 @@
 import { arrayMove } from '@dnd-kit/sortable'
-import { useAtom } from 'jotai'
 
-import type { CheckboxesElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
+import type { CheckboxesElement } from '../../libs/issueForm'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
@@ -10,48 +11,43 @@ import { IdInput } from './IdInput'
 import { type Option, OptionsEditor } from './OptionsEditor'
 import { TextInput } from './TextInput'
 
-export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
-  const [checkboxes, setCheckboxes] = useAtom(atom)
+export function CheckboxesEditor({ _id, ...others }: CheckboxesEditorProps) {
+  const checkboxes = useElement(_id, 'checkboxes')
+  const { setElement } = useElementsActions()
 
   function handleDescriptionChange(description: string) {
-    setCheckboxes((prevCheckboxes) => ({
-      ...prevCheckboxes,
-      attributes: { ...prevCheckboxes.attributes, description },
-    }))
+    setElement({ ...checkboxes, attributes: { ...checkboxes.attributes, description } })
   }
 
   function handleIdChange(id: string) {
-    setCheckboxes((prevCheckboxes) => ({ ...prevCheckboxes, id }))
+    setElement({ ...checkboxes, id })
   }
 
   function handleLabelChange(label: string) {
-    setCheckboxes((prevCheckboxes) => ({ ...prevCheckboxes, attributes: { ...prevCheckboxes.attributes, label } }))
+    setElement({ ...checkboxes, attributes: { ...checkboxes.attributes, label } })
   }
 
   function handleRequiredChange(required: boolean) {
-    setCheckboxes((prevCheckboxes) => ({ ...prevCheckboxes, validations: { ...prevCheckboxes.validations, required } }))
+    setElement({ ...checkboxes, validations: { ...checkboxes.validations, required } })
   }
 
   function handleOptionAddition() {
     const newOption = { _id: crypto.randomUUID(), label: 'New option' }
 
-    setCheckboxes((prevCheckboxes) => ({
-      ...prevCheckboxes,
-      attributes: {
-        ...prevCheckboxes.attributes,
-        options: [...prevCheckboxes.attributes.options, newOption],
-      },
-    }))
+    setElement({
+      ...checkboxes,
+      attributes: { ...checkboxes.attributes, options: [...checkboxes.attributes.options, newOption] },
+    })
 
     return newOption._id
   }
 
   function handleOptionChange(updatedId: Option['_id'], newLabel: Option['label']) {
-    setCheckboxes((prevCheckboxes) => ({
-      ...prevCheckboxes,
+    setElement({
+      ...checkboxes,
       attributes: {
-        ...prevCheckboxes.attributes,
-        options: prevCheckboxes.attributes.options.map((option) => {
+        ...checkboxes.attributes,
+        options: checkboxes.attributes.options.map((option) => {
           if (option._id !== updatedId) {
             return option
           }
@@ -59,34 +55,34 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
           return { ...option, label: newLabel }
         }),
       },
-    }))
+    })
   }
 
   function handleOptionDeletion(deletedId: Option['_id']) {
-    setCheckboxes((prevCheckboxes) => ({
-      ...prevCheckboxes,
+    setElement({
+      ...checkboxes,
       attributes: {
-        ...prevCheckboxes.attributes,
-        options: prevCheckboxes.attributes.options.filter((option) => option._id !== deletedId),
+        ...checkboxes.attributes,
+        options: checkboxes.attributes.options.filter((option) => option._id !== deletedId),
       },
-    }))
+    })
   }
 
   function handleOptionReorder(fromIndex: number, toIndex: number) {
-    setCheckboxes((prevCheckboxes) => ({
-      ...prevCheckboxes,
+    setElement({
+      ...checkboxes,
       attributes: {
-        ...prevCheckboxes.attributes,
-        options: arrayMove(prevCheckboxes.attributes.options, fromIndex, toIndex),
+        ...checkboxes.attributes,
+        options: arrayMove(checkboxes.attributes.options, fromIndex, toIndex),
       },
-    }))
+    })
   }
 
   return (
     <EditorBlock
-      atom={atom}
       collapsed={checkboxes._collapsed}
       excerpt={checkboxes.attributes.label}
+      _id={_id}
       title="Checkboxes"
       {...others}
     >
@@ -125,5 +121,5 @@ export function CheckboxesEditor({ atom, ...others }: CheckboxesEditorProps) {
 }
 
 interface CheckboxesEditorProps extends DraggableProps {
-  atom: CheckboxesElementAtom
+  _id: CheckboxesElement['_id']
 }

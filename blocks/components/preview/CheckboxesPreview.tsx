@@ -1,7 +1,7 @@
 import { Checkbox, CheckboxGroup, FormControl } from '@primer/react'
-import { useAtomValue } from 'jotai'
 
-import type { CheckboxesElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import type { CheckboxesElement } from '../../libs/issueForm'
 
 import { Markdown } from './Markdown'
 import { PreviewBlock } from './PreviewBlock'
@@ -11,18 +11,17 @@ const checkboxStyle = {
   borderColor: 'border.default',
 }
 
-export function CheckboxesPreview({ atom }: CheckboxesPreviewProps) {
-  const checkboxes = useAtomValue(atom)
-  const checkboxesId = atom.toString()
+export function CheckboxesPreview({ _id }: CheckboxesPreviewProps) {
+  const checkboxes = useElement(_id, 'checkboxes')
 
   return (
     <PreviewBlock
       description={checkboxes.attributes.description}
-      id={checkboxesId}
+      id={checkboxes._id}
       required={checkboxes.validations?.required}
       title={checkboxes.attributes.label}
     >
-      <CheckboxGroup aria-labelledby={`${checkboxesId}-caption`}>
+      <CheckboxGroup aria-labelledby={`${checkboxes._id}-caption`}>
         {checkboxes.attributes.options.map((option) => (
           <FormControl key={option._id}>
             <Checkbox checked={false} readOnly sx={checkboxStyle} />
@@ -37,5 +36,5 @@ export function CheckboxesPreview({ atom }: CheckboxesPreviewProps) {
 }
 
 interface CheckboxesPreviewProps {
-  atom: CheckboxesElementAtom
+  _id: CheckboxesElement['_id']
 }

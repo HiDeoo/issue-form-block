@@ -1,9 +1,9 @@
 import { DndContext, DragOverlay, type DragStartEvent, type UniqueIdentifier, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove } from '@dnd-kit/sortable'
-import { useAtom } from 'jotai'
 import { useMemo, useState } from 'react'
 
-import { issueFormElementsAtom } from '../../atoms/issueForm'
+import { useElements } from '../../hooks/useElements'
+import { useElementsActions } from '../../hooks/useElementsActions'
 import { getDndOptions, getUniqueIdentifierIndex, resetDragCursor, setDragCursor, useDnd } from '../../libs/dnd'
 
 import { ElementDraggableEditor } from './ElementDraggableEditor'
@@ -13,14 +13,16 @@ const dndItemType = 'element'
 const dndOptions = getDndOptions(dndItemType)
 
 export function ElementsEditor() {
-  const [elements, setElements] = useAtom(issueFormElementsAtom)
-  const elementIds = elements.map((element) => element.toString())
+  const elements = useElements()
+  const { setElementsOrder } = useElementsActions()
+
+  const elementIds = elements.map((element) => element._id)
 
   const { announcements, sensors } = useDnd(dndItemType, elementIds)
 
   const [draggedElementId, setDraggedElementId] = useState<UniqueIdentifier | undefined>(undefined)
-  const draggedElementAtom = useMemo(
-    () => elements.find((element) => element.toString() === draggedElementId),
+  const draggedElement = useMemo(
+    () => elements.find((element) => element._id === draggedElementId),
     [draggedElementId, elements]
   )
 
@@ -46,7 +48,7 @@ export function ElementsEditor() {
     const draggedElementIndex = getUniqueIdentifierIndex(elementIds, draggedElementId)
 
     if (draggedElementIndex !== overIndex) {
-      setElements(arrayMove(elements, draggedElementIndex - 1, overIndex - 1))
+      setElementsOrder(arrayMove(elements, draggedElementIndex - 1, overIndex - 1))
     }
   }
 
@@ -62,11 +64,11 @@ export function ElementsEditor() {
     >
       <SortableContext items={elementIds} strategy={dndOptions.sortable.strategy}>
         {elements.map((element) => (
-          <ElementDraggableEditor atom={element} key={element.toString()} />
+          <ElementDraggableEditor _id={element._id} key={element._id} type={element.type} />
         ))}
       </SortableContext>
       <DragOverlay dropAnimation={dndOptions.dropAnimation}>
-        {draggedElementAtom ? <ElementEditor atom={draggedElementAtom} isDragOverlay /> : null}
+        {draggedElement ? <ElementEditor _id={draggedElement._id} isDragOverlay type={draggedElement.type} /> : null}
       </DragOverlay>
     </DndContext>
   )

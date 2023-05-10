@@ -1,6 +1,3 @@
-import { useAtomValue } from 'jotai'
-
-import { isTextareaAtom, isInputAtom, isMarkdownAtom, isDropdownAtom, isCheckboxesAtom } from '../../atoms/issueForm'
 import type { DraggableProps } from '../../libs/dnd'
 
 import { CheckboxesEditor } from './CheckboxesEditor'
@@ -10,22 +7,24 @@ import { InputEditor } from './InputEditor'
 import { MarkdownEditor } from './MarkdownEditor'
 import { TextareaEditor } from './TextareaEditor'
 
-export function ElementEditor({ atom, ...others }: ElementEditorProps) {
-  const element = useAtomValue(atom)
-
-  if (isCheckboxesAtom(atom, element)) {
-    return <CheckboxesEditor atom={atom} {...others} />
-  } else if (isDropdownAtom(atom, element)) {
-    return <DropdownEditor atom={atom} {...others} />
-  } else if (isInputAtom(atom, element)) {
-    return <InputEditor atom={atom} {...others} />
-  } else if (isMarkdownAtom(atom, element)) {
-    return <MarkdownEditor atom={atom} {...others} />
-  } else if (isTextareaAtom(atom, element)) {
-    return <TextareaEditor atom={atom} {...others} />
+export function ElementEditor({ _id, type, ...others }: ElementEditorProps) {
+  switch (type) {
+    case 'checkboxes': {
+      return <CheckboxesEditor _id={_id} {...others} />
+    }
+    case 'dropdown': {
+      return <DropdownEditor _id={_id} {...others} />
+    }
+    case 'input': {
+      return <InputEditor _id={_id} {...others} />
+    }
+    case 'markdown': {
+      return <MarkdownEditor _id={_id} {...others} />
+    }
+    case 'textarea': {
+      return <TextareaEditor _id={_id} {...others} />
+    }
   }
-
-  throw new Error(`Unsupported editor element '${element.type}'.`)
 }
 
 type ElementEditorProps = ElementDraggableEditorProps & DraggableProps

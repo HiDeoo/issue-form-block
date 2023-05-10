@@ -1,25 +1,24 @@
 import { Textarea } from '@primer/react'
-import { useAtomValue } from 'jotai'
 
-import type { TextareaElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import type { TextareaElement } from '../../libs/issueForm'
 
 import { PreviewBlock } from './PreviewBlock'
 
-export function TextareaPreview({ atom }: TextareaPreviewProps) {
-  const textarea = useAtomValue(atom)
-  const textareaId = atom.toString()
+export function TextareaPreview({ _id }: TextareaPreviewProps) {
+  const textarea = useElement(_id, 'textarea')
 
   return (
     <PreviewBlock
       description={textarea.attributes.description}
-      id={textareaId}
+      id={textarea._id}
       required={textarea.validations?.required}
       title={textarea.attributes.label}
     >
       <Textarea
-        aria-describedby={`${textareaId}-caption`}
+        aria-describedby={`${textarea._id}-caption`}
         block
-        id={textareaId}
+        id={textarea._id}
         placeholder={textarea.attributes.placeholder}
         readOnly
         resize="vertical"
@@ -31,5 +30,5 @@ export function TextareaPreview({ atom }: TextareaPreviewProps) {
 }
 
 interface TextareaPreviewProps {
-  atom: TextareaElementAtom
+  _id: TextareaElement['_id']
 }

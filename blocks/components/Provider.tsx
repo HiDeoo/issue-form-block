@@ -1,11 +1,12 @@
-import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { setIssueFormAtom } from '../atoms/issueForm'
+import { useElementsActions } from '../hooks/useElementsActions'
+import { useMetadataActions } from '../hooks/useMetadataActions'
 import { parseIssueForm } from '../libs/issueForm'
 
 export function Provider({ children, content }: ProviderProps) {
-  const setIssueForm = useSetAtom(setIssueFormAtom)
+  const { setOriginalMetadata } = useMetadataActions()
+  const { setOriginalElements } = useElementsActions()
 
   useMemo(() => {
     const issueForm = parseIssueForm(content)
@@ -13,8 +14,9 @@ export function Provider({ children, content }: ProviderProps) {
     // FIXME(HiDeoo)
     console.error('🚨 [Provider.tsx:13] issueForm:', issueForm)
 
-    setIssueForm(issueForm)
-  }, [content, setIssueForm])
+    setOriginalMetadata(issueForm.metadata)
+    setOriginalElements(issueForm.elements)
+  }, [content, setOriginalElements, setOriginalMetadata])
 
   return <>{children}</>
 }

@@ -1,13 +1,4 @@
-import { useAtomValue } from 'jotai'
-
-import {
-  isTextareaAtom,
-  type ElementAtom,
-  isInputAtom,
-  isMarkdownAtom,
-  isDropdownAtom,
-  isCheckboxesAtom,
-} from '../../atoms/issueForm'
+import type { IssueFormElement } from '../../libs/issueForm'
 
 import { CheckboxesPreview } from './CheckboxesPreview'
 import { DropdownPreview } from './DropdownPreview'
@@ -15,24 +6,27 @@ import { InputPreview } from './InputPreview'
 import { MarkdownPreview } from './MarkdownPreview'
 import { TextareaPreview } from './TextareaPreview'
 
-export function ElementPreview({ atom }: ElementEditorProps) {
-  const element = useAtomValue(atom)
-
-  if (isCheckboxesAtom(atom, element)) {
-    return <CheckboxesPreview atom={atom} />
-  } else if (isDropdownAtom(atom, element)) {
-    return <DropdownPreview atom={atom} />
-  } else if (isInputAtom(atom, element)) {
-    return <InputPreview atom={atom} />
-  } else if (isMarkdownAtom(atom, element)) {
-    return <MarkdownPreview atom={atom} />
-  } else if (isTextareaAtom(atom, element)) {
-    return <TextareaPreview atom={atom} />
+export function ElementPreview({ _id, type }: ElementEditorProps) {
+  switch (type) {
+    case 'checkboxes': {
+      return <CheckboxesPreview _id={_id} />
+    }
+    case 'dropdown': {
+      return <DropdownPreview _id={_id} />
+    }
+    case 'input': {
+      return <InputPreview _id={_id} />
+    }
+    case 'markdown': {
+      return <MarkdownPreview _id={_id} />
+    }
+    case 'textarea': {
+      return <TextareaPreview _id={_id} />
+    }
   }
-
-  throw new Error(`Unsupported preview element '${element.type}'.`)
 }
 
 interface ElementEditorProps {
-  atom: ElementAtom
+  _id: IssueFormElement['_id']
+  type: IssueFormElement['type']
 }

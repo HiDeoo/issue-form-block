@@ -4,7 +4,7 @@ import { parse } from 'yaml'
 import {
   serializeIssueForm,
   type IssueFormMetadata,
-  type RawIssueForm,
+  type IssueForm,
   type CheckboxesElement,
   type DropdownElement,
 } from '../blocks/libs/issueForm'
@@ -21,8 +21,8 @@ test('should not include empty strings', () => {
 
 test('should not include _collapsed properties', () => {
   const yaml = serializeIssueForm(getTestMetadata(), [
-    { type: 'input', _collapsed: true, attributes: { label: 'test' } },
-    { type: 'markdown', _collapsed: false, attributes: { value: 'test' } },
+    { type: 'input', _id: crypto.randomUUID(), _collapsed: true, attributes: { label: 'test' } },
+    { type: 'markdown', _id: crypto.randomUUID(), _collapsed: false, attributes: { value: 'test' } },
   ])
 
   const issueForm = parseIssueForm(yaml)
@@ -32,13 +32,27 @@ test('should not include _collapsed properties', () => {
 
 test('should not include _id options properties', () => {
   const yaml = serializeIssueForm(getTestMetadata(), [
-    { type: 'checkboxes', attributes: { label: 'test', options: [{ _id: crypto.randomUUID(), label: 'option' }] } },
-    { type: 'dropdown', attributes: { label: 'test', options: [{ _id: crypto.randomUUID(), label: 'option' }] } },
+    {
+      type: 'checkboxes',
+      _id: crypto.randomUUID(),
+      attributes: { label: 'test', options: [{ _id: crypto.randomUUID(), label: 'option' }] },
+    },
+    {
+      type: 'dropdown',
+      _id: crypto.randomUUID(),
+      attributes: { label: 'test', options: [{ _id: crypto.randomUUID(), label: 'option' }] },
+    },
   ])
 
   const issueForm = parseIssueForm(yaml)
-  const checkboxesOptionKeys = Object.keys((issueForm.body.at(0) as CheckboxesElement).attributes.options.at(0) ?? {})
-  const dropdownOptionKeys = Object.keys((issueForm.body.at(1) as DropdownElement).attributes.options.at(0) ?? {})
+  const checkboxes = issueForm.body.at(0) as CheckboxesElement
+  const dropdown = issueForm.body.at(1) as DropdownElement
+
+  expect(Object.keys(checkboxes).includes('_id')).toBe(false)
+  expect(Object.keys(dropdown).includes('_id')).toBe(false)
+
+  const checkboxesOptionKeys = Object.keys(checkboxes.attributes.options.at(0) ?? {})
+  const dropdownOptionKeys = Object.keys(dropdown.attributes.options.at(0) ?? {})
 
   expect(checkboxesOptionKeys.includes('_id')).toBe(false)
   expect(dropdownOptionKeys.includes('_id')).toBe(false)
@@ -48,6 +62,7 @@ test('should flatten options labels for a dropdown', () => {
   const yaml = serializeIssueForm(getTestMetadata(), [
     {
       type: 'dropdown',
+      _id: crypto.randomUUID(),
       attributes: {
         label: 'test',
         options: [
@@ -69,5 +84,5 @@ function getTestMetadata(): IssueFormMetadata {
 }
 
 function parseIssueForm(yaml: string) {
-  return parse(yaml) as RawIssueForm
+  return parse(yaml) as IssueForm
 }

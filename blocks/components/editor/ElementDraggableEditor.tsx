@@ -1,18 +1,18 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-import type { ElementAtom } from '../../atoms/issueForm'
+import type { IssueFormElement } from '../../libs/issueForm'
 
 import { ElementEditor } from './ElementEditor'
 
-export function ElementDraggableEditor({ atom }: ElementDraggableEditorProps) {
+export function ElementDraggableEditor({ _id, type }: ElementDraggableEditorProps) {
   const { attributes, isDragging, listeners, setActivatorNodeRef, setNodeRef, transform, transition } = useSortable({
-    id: atom.toString(),
+    id: _id,
   })
 
   return (
     <ElementEditor
-      atom={atom}
+      _id={_id}
       attributes={attributes}
       isDragging={isDragging}
       listeners={listeners}
@@ -22,10 +22,12 @@ export function ElementDraggableEditor({ atom }: ElementDraggableEditorProps) {
         transform: CSS.Transform.toString(transform),
         transition,
       }}
+      type={type}
     />
   )
 }
 
 export interface ElementDraggableEditorProps {
-  atom: ElementAtom
+  _id: IssueFormElement['_id']
+  type: IssueFormElement['type']
 }

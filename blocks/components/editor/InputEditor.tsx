@@ -1,42 +1,43 @@
-import { useAtom } from 'jotai'
-
-import type { InputElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
+import type { InputElement } from '../../libs/issueForm'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
 import { IdInput } from './IdInput'
 import { TextInput } from './TextInput'
 
-export function InputEditor({ atom, ...others }: InputEditorProps) {
-  const [input, setInput] = useAtom(atom)
+export function InputEditor({ _id, ...others }: InputEditorProps) {
+  const input = useElement(_id, 'input')
+  const { setElement } = useElementsActions()
 
   function handleDescriptionChange(description: string) {
-    setInput((prevInput) => ({ ...prevInput, attributes: { ...prevInput.attributes, description } }))
+    setElement({ ...input, attributes: { ...input.attributes, description } })
   }
 
   function handleIdChange(id: string) {
-    setInput((prevInput) => ({ ...prevInput, id }))
+    setElement({ ...input, id })
   }
 
   function handleLabelChange(label: string) {
-    setInput((prevInput) => ({ ...prevInput, attributes: { ...prevInput.attributes, label } }))
+    setElement({ ...input, attributes: { ...input.attributes, label } })
   }
 
   function handlePlaceholderChange(placeholder: string) {
-    setInput((prevInput) => ({ ...prevInput, attributes: { ...prevInput.attributes, placeholder } }))
+    setElement({ ...input, attributes: { ...input.attributes, placeholder } })
   }
 
   function handleRequiredChange(required: boolean) {
-    setInput((prevInput) => ({ ...prevInput, validations: { ...prevInput.validations, required } }))
+    setElement({ ...input, validations: { ...input.validations, required } })
   }
 
   function handleValueChange(value: string) {
-    setInput((prevInput) => ({ ...prevInput, attributes: { ...prevInput.attributes, value } }))
+    setElement({ ...input, attributes: { ...input.attributes, value } })
   }
 
   return (
-    <EditorBlock atom={atom} collapsed={input._collapsed} excerpt={input.attributes.label} title="Input" {...others}>
+    <EditorBlock collapsed={input._collapsed} excerpt={input.attributes.label} _id={_id} title="Input" {...others}>
       <TextInput
         caption="A brief description of the expected user input."
         errorMessage={input.attributes.label.length === 0 && 'A label is required.'}
@@ -75,5 +76,5 @@ export function InputEditor({ atom, ...others }: InputEditorProps) {
 }
 
 interface InputEditorProps extends DraggableProps {
-  atom: InputElementAtom
+  _id: InputElement['_id']
 }

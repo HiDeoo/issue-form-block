@@ -1,8 +1,9 @@
 import { arrayMove } from '@dnd-kit/sortable'
-import { useAtom } from 'jotai'
 
-import type { DropdownElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
+import type { DropdownElement } from '../../libs/issueForm'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
@@ -10,49 +11,47 @@ import { IdInput } from './IdInput'
 import { type Option, OptionsEditor } from './OptionsEditor'
 import { TextInput } from './TextInput'
 
-export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
-  const [dropdown, setDropdown] = useAtom(atom)
+export function DropdownEditor({ _id, ...others }: DropdownEditorProps) {
+  const dropdown = useElement(_id, 'dropdown')
+  const { setElement } = useElementsActions()
 
   function handleDescriptionChange(description: string) {
-    setDropdown((prevDropdown) => ({ ...prevDropdown, attributes: { ...prevDropdown.attributes, description } }))
+    setElement({ ...dropdown, attributes: { ...dropdown.attributes, description } })
   }
 
   function handleIdChange(id: string) {
-    setDropdown((prevDropdown) => ({ ...prevDropdown, id }))
+    setElement({ ...dropdown, id })
   }
 
   function handleLabelChange(label: string) {
-    setDropdown((prevDropdown) => ({ ...prevDropdown, attributes: { ...prevDropdown.attributes, label } }))
+    setElement({ ...dropdown, attributes: { ...dropdown.attributes, label } })
   }
 
   function handleMultipleChange(multiple: boolean) {
-    setDropdown((prevDropdown) => ({ ...prevDropdown, attributes: { ...prevDropdown.attributes, multiple } }))
+    setElement({ ...dropdown, attributes: { ...dropdown.attributes, multiple } })
   }
 
   function handleRequiredChange(required: boolean) {
-    setDropdown((prevDropdown) => ({ ...prevDropdown, validations: { ...prevDropdown.validations, required } }))
+    setElement({ ...dropdown, validations: { ...dropdown.validations, required } })
   }
 
   function handleOptionAddition() {
     const newOption = { _id: crypto.randomUUID(), label: 'New option' }
 
-    setDropdown((prevDropdown) => ({
-      ...prevDropdown,
-      attributes: {
-        ...prevDropdown.attributes,
-        options: [...prevDropdown.attributes.options, newOption],
-      },
-    }))
+    setElement({
+      ...dropdown,
+      attributes: { ...dropdown.attributes, options: [...dropdown.attributes.options, newOption] },
+    })
 
     return newOption._id
   }
 
   function handleOptionChange(updatedId: Option['_id'], newLabel: Option['label']) {
-    setDropdown((prevDropdown) => ({
-      ...prevDropdown,
+    setElement({
+      ...dropdown,
       attributes: {
-        ...prevDropdown.attributes,
-        options: prevDropdown.attributes.options.map((option) => {
+        ...dropdown.attributes,
+        options: dropdown.attributes.options.map((option) => {
           if (option._id !== updatedId) {
             return option
           }
@@ -60,34 +59,34 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
           return { ...option, label: newLabel }
         }),
       },
-    }))
+    })
   }
 
   function handleOptionDeletion(deletedId: Option['_id']) {
-    setDropdown((prevDropdown) => ({
-      ...prevDropdown,
+    setElement({
+      ...dropdown,
       attributes: {
-        ...prevDropdown.attributes,
-        options: prevDropdown.attributes.options.filter((option) => option._id !== deletedId),
+        ...dropdown.attributes,
+        options: dropdown.attributes.options.filter((option) => option._id !== deletedId),
       },
-    }))
+    })
   }
 
   function handleOptionReorder(fromIndex: number, toIndex: number) {
-    setDropdown((prevDropdown) => ({
-      ...prevDropdown,
+    setElement({
+      ...dropdown,
       attributes: {
-        ...prevDropdown.attributes,
-        options: arrayMove(prevDropdown.attributes.options, fromIndex, toIndex),
+        ...dropdown.attributes,
+        options: arrayMove(dropdown.attributes.options, fromIndex, toIndex),
       },
-    }))
+    })
   }
 
   return (
     <EditorBlock
-      atom={atom}
       collapsed={dropdown._collapsed}
       excerpt={dropdown.attributes.label}
+      _id={_id}
       title="Dropdown"
       {...others}
     >
@@ -132,5 +131,5 @@ export function DropdownEditor({ atom, ...others }: DropdownEditorProps) {
 }
 
 interface DropdownEditorProps extends DraggableProps {
-  atom: DropdownElementAtom
+  _id: DropdownElement['_id']
 }

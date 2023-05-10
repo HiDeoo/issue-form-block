@@ -1,25 +1,24 @@
 import { TextInput } from '@primer/react'
-import { useAtomValue } from 'jotai'
 
-import type { InputElementAtom } from '../../atoms/issueForm'
+import { useElement } from '../../hooks/useElement'
+import type { InputElement } from '../../libs/issueForm'
 
 import { PreviewBlock } from './PreviewBlock'
 
-export function InputPreview({ atom }: InputPreviewProps) {
-  const input = useAtomValue(atom)
-  const inputId = atom.toString()
+export function InputPreview({ _id }: InputPreviewProps) {
+  const input = useElement(_id, 'input')
 
   return (
     <PreviewBlock
       description={input.attributes.description}
-      id={inputId}
+      id={input._id}
       required={input.validations?.required}
       title={input.attributes.label}
     >
       <TextInput
-        aria-describedby={`${inputId}-caption`}
+        aria-describedby={`${input._id}-caption`}
         block
-        id={inputId}
+        id={input._id}
         placeholder={input.attributes.placeholder}
         readOnly
         sx={{ bg: 'canvas.inset' }}
@@ -30,5 +29,5 @@ export function InputPreview({ atom }: InputPreviewProps) {
 }
 
 interface InputPreviewProps {
-  atom: InputElementAtom
+  _id: InputElement['_id']
 }

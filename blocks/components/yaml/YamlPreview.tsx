@@ -2,18 +2,19 @@ import { Box } from '@primer/react'
 import hljs from 'highlight.js/lib/core'
 import yaml from 'highlight.js/lib/languages/yaml'
 import 'highlight.js/styles/github.css'
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { issueFormAtom } from '../../atoms/issueForm'
+import { useIssueForm } from '../../hooks/useIssueForm'
 import { serializeIssueForm } from '../../libs/issueForm'
 
 hljs.registerLanguage('yaml', yaml)
 
 export function YamlPreview() {
-  const issueForm = useAtomValue(issueFormAtom)
+  const issueForm = useIssueForm()
+
   const issueFormYaml = useMemo(() => {
     const yaml = serializeIssueForm(issueForm.metadata, issueForm.elements)
+
     return hljs.highlight(yaml, { language: 'yaml' })
   }, [issueForm])
 
