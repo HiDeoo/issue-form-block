@@ -9,7 +9,7 @@ import { parseIssueForm, serializeIssueForm } from '../libs/issueForm'
 import { useElementsStore } from '../stores/elements'
 import { useMetadataStore } from '../stores/metadata'
 
-export function Provider({ children, content, updateContent }: ProviderProps) {
+export function Provider({ children, content, isEditable, updateContent }: ProviderProps) {
   const { setOriginalMetadata } = useMetadataActions()
   const { setOriginalElements } = useElementsActions()
 
@@ -23,8 +23,15 @@ export function Provider({ children, content, updateContent }: ProviderProps) {
     setOriginalElements(issueForm.elements)
   }, [content, setOriginalElements, setOriginalMetadata])
 
-  useEffect(() => useMetadataStore.subscribe(() => reportChanges(updateContent)), [updateContent])
-  useEffect(() => useElementsStore.subscribe(() => reportChanges(updateContent)), [updateContent])
+  useEffect(
+    () => useMetadataStore.subscribe(() => (isEditable ? reportChanges(updateContent) : undefined)),
+    [isEditable, updateContent]
+  )
+
+  useEffect(
+    () => useElementsStore.subscribe(() => (isEditable ? reportChanges(updateContent) : undefined)),
+    [isEditable, updateContent]
+  )
 
   return <>{children}</>
 }
@@ -41,5 +48,6 @@ const reportChanges = debounce(250, (updater: FileBlockProps['onUpdateContent'])
 interface ProviderProps {
   content: string
   children: React.ReactNode
+  isEditable: FileBlockProps['isEditable']
   updateContent: FileBlockProps['onUpdateContent']
 }

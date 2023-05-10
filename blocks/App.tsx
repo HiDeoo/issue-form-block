@@ -16,12 +16,12 @@ const baseStyles: CSSProperties = {
   overflow: 'hidden',
 }
 
-export default function App({ onUpdateContent, originalContent }: FileBlockProps) {
+export default function App({ isEditable, onUpdateContent, originalContent }: FileBlockProps) {
   return (
     <ErrorBoundary>
       <ThemeProvider>
         <BaseStyles style={baseStyles}>
-          <Provider content={originalContent} updateContent={onUpdateContent}>
+          <Provider content={originalContent} isEditable={isEditable} updateContent={onUpdateContent}>
             <Header />
             <Panels />
           </Provider>
