@@ -1,16 +1,14 @@
 import type { FileBlockProps } from '@githubnext/blocks'
-import { EyeIcon, FileDiffIcon, FoldIcon, PlusIcon, RepoLockedIcon, UnfoldIcon } from '@primer/octicons-react'
 import {
-  ActionList,
-  ActionMenu,
-  Box,
-  Button,
-  Flash,
-  IconButton,
-  SegmentedControl,
-  StyledOcticon,
-  Tooltip,
-} from '@primer/react'
+  EyeIcon,
+  FileDiffIcon,
+  FileDirectoryOpenFillIcon,
+  FoldIcon,
+  PlusIcon,
+  RepoLockedIcon,
+  UnfoldIcon,
+} from '@primer/octicons-react'
+import { ActionList, ActionMenu, Box, Button, IconButton, SegmentedControl, Tooltip } from '@primer/react'
 import { useEffect, useRef } from 'react'
 
 import { useElements } from '../hooks/useElements'
@@ -28,6 +26,7 @@ import {
   type IssueFormElementType,
 } from '../libs/issueForm'
 
+import { HeaderFlash } from './HeaderFlash'
 import { YamlDialog } from './yaml/YamlDialog'
 
 const elementCreatorMap: Record<IssueFormElementType, () => IssueFormElement> = {
@@ -41,7 +40,7 @@ const elementCreatorMap: Record<IssueFormElementType, () => IssueFormElement> = 
 const collapseButtonTooltip = 'Collapse all elements'
 const expandButtonTooltip = 'Expand all elements'
 
-export function Header({ isEditable }: HeaderProps) {
+export function Header({ isEditable, isValidPath }: HeaderProps) {
   const { isSinglePanel, selectedPanel } = usePanels()
   const { setSelectedPanel } = usePanelsActions()
 
@@ -166,16 +165,21 @@ export function Header({ isEditable }: HeaderProps) {
           </SegmentedControl>
         ) : null}
       </Box>
-      {isEditable ? (
-        <Flash sx={{ fontSize: 1, fontWeight: 500, p: 2 }} variant="warning">
-          <StyledOcticon icon={RepoLockedIcon} />
+      {isEditable ? null : (
+        <HeaderFlash icon={RepoLockedIcon}>
           You do not have the permissions to save changes to this issue form.
-        </Flash>
-      ) : null}
+        </HeaderFlash>
+      )}
+      {isValidPath ? null : (
+        <HeaderFlash icon={FileDirectoryOpenFillIcon}>
+          Issue forms must be located in the <code>.github/ISSUE_TEMPLATE</code> directory to be used.
+        </HeaderFlash>
+      )}
     </Box>
   )
 }
 
 interface HeaderProps {
   isEditable: FileBlockProps['isEditable']
+  isValidPath: boolean
 }

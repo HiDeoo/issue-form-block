@@ -67,6 +67,10 @@ export function createTextareaElement(): TextareaElement {
   return { type: 'textarea', _id: crypto.randomUUID(), attributes: { label: 'New textarea' } }
 }
 
+export function isValidIssueFormPath(path: string, file: string) {
+  return path.replace(file, '') === '.github/ISSUE_TEMPLATE'
+}
+
 function normalizeIssueFormElements(elements: IssueFormElement[]) {
   return elements.map((element) => {
     const { _collapsed, _id, ...others } = element
