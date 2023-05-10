@@ -1,14 +1,13 @@
-import { Link } from '@primer/react'
+import { AlertIcon } from '@primer/octicons-react'
+import { Box, Button, Flash, Link, StyledOcticon, Text } from '@primer/react'
 import { ErrorBoundary as ReactErrorBoundary, type FallbackProps } from 'react-error-boundary'
 import { ZodError } from 'zod'
-
-import { ErrorBox } from './ErrorBox'
 
 export function ErrorBoundary({ children }: ErrorBoundaryProps) {
   return <ReactErrorBoundary FallbackComponent={ErrorFallback}>{children}</ReactErrorBoundary>
 }
 
-function ErrorFallback({ error }: FallbackProps) {
+function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const isZodError = error instanceof ZodError
 
   const title = isZodError ? 'The file contains valid YAML but is not a valid issue form.' : 'Something went wrong!'
@@ -21,7 +20,7 @@ function ErrorFallback({ error }: FallbackProps) {
       >
         documentation
       </Link>{' '}
-      with the list of errors below.
+      with the list of errors below. You can also create a new issue form starting from scratch.
     </>
   ) : (
     <>
@@ -32,8 +31,84 @@ function ErrorFallback({ error }: FallbackProps) {
       repository with the error below.
     </>
   )
+  const message = error.cause instanceof Error && error.cause.stack ? error.cause.stack : error.stack ?? error.message
 
-  return <ErrorBox error={error} subtitle={subtitle} title={title} />
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        fontSize: 1,
+        height: '100%',
+        overflow: 'auto',
+        p: 2,
+      }}
+    >
+      <Flash
+        variant="danger"
+        sx={{
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          color: 'danger.fg',
+        }}
+      >
+        <StyledOcticon icon={AlertIcon} />
+        {title}
+        <Text as="p" sx={{ fontSize: 1 }}>
+          {subtitle}
+        </Text>
+        <Button onClick={resetErrorBoundary} variant="primary">
+          New issue form
+        </Button>
+      </Flash>
+      <Box
+        sx={{
+          borderRadius: 2,
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+          borderWidth: 1,
+          borderTopWidth: 0,
+          borderStyle: 'solid',
+          borderColor: 'border.default',
+          display: 'flex',
+          flexDirection: 'column',
+          fontSize: 1,
+          gap: 3,
+          marginTop: 0,
+          overflow: 'auto',
+          p: 3,
+        }}
+      >
+        {isZodError ? (
+          error.issues.map((issue, issueIndex) => (
+            <Box
+              key={issueIndex}
+              sx={{
+                bg: 'canvas.subtle',
+                borderRadius: 2,
+                borderWidth: 1,
+                borderStyle: 'solid',
+                borderColor: 'border.default',
+                display: 'grid',
+                columnGap: 3,
+                gridTemplateColumns: 'auto 1fr',
+                p: 3,
+              }}
+            >
+              <Box>Path:</Box>
+              <Text fontFamily="mono">{issue.path.join('.')}</Text>
+              <Box>Message:</Box>
+              <Text fontFamily="mono">{issue.message}</Text>
+            </Box>
+          ))
+        ) : (
+          <Text as="pre" sx={{ fontFamily: 'mono', m: 0 }}>
+            {message}
+          </Text>
+        )}
+      </Box>
+    </Box>
+  )
 }
 
 interface ErrorBoundaryProps {

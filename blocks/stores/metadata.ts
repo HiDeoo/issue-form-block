@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 import type { IssueFormMetadata } from '../libs/issueForm'
 
-const initialState: IssueFormMetadata = { description: '', name: '' }
+const initialState: IssueFormMetadata = { description: 'A new issue form.', name: 'New issue form' }
 
 export const useMetadataStore = create<MetadataState>()((set) => ({
   ...initialState,

@@ -1,4 +1,5 @@
-import { Box } from '@primer/react'
+import { AlertIcon } from '@primer/octicons-react'
+import { Box, Flash, StyledOcticon } from '@primer/react'
 import hljs from 'highlight.js/lib/core'
 import yaml from 'highlight.js/lib/languages/yaml'
 import 'highlight.js/styles/github.css'
@@ -12,28 +13,36 @@ hljs.registerLanguage('yaml', yaml)
 export function YamlPreview() {
   const issueForm = useIssueForm()
 
-  const issueFormYaml = useMemo(() => {
-    const yaml = serializeIssueForm(issueForm.metadata, issueForm.elements)
+  const { isValid, yaml } = useMemo(() => {
+    const { isValid, yaml } = serializeIssueForm(issueForm.metadata, issueForm.elements, true)
 
-    return hljs.highlight(yaml, { language: 'yaml' })
+    return { isValid, yaml: hljs.highlight(yaml, { language: 'yaml' }).value }
   }, [issueForm])
 
   return (
-    <Box
-      dangerouslySetInnerHTML={{ __html: issueFormYaml.value }}
-      sx={{
-        bg: 'canvas.inset',
-        border: 1,
-        borderColor: 'border.default',
-        borderRadius: 2,
-        borderStyle: 'solid',
-        fontFamily: 'mono',
-        fontSize: 1,
-        height: '100%',
-        overflow: 'auto',
-        p: 2,
-        whiteSpace: 'pre',
-      }}
-    />
+    <>
+      {isValid ? null : (
+        <Flash variant="danger" sx={{ fontSize: 1, fontWeight: 500, p: 2 }}>
+          <StyledOcticon icon={AlertIcon} />
+          The issue form contains errors.
+        </Flash>
+      )}
+      <Box
+        dangerouslySetInnerHTML={{ __html: yaml }}
+        sx={{
+          bg: 'canvas.inset',
+          border: 1,
+          borderColor: 'border.default',
+          borderRadius: 2,
+          borderStyle: 'solid',
+          fontFamily: 'mono',
+          fontSize: 1,
+          height: '100%',
+          overflow: 'auto',
+          p: 2,
+          whiteSpace: 'pre',
+        }}
+      />
+    </>
   )
 }

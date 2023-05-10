@@ -12,7 +12,7 @@ import {
 test('should not include empty strings', () => {
   const metadata = { ...getTestMetadata(), title: '' }
 
-  const yaml = serializeIssueForm(metadata, [])
+  const { yaml } = serializeIssueForm(metadata, [])
 
   const issueForm = parseIssueForm(yaml)
 
@@ -20,7 +20,7 @@ test('should not include empty strings', () => {
 })
 
 test('should not include _collapsed properties', () => {
-  const yaml = serializeIssueForm(getTestMetadata(), [
+  const { yaml } = serializeIssueForm(getTestMetadata(), [
     { type: 'input', _id: crypto.randomUUID(), _collapsed: true, attributes: { label: 'test' } },
     { type: 'markdown', _id: crypto.randomUUID(), _collapsed: false, attributes: { value: 'test' } },
   ])
@@ -31,7 +31,7 @@ test('should not include _collapsed properties', () => {
 })
 
 test('should not include _id options properties', () => {
-  const yaml = serializeIssueForm(getTestMetadata(), [
+  const { yaml } = serializeIssueForm(getTestMetadata(), [
     {
       type: 'checkboxes',
       _id: crypto.randomUUID(),
@@ -59,7 +59,7 @@ test('should not include _id options properties', () => {
 })
 
 test('should flatten options labels for a dropdown', () => {
-  const yaml = serializeIssueForm(getTestMetadata(), [
+  const { yaml } = serializeIssueForm(getTestMetadata(), [
     {
       type: 'dropdown',
       _id: crypto.randomUUID(),

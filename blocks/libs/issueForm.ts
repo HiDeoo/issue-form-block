@@ -11,14 +11,12 @@ export function parseIssueForm(content: string) {
   return { elements: body, metadata: others }
 }
 
-export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[], validate = true) {
+export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[], validate = false) {
   const issueForm = { ...metadata, body: normalizeIssueFormElements(elements) }
 
-  if (validate) {
-    issueFormSchema.parse(issueForm)
-  }
+  const isValid = validate ? issueFormSchema.safeParse(issueForm).success : undefined
 
-  return stringify(
+  const yaml = stringify(
     issueForm,
     (_key, value) => {
       if (typeof value === 'string' && value.trim().length === 0) {
@@ -37,6 +35,8 @@ export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueF
       },
     }
   )
+
+  return { isValid, yaml }
 }
 
 export function createCheckboxesElement(): CheckboxesElement {
