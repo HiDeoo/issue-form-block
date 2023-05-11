@@ -1,7 +1,8 @@
 import { AlertIcon } from '@primer/octicons-react'
 import { Box, Button, Flash, Link, StyledOcticon, Text } from '@primer/react'
 import { ErrorBoundary as ReactErrorBoundary, type FallbackProps } from 'react-error-boundary'
-import { ZodError } from 'zod'
+
+import { ZodError } from '../libs/validations'
 
 export function ErrorBoundary({ children }: ErrorBoundaryProps) {
   return <ReactErrorBoundary FallbackComponent={ErrorFallback}>{children}</ReactErrorBoundary>

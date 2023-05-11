@@ -1,7 +1,7 @@
 import { type Pair, type Scalar, parse, stringify } from 'yaml'
 
 import { issueFormElementSchema, type IssueFormElement } from './elements'
-import { z, zNonEmptyString } from './validations'
+import { z, zNonEmptyString, type RefinementCtx, ZodIssueCode } from './validations'
 
 const serializationKeyOrder = [
   'name',
@@ -36,6 +36,9 @@ const issueFormSchema = z
     body: z.array(issueFormElementSchema),
   })
   .merge(issueFormMetadataSchema)
+  .superRefine((issueForm, ctx) => {
+    validateIssueForm(issueForm, ctx)
+  })
 
 export function parseIssueForm(content: string) {
   const yaml = parse(content)
@@ -109,6 +112,19 @@ function normalizeIssueFormElements(elements: IssueFormElement[]) {
       },
     }
   })
+}
+
+function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
+  // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-contain-at-least-one-non-markdown-field
+  const hasNonMarkdownField = issueForm.body.some((element) => element.type !== 'markdown')
+
+  if (!hasNonMarkdownField) {
+    ctx.addIssue({
+      code: ZodIssueCode.custom,
+      message: 'The issue form must contain at least one non-markdown field.',
+      path: ['body'],
+    })
+  }
 }
 
 export type IssueForm = z.infer<typeof issueFormSchema>
