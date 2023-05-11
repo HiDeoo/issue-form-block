@@ -11,10 +11,14 @@ export function parseIssueForm(content: string) {
   return { elements: body, metadata: others }
 }
 
-export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[], validate = false) {
+export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[]): SerializedIssueForm {
   const issueForm = { ...metadata, body: normalizeIssueFormElements(elements) }
 
-  const isValid = validate ? issueFormSchema.safeParse(issueForm).success : undefined
+  const validation = issueFormSchema.safeParse(issueForm)
+  const isValid = validation.success
+  const errors = validation.success
+    ? []
+    : validation.error.issues.map(({ message, path }) => ({ message, path: path.join('.') }))
 
   const yaml = stringify(
     issueForm,
@@ -36,7 +40,7 @@ export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueF
     }
   )
 
-  return { isValid, yaml }
+  return { isValid, errors, yaml }
 }
 
 export function createCheckboxesElement(): CheckboxesElement {
@@ -247,3 +251,14 @@ export type DropdownElement = z.infer<typeof dropdownElementSchema>
 export type InputElement = z.infer<typeof inputElementSchema>
 export type MarkdownElement = z.infer<typeof markdownElementSchema>
 export type TextareaElement = z.infer<typeof textareaElementSchema>
+
+interface SerializedIssueForm {
+  errors: IssueFormError[]
+  isValid: boolean
+  yaml: string
+}
+
+export interface IssueFormError {
+  message: string
+  path: string
+}

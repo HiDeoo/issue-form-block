@@ -17,7 +17,7 @@ import {
   type IssueFormElementType,
 } from '../libs/issueForm'
 
-import { Report } from './Report'
+import { Errors } from './Errors'
 import { Warnings } from './Warnings'
 import { YamlDialog } from './yaml/YamlDialog'
 
@@ -122,7 +122,7 @@ export function Header({ isEditable, isValidExtension, isValidPath }: HeaderProp
         </ActionMenu.Overlay>
       </ActionMenu>
       <Warnings isEditable={isEditable} isValidExtension={isValidExtension} isValidPath={isValidPath} />
-      <Report messages={[]} variant="error" />
+      <Errors />
       <Box flex={1} />
       {showExpandCollapseButtons ? (
         <>

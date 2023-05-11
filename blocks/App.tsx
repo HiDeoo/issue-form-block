@@ -1,6 +1,6 @@
 import type { FileBlockProps } from '@githubnext/blocks'
 import { BaseStyles, ThemeProvider } from '@primer/react'
-import { type CSSProperties, useCallback, useState, useEffect } from 'react'
+import { type CSSProperties, useCallback, useState, useEffect, useMemo } from 'react'
 import { debounce } from 'throttle-debounce'
 
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -8,6 +8,7 @@ import { IssueForm } from './components/IssueForm'
 import { issueFormElementsSelector } from './hooks/useIssueForm'
 import { isValidIssueFormExtension, isValidIssueFormPath, serializeIssueForm } from './libs/issueForm'
 import { useElementsStore } from './stores/elements'
+import { useErrorsStore } from './stores/errors'
 import { useMetadataStore } from './stores/metadata'
 
 import './styles.css'
@@ -23,6 +24,23 @@ export default function App({ content, context, isEditable, onUpdateContent, ori
   const [didEditContent, setDidEditContent] = useState(false)
   const [shouldParseContent, setShouldParseContent] = useState(true)
 
+  const handleChange = useMemo(
+    () =>
+      debounce(250, () => {
+        const { actions, ...metadata } = useMetadataStore.getState()
+        const elements = issueFormElementsSelector(useElementsStore.getState())
+
+        const { errors, yaml } = serializeIssueForm(metadata, elements)
+
+        useErrorsStore.getState().actions.setErrors(errors)
+
+        if (isEditable) {
+          onUpdateContent(yaml)
+        }
+      }),
+    [isEditable, onUpdateContent]
+  )
+
   useEffect(() => {
     if (content !== originalContent) {
       setDidEditContent(true)
@@ -36,15 +54,8 @@ export default function App({ content, context, isEditable, onUpdateContent, ori
     }
   }, [content, didEditContent, originalContent, shouldParseContent])
 
-  useEffect(
-    () => useMetadataStore.subscribe(() => (isEditable ? reportChanges(onUpdateContent) : undefined)),
-    [didEditContent, isEditable, onUpdateContent]
-  )
-
-  useEffect(
-    () => useElementsStore.subscribe(() => (isEditable ? reportChanges(onUpdateContent) : undefined)),
-    [didEditContent, isEditable, onUpdateContent]
-  )
+  useEffect(() => useMetadataStore.subscribe(handleChange), [handleChange])
+  useEffect(() => useElementsStore.subscribe(handleChange), [handleChange])
 
   const handleContentParse = useCallback(() => {
     setShouldParseContent(false)
@@ -70,12 +81,3 @@ export default function App({ content, context, isEditable, onUpdateContent, ori
     </ErrorBoundary>
   )
 }
-
-const reportChanges = debounce(250, (reporter: FileBlockProps['onUpdateContent']) => {
-  const { actions, ...metadata } = useMetadataStore.getState()
-  const elements = issueFormElementsSelector(useElementsStore.getState())
-
-  const { yaml } = serializeIssueForm(metadata, elements)
-
-  reporter(yaml)
-})

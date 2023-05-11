@@ -14,7 +14,7 @@ export function YamlPreview() {
   const issueForm = useIssueForm()
 
   const { isValid, yaml } = useMemo(() => {
-    const { isValid, yaml } = serializeIssueForm(issueForm.metadata, issueForm.elements, true)
+    const { isValid, yaml } = serializeIssueForm(issueForm.metadata, issueForm.elements)
 
     return { isValid, yaml: hljs.highlight(yaml, { language: 'yaml' }).value }
   }, [issueForm])
