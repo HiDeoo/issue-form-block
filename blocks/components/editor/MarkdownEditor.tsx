@@ -4,7 +4,7 @@ import { MarkdownEditor as PrimerMarkdownEditor } from '@primer/react/drafts'
 import { useElement } from '../../hooks/useElement'
 import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
-import type { MarkdownElement } from '../../libs/issueForm'
+import type { MarkdownElement } from '../../libs/elements'
 
 import { EditorBlock } from './EditorBlock'
 

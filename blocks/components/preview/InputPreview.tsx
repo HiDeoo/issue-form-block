@@ -1,7 +1,7 @@
 import { TextInput } from '@primer/react'
 
 import { useElement } from '../../hooks/useElement'
-import type { InputElement } from '../../libs/issueForm'
+import type { InputElement } from '../../libs/elements'
 
 import { PreviewBlock } from './PreviewBlock'
 

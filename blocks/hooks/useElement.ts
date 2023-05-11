@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import type { IssueFormElement } from '../libs/issueForm'
+import type { IssueFormElement } from '../libs/elements'
 import { useElementsStore } from '../stores/elements'
 
 export function useElement<TType extends IssueFormElement['type']>(

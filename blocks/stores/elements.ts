@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import type { IssueFormElement } from '../libs/issueForm'
+import type { IssueFormElement } from '../libs/elements'
 
 export const useElementsStore = create<ElementsState>()((set) => ({
   baseElements: [],

@@ -2,7 +2,7 @@ import { ActionList, ActionMenu } from '@primer/react'
 import { Fragment } from 'react'
 
 import { useElement } from '../../hooks/useElement'
-import type { DropdownElement } from '../../libs/issueForm'
+import type { DropdownElement } from '../../libs/elements'
 
 import { PreviewBlock } from './PreviewBlock'
 

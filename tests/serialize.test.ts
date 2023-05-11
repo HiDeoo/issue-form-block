@@ -1,13 +1,8 @@
 import { expect, test } from 'vitest'
 import { parse } from 'yaml'
 
-import {
-  serializeIssueForm,
-  type IssueFormMetadata,
-  type IssueForm,
-  type CheckboxesElement,
-  type DropdownElement,
-} from '../blocks/libs/issueForm'
+import type { CheckboxesElement, DropdownElement } from '../blocks/libs/elements'
+import { serializeIssueForm, type IssueFormMetadata, type IssueForm } from '../blocks/libs/issueForm'
 
 test('should not include empty strings', () => {
   const metadata = { ...getTestMetadata(), title: '' }

@@ -3,7 +3,7 @@ import { arrayMove } from '@dnd-kit/sortable'
 import { useElement } from '../../hooks/useElement'
 import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
-import type { DropdownElement } from '../../libs/issueForm'
+import type { DropdownElement } from '../../libs/elements'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'

@@ -1,7 +1,7 @@
 import { Checkbox, CheckboxGroup, FormControl } from '@primer/react'
 
 import { useElement } from '../../hooks/useElement'
-import type { CheckboxesElement } from '../../libs/issueForm'
+import type { CheckboxesElement } from '../../libs/elements'
 
 import { Markdown } from './Markdown'
 import { PreviewBlock } from './PreviewBlock'

@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-import type { IssueFormElement } from '../../libs/issueForm'
+import type { IssueFormElement } from '../../libs/elements'
 
 import { ElementEditor } from './ElementEditor'
 

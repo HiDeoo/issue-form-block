@@ -1,4 +1,4 @@
-import type { IssueFormElement } from '../../libs/issueForm'
+import type { IssueFormElement } from '../../libs/elements'
 
 import { CheckboxesPreview } from './CheckboxesPreview'
 import { DropdownPreview } from './DropdownPreview'

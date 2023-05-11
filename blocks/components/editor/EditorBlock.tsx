@@ -3,7 +3,7 @@ import { Box, IconButton, Text, Tooltip } from '@primer/react'
 
 import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
-import type { IssueFormElement } from '../../libs/issueForm'
+import type { IssueFormElement } from '../../libs/elements'
 
 const dragHandleStyle = {
   border: 0,

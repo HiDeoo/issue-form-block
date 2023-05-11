@@ -1,5 +1,5 @@
 import { useElement } from '../../hooks/useElement'
-import type { MarkdownElement } from '../../libs/issueForm'
+import type { MarkdownElement } from '../../libs/elements'
 
 import { Markdown } from './Markdown'
 

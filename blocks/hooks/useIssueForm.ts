@@ -1,4 +1,4 @@
-import type { IssueFormElement } from '../libs/issueForm'
+import type { IssueFormElement } from '../libs/elements'
 import { useElementsStore, type ElementsState } from '../stores/elements'
 
 import { useMetadata } from './useMetadata'

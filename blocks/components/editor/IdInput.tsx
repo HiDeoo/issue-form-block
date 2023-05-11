@@ -1,9 +1,9 @@
-import { ID_VALIDATION_REGEX } from '../../libs/issueForm'
+import { ELEMENT_ID_VALIDATION_REGEX } from '../../libs/elements'
 
 import { TextInput } from './TextInput'
 
 export function IdInput({ onChange, value }: IdInputProps) {
-  const isInvalid = !value || value.length === 0 ? false : !ID_VALIDATION_REGEX.test(value)
+  const isInvalid = !value || value.length === 0 ? false : !ELEMENT_ID_VALIDATION_REGEX.test(value)
 
   return (
     <TextInput

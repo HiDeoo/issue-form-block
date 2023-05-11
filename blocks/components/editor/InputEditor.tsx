@@ -1,7 +1,7 @@
 import { useElement } from '../../hooks/useElement'
 import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
-import type { InputElement } from '../../libs/issueForm'
+import type { InputElement } from '../../libs/elements'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'

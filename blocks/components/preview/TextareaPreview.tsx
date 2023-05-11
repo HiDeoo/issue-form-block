@@ -1,7 +1,7 @@
 import { Textarea } from '@primer/react'
 
 import { useElement } from '../../hooks/useElement'
-import type { TextareaElement } from '../../libs/issueForm'
+import type { TextareaElement } from '../../libs/elements'
 
 import { PreviewBlock } from './PreviewBlock'
 

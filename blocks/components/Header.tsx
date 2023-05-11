@@ -15,7 +15,7 @@ import {
   createTextareaElement,
   type IssueFormElement,
   type IssueFormElementType,
-} from '../libs/issueForm'
+} from '../libs/elements'
 
 import { Errors } from './Errors'
 import { Warnings } from './Warnings'

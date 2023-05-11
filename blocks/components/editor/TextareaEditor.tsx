@@ -3,7 +3,7 @@ import { Link } from '@primer/react'
 import { useElement } from '../../hooks/useElement'
 import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
-import type { TextareaElement } from '../../libs/issueForm'
+import type { TextareaElement } from '../../libs/elements'
 
 import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
