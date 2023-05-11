@@ -125,6 +125,25 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
       path: ['body'],
     })
   }
+
+  // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-ids
+  const elementsIds = new Set<string>()
+
+  for (const [index, element] of issueForm.body.entries()) {
+    if (element.type === 'markdown' || element.id === undefined) {
+      continue
+    }
+
+    if (elementsIds.has(element.id)) {
+      ctx.addIssue({
+        code: ZodIssueCode.custom,
+        message: `The issue form contains multiple elements with the same identifier: '${element.id}'.`,
+        path: ['body', index, 'id'],
+      })
+    }
+
+    elementsIds.add(element.id)
+  }
 }
 
 export type IssueForm = z.infer<typeof issueFormSchema>
