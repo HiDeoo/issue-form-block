@@ -116,9 +116,9 @@ function normalizeIssueFormElements(elements: IssueFormElement[]) {
 
 function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
   // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-contain-at-least-one-non-markdown-field
-  const hasNonMarkdownField = issueForm.body.some((element) => element.type !== 'markdown')
+  const hasNonMarkdownElement = issueForm.body.some((element) => element.type !== 'markdown')
 
-  if (!hasNonMarkdownField) {
+  if (!hasNonMarkdownElement) {
     ctx.addIssue({
       code: ZodIssueCode.custom,
       message: 'The issue form must contain at least one non-markdown field.',
@@ -126,23 +126,40 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
     })
   }
 
-  // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-ids
-  const elementsIds = new Set<string>()
+  const elementIds = new Set<string>()
+  const elementLabels = new Set<string>()
 
   for (const [index, element] of issueForm.body.entries()) {
-    if (element.type === 'markdown' || element.id === undefined) {
+    // Markdown elements do not have IDs or labels.
+    if (element.type === 'markdown') {
       continue
     }
 
-    if (elementsIds.has(element.id)) {
-      ctx.addIssue({
-        code: ZodIssueCode.custom,
-        message: `The issue form contains multiple elements with the same identifier: '${element.id}'.`,
-        path: ['body', index, 'id'],
-      })
+    // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-ids
+    if (element.id) {
+      if (elementIds.has(element.id)) {
+        ctx.addIssue({
+          code: ZodIssueCode.custom,
+          message: `The issue form contains multiple elements with the same identifier: '${element.id}'.`,
+          path: ['body', index, 'id'],
+        })
+      }
+
+      elementIds.add(element.id)
     }
 
-    elementsIds.add(element.id)
+    // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-labels
+    if (element.attributes.label) {
+      if (elementLabels.has(element.attributes.label)) {
+        ctx.addIssue({
+          code: ZodIssueCode.custom,
+          message: `The issue form contains multiple elements with the same label: '${element.attributes.label}'.`,
+          path: ['body', index, 'attributes', 'label'],
+        })
+      }
+
+      elementLabels.add(element.attributes.label)
+    }
   }
 }
 
