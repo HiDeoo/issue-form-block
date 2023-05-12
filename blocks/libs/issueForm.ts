@@ -154,8 +154,21 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
       labels.push(element.attributes.label)
     }
 
-    if (element.type === 'checkboxes') {
-      labels.push(...element.attributes.options.map((option) => option.label))
+    if (element.type === 'checkboxes' || element.type === 'dropdown') {
+      for (const option of element.attributes.options) {
+        if (element.type === 'checkboxes') {
+          labels.push(option.label)
+        }
+
+        // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#bodyi-options-must-not-include-the-reserved-word-none
+        if (option.label.toLowerCase() === 'none') {
+          ctx.addIssue({
+            code: ZodIssueCode.custom,
+            message: `The issue form contains an option label with a reserved word: '${option.label}'.`,
+            path: ['body', index],
+          })
+        }
+      }
     }
 
     // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-labels
