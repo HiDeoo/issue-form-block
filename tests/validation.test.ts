@@ -212,15 +212,41 @@ test('should not validate an issue form with checkboxes having the same option l
 })
 
 test('should not validate an issue form with option labels using a reserved keyword', () => {
-  const optionLabels = ['None', 'test', 'none', 'NOnE'] as const
-
-  const issueForm = serializeIssueForm(getTestMetadata(), [getTestCheckboxesElement({ optionLabels: optionLabels })])
+  let issueForm = serializeIssueForm(getTestMetadata(), [getTestCheckboxesElement({ optionLabels: ['None'] })])
 
   expect(issueForm.isValid).toBe(false)
-  expect(issueForm.errors).toHaveLength(3)
-  expect(issueForm.errors).toContainEqual(getExpectedInvalidOptionLabelError(optionLabels[0]))
-  expect(issueForm.errors).toContainEqual(getExpectedInvalidOptionLabelError(optionLabels[2]))
-  expect(issueForm.errors).toContainEqual(getExpectedInvalidOptionLabelError(optionLabels[3]))
+  expect(issueForm.errors).toContainEqual(getExpectedInvalidOptionLabelError('None'))
+
+  issueForm = serializeIssueForm(getTestMetadata(), [getTestCheckboxesElement({ optionLabels: ['none'] })])
+
+  expect(issueForm.isValid).toBe(false)
+  expect(issueForm.errors).toContainEqual(getExpectedInvalidOptionLabelError('none'))
+
+  issueForm = serializeIssueForm(getTestMetadata(), [getTestCheckboxesElement({ optionLabels: ['NOnE'] })])
+
+  expect(issueForm.isValid).toBe(false)
+  expect(issueForm.errors).toContainEqual(getExpectedInvalidOptionLabelError('NOnE'))
+
+  issueForm = serializeIssueForm(getTestMetadata(), [getTestCheckboxesElement({ optionLabels: ['test'] })])
+
+  expect(issueForm.isValid).toBe(true)
+})
+
+test('should not validate an issue form with elements having too similar labels and no different ids', () => {
+  let issueForm = serializeIssueForm(getTestMetadata(), [
+    getTestElememt('input', { attributes: { label: 'Name?' } }),
+    getTestElememt('input', { attributes: { label: 'Name????' } }),
+  ])
+
+  expect(issueForm.isValid).toBe(false)
+  expect(issueForm.errors).toContainEqual(getExpectedDuplicatedLabelError('Name????', 1))
+
+  issueForm = serializeIssueForm(getTestMetadata(), [
+    getTestElememt('input', { id: 'input-1', attributes: { label: 'Name?' } }),
+    getTestElememt('input', { id: 'input-2', attributes: { label: 'Name????' } }),
+  ])
+
+  expect(issueForm.isValid).toBe(true)
 })
 
 function getTestCheckboxesElement({
@@ -243,7 +269,7 @@ function getTestCheckboxesElement({
 
 function getExpectedDuplicatedLabelError(label: string, elementIndex = 0) {
   return {
-    message: `The issue form contains multiple elements with the same label: '${label}'.`,
+    message: `The issue form contains multiple elements with identical or too similar labels: '${label}'.`,
     path: `body.${elementIndex}`,
   }
 }

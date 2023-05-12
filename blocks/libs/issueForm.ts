@@ -1,3 +1,4 @@
+import slugify from '@sindresorhus/slugify'
 import { type Pair, type Scalar, parse, stringify } from 'yaml'
 
 import { issueFormElementSchema, type IssueFormElement } from './elements'
@@ -148,16 +149,26 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
       elementIds.add(element.id)
     }
 
-    const labels: string[] = []
+    const labels: [labelOrSlug: string, slugLabel?: string][] = []
 
     if (element.attributes.label) {
-      labels.push(element.attributes.label)
+      labels.push([element.attributes.label])
+
+      const labelSlug = slugify(element.attributes.label)
+
+      if (labelSlug !== element.attributes.label) {
+        labels.push([labelSlug, element.attributes.label])
+      }
     }
 
     if (element.type === 'checkboxes' || element.type === 'dropdown') {
       for (const option of element.attributes.options) {
-        if (element.type === 'checkboxes') {
-          labels.push(option.label)
+        labels.push([option.label])
+
+        const labelSlug = slugify(option.label)
+
+        if (labelSlug !== option.label) {
+          labels.push([labelSlug, option.label])
         }
 
         // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#bodyi-options-must-not-include-the-reserved-word-none
@@ -173,27 +184,30 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
 
     // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-labels
     // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#checkboxes-must-have-unique-labels
-    for (const label of labels) {
-      const isKnownLabel = elementLabelsAndIds.has(label)
-      const knownLabelIds = elementLabelsAndIds.get(label)
+    // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#labels-are-too-similar
+    for (const [labelOrSlug, slugLabel] of labels) {
+      const isKnownLabel = elementLabelsAndIds.has(labelOrSlug)
+      const knownLabelIds = elementLabelsAndIds.get(labelOrSlug)
       const elementId = !element.id || element.id === '' ? undefined : element.id
 
       // The label is not known yet.
       if (!isKnownLabel || !knownLabelIds) {
-        elementLabelsAndIds.set(label, new Set([elementId]))
+        elementLabelsAndIds.set(labelOrSlug, new Set([elementId]))
         continue
       }
 
       // The label is known but the element ID is not.
       if (!knownLabelIds.has(elementId)) {
-        elementLabelsAndIds.set(label, new Set([...knownLabelIds, elementId]))
+        elementLabelsAndIds.set(labelOrSlug, new Set([...knownLabelIds, elementId]))
         continue
       }
 
       // The label is known and an element with the same ID already exists.
       ctx.addIssue({
         code: ZodIssueCode.custom,
-        message: `The issue form contains multiple elements with the same label: '${label}'.`,
+        message: `The issue form contains multiple elements with identical or too similar labels: '${
+          slugLabel ?? labelOrSlug
+        }'.`,
         path: ['body', index],
       })
     }
