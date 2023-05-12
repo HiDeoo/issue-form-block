@@ -17,8 +17,8 @@ import {
   type IssueFormElementType,
 } from '../libs/elements'
 
-import { Errors } from './Errors'
-import { Warnings } from './Warnings'
+import { IssueFormErrors } from './IssueFormErrors'
+import { IssueFormWarnings } from './IssueFormWarnings'
 import { YamlDialog } from './yaml/YamlDialog'
 
 const elementCreatorMap: Record<IssueFormElementType, () => IssueFormElement> = {
@@ -121,8 +121,8 @@ export function Header({ isEditable, isValidExtension, isValidPath }: HeaderProp
           </ActionList>
         </ActionMenu.Overlay>
       </ActionMenu>
-      <Warnings isEditable={isEditable} isValidExtension={isValidExtension} isValidPath={isValidPath} />
-      <Errors />
+      <IssueFormWarnings isEditable={isEditable} isValidExtension={isValidExtension} isValidPath={isValidPath} />
+      <IssueFormErrors />
       <Box flex={1} />
       {showExpandCollapseButtons ? (
         <>

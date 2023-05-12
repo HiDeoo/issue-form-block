@@ -4,6 +4,8 @@ import { ErrorBoundary as ReactErrorBoundary, type FallbackProps } from 'react-e
 
 import { ZodError } from '../libs/validations'
 
+import { IssueFormError } from './IssueFormError'
+
 export function ErrorBoundary({ children }: ErrorBoundaryProps) {
   return <ReactErrorBoundary FallbackComponent={ErrorFallback}>{children}</ReactErrorBoundary>
 }
@@ -82,7 +84,8 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
       >
         {isZodError ? (
           error.issues.map((issue, issueIndex) => (
-            <Box
+            <IssueFormError
+              error={{ message: issue.message, path: issue.path.join('.') }}
               key={issueIndex}
               sx={{
                 bg: 'canvas.subtle',
@@ -90,17 +93,9 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
                 borderWidth: 1,
                 borderStyle: 'solid',
                 borderColor: 'border.default',
-                display: 'grid',
-                columnGap: 3,
-                gridTemplateColumns: 'auto 1fr',
                 p: 3,
               }}
-            >
-              <Box>Path:</Box>
-              <Text fontFamily="mono">{issue.path.join('.')}</Text>
-              <Box>Message:</Box>
-              <Text fontFamily="mono">{issue.message}</Text>
-            </Box>
+            />
           ))
         ) : (
           <Text as="pre" sx={{ fontFamily: 'mono', m: 0 }}>

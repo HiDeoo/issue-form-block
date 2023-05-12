@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { Report } from './Report'
 
-export function Warnings({ isEditable, isValidExtension, isValidPath }: WarningsProps) {
+export function IssueFormWarnings({ isEditable, isValidExtension, isValidPath }: IssueFormWarningsProps) {
   const warnings = useMemo(() => {
     return [
       !isEditable && 'You do not have the permissions to save changes to this issue form.',
@@ -23,7 +23,7 @@ export function Warnings({ isEditable, isValidExtension, isValidPath }: Warnings
   return <Report messages={warnings} variant="warning" />
 }
 
-interface WarningsProps {
+interface IssueFormWarningsProps {
   isEditable: FileBlockProps['isEditable']
   isValidExtension: boolean
   isValidPath: boolean
