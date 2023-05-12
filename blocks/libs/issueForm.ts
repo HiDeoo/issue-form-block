@@ -127,7 +127,7 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
   }
 
   const elementIds = new Set<string>()
-  const elementLabels = new Set<string>()
+  const elementLabelsAndIds = new Map<string, Set<string | undefined>>()
 
   for (const [index, element] of issueForm.body.entries()) {
     // Markdown elements do not have IDs or labels.
@@ -150,15 +150,28 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
 
     // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-labels
     if (element.attributes.label) {
-      if (elementLabels.has(element.attributes.label)) {
-        ctx.addIssue({
-          code: ZodIssueCode.custom,
-          message: `The issue form contains multiple elements with the same label: '${element.attributes.label}'.`,
-          path: ['body', index, 'attributes', 'label'],
-        })
+      const isKnownLabel = elementLabelsAndIds.has(element.attributes.label)
+      const knownLabelIds = elementLabelsAndIds.get(element.attributes.label)
+      const elementId = !element.id || element.id === '' ? undefined : element.id
+
+      // The label is not known yet.
+      if (!isKnownLabel || !knownLabelIds) {
+        elementLabelsAndIds.set(element.attributes.label, new Set([elementId]))
+        continue
       }
 
-      elementLabels.add(element.attributes.label)
+      // The label is known but the element ID is not.
+      if (!knownLabelIds.has(elementId)) {
+        elementLabelsAndIds.set(element.attributes.label, new Set([...knownLabelIds, elementId]))
+        continue
+      }
+
+      // The label is known and an element with the same ID already exists.
+      ctx.addIssue({
+        code: ZodIssueCode.custom,
+        message: `The issue form contains multiple elements with the same label: '${element.attributes.label}'.`,
+        path: ['body', index, 'attributes', 'label'],
+      })
     }
   }
 }
