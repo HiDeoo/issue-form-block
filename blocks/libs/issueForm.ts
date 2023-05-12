@@ -148,29 +148,40 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
       elementIds.add(element.id)
     }
 
-    // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-labels
+    const labels: string[] = []
+
     if (element.attributes.label) {
-      const isKnownLabel = elementLabelsAndIds.has(element.attributes.label)
-      const knownLabelIds = elementLabelsAndIds.get(element.attributes.label)
+      labels.push(element.attributes.label)
+    }
+
+    if (element.type === 'checkboxes') {
+      labels.push(...element.attributes.options.map((option) => option.label))
+    }
+
+    // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#body-must-have-unique-labels
+    // https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/common-validation-errors-when-creating-issue-forms#checkboxes-must-have-unique-labels
+    for (const label of labels) {
+      const isKnownLabel = elementLabelsAndIds.has(label)
+      const knownLabelIds = elementLabelsAndIds.get(label)
       const elementId = !element.id || element.id === '' ? undefined : element.id
 
       // The label is not known yet.
       if (!isKnownLabel || !knownLabelIds) {
-        elementLabelsAndIds.set(element.attributes.label, new Set([elementId]))
+        elementLabelsAndIds.set(label, new Set([elementId]))
         continue
       }
 
       // The label is known but the element ID is not.
       if (!knownLabelIds.has(elementId)) {
-        elementLabelsAndIds.set(element.attributes.label, new Set([...knownLabelIds, elementId]))
+        elementLabelsAndIds.set(label, new Set([...knownLabelIds, elementId]))
         continue
       }
 
       // The label is known and an element with the same ID already exists.
       ctx.addIssue({
         code: ZodIssueCode.custom,
-        message: `The issue form contains multiple elements with the same label: '${element.attributes.label}'.`,
-        path: ['body', index, 'attributes', 'label'],
+        message: `The issue form contains multiple elements with the same label: '${label}'.`,
+        path: ['body', index],
       })
     }
   }
