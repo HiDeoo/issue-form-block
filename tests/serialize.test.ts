@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 
-import type { CheckboxesElement, DropdownElement } from '../blocks/libs/elements'
+import type { CheckboxesElement, DropdownElement, InputElement, TextareaElement } from '../blocks/libs/elements'
 import { serializeIssueForm } from '../blocks/libs/issueForm'
 
 import { getTestElememt, getTestMetadata, parseTestIssueForm } from './utils'
@@ -26,6 +26,20 @@ test('should not include _collapsed properties', () => {
   expect(issueForm.body).not.toMatchObject([{ _collapsed: true }, { _collapsed: false }])
 })
 
+test('should not include _id properties', () => {
+  const { yaml } = serializeIssueForm(getTestMetadata(), [
+    getTestElememt('input', { _collapsed: true, attributes: { label: 'test' } }),
+    getTestElememt('textarea', { _collapsed: false, attributes: { value: 'test' } }),
+  ])
+
+  const issueForm = parseTestIssueForm(yaml)
+  const checkboxes = issueForm.body.at(0) as InputElement
+  const dropdown = issueForm.body.at(1) as TextareaElement
+
+  expect(Object.keys(checkboxes).includes('_id')).toBe(false)
+  expect(Object.keys(dropdown).includes('_id')).toBe(false)
+})
+
 test('should not include _id options properties', () => {
   const { yaml } = serializeIssueForm(getTestMetadata(), [
     getTestElememt('checkboxes', {
@@ -39,10 +53,6 @@ test('should not include _id options properties', () => {
   const issueForm = parseTestIssueForm(yaml)
   const checkboxes = issueForm.body.at(0) as CheckboxesElement
   const dropdown = issueForm.body.at(1) as DropdownElement
-
-  expect(Object.keys(checkboxes).includes('_id')).toBe(false)
-  expect(Object.keys(dropdown).includes('_id')).toBe(false)
-
   const checkboxesOptionKeys = Object.keys(checkboxes.attributes.options.at(0) ?? {})
   const dropdownOptionKeys = Object.keys(dropdown.attributes.options.at(0) ?? {})
 
