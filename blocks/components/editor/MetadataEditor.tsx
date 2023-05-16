@@ -21,11 +21,11 @@ export function MetadataEditor() {
     setMetadata({ title })
   }
 
-  function handleAssigneesAddition(newTexts: Token['text'][]) {
+  function handleAssigneesAddition(newAssignee: Token['text'][]) {
     setMetadata({
       assignees: [
         ...metadata.assignees,
-        ...newTexts.map((text) => ({
+        ...newAssignee.map((text) => ({
           _id: crypto.randomUUID(),
           text,
         })),
@@ -35,6 +35,22 @@ export function MetadataEditor() {
 
   function handleAssigneesDeletion(deletedId: Token['_id']) {
     setMetadata({ assignees: metadata.assignees.filter((assignee) => assignee._id !== deletedId) })
+  }
+
+  function handleLabelsAddition(newLabels: Token['text'][]) {
+    setMetadata({
+      labels: [
+        ...metadata.labels,
+        ...newLabels.map((text) => ({
+          _id: crypto.randomUUID(),
+          text,
+        })),
+      ],
+    })
+  }
+
+  function handleLabelsDeletion(deletedId: Token['_id']) {
+    setMetadata({ labels: metadata.labels.filter((label) => label._id !== deletedId) })
   }
 
   return (
@@ -62,6 +78,13 @@ export function MetadataEditor() {
         onAdd={handleAssigneesAddition}
         onDelete={handleAssigneesDeletion}
         tokens={metadata.assignees}
+      />
+      <TokensEditor
+        caption="Existing labels that will be automatically added to issues created with this issue form."
+        label="Labels"
+        onAdd={handleLabelsAddition}
+        onDelete={handleLabelsDeletion}
+        tokens={metadata.labels}
       />
     </EditorBlock>
   )

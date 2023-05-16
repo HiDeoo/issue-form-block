@@ -79,7 +79,7 @@ test('should flatten options labels for a dropdown', () => {
   expect(dropdownOptions).toEqual(['option 1', 'option 2'])
 })
 
-test('should flatten properties and not include _id properties', () => {
+test('should flatten assignees and not include _id properties', () => {
   const assignee0 = 'assignee 1'
   const assignee1 = 'assignee 2'
 
@@ -98,4 +98,25 @@ test('should flatten properties and not include _id properties', () => {
   expect(Array.isArray(issueForm.assignees)).toBe(true)
   expect(issueForm.assignees.at(0)).toBe(assignee0)
   expect(issueForm.assignees.at(1)).toBe(assignee1)
+})
+
+test('should flatten labels and not include _id properties', () => {
+  const label0 = 'label 1'
+  const label1 = 'label 2'
+
+  const { yaml } = serializeIssueForm(
+    getTestMetadata({
+      labels: [
+        { _id: crypto.randomUUID(), text: label0 },
+        { _id: crypto.randomUUID(), text: label1 },
+      ],
+    }),
+    [getTestElememt('input', { attributes: { label: 'test' } })]
+  )
+
+  const issueForm = parseTestIssueForm(yaml)
+
+  expect(Array.isArray(issueForm.labels)).toBe(true)
+  expect(issueForm.labels.at(0)).toBe(label0)
+  expect(issueForm.labels.at(1)).toBe(label1)
 })

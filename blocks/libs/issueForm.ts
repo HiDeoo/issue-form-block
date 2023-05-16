@@ -12,6 +12,7 @@ const serializationKeyOrder = [
   'description',
   'title',
   'assignees',
+  'labels',
   'body',
   'type',
   'id',
@@ -28,8 +29,7 @@ const serializationKeyOrder = [
 const issueFormMetadataSchema = z.object({
   assignees: zTokenList.optional(),
   description: zNonEmptyString,
-  // TODO(HiDeoo)
-  // labels
+  labels: zTokenList.optional(),
   name: zNonEmptyString,
   title: z.string().optional(),
 })
@@ -39,7 +39,11 @@ const issueFormSchema = z
     body: z.array(issueFormElementSchema),
   })
   .merge(issueFormMetadataSchema)
-  .transform((value) => ({ ...value, assignees: parseTokensList(value.assignees) }))
+  .transform((value) => ({
+    ...value,
+    assignees: parseTokensList(value.assignees),
+    labels: parseTokensList(value.labels),
+  }))
   .superRefine((issueForm, ctx) => {
     validateIssueForm(issueForm, ctx)
   })
@@ -102,6 +106,7 @@ function normalizeMetadata(metadata: IssueFormMetadata) {
   return {
     ...metadata,
     assignees: normalizeTokenList(metadata.assignees),
+    labels: normalizeTokenList(metadata.labels),
   }
 }
 

@@ -5,6 +5,7 @@ import type { IssueFormMetadata } from '../libs/issueForm'
 const initialState: IssueFormMetadata = {
   assignees: [],
   description: 'A new issue form.',
+  labels: [],
   name: 'New issue form',
 }
 
