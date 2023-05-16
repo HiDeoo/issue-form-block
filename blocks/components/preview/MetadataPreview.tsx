@@ -1,8 +1,19 @@
-import { Box, Button, Heading, Text, TextInput } from '@primer/react'
+import { Avatar, Box, Button, Heading, Link, Text, TextInput } from '@primer/react'
 
 import { useMetadata } from '../../hooks/useMetadata'
 
 import { PreviewSeparator } from './PreviewSeparator'
+
+const assigneeStyle = {
+  color: 'fg.default',
+  textDecoration: 'none',
+  '&:hover': {
+    color: 'accent.fg',
+  },
+  '&:focus-visible': {
+    outlineColor: 'accent.fg',
+  },
+}
 
 export function MetadataPreview() {
   const metadata = useMetadata()
@@ -37,6 +48,30 @@ export function MetadataPreview() {
       </Box>
       <PreviewSeparator />
       <TextInput placeholder="Title" readOnly sx={{ bg: 'canvas.inset' }} value={metadata.title ?? ''} />
+      {metadata.assignees.length > 0 ? (
+        <>
+          <PreviewSeparator />
+          <Text fontSize={1} fontWeight={600}>
+            Assignees
+          </Text>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {metadata.assignees.map((assignee) => (
+              <Box display="flex" key={assignee._id}>
+                <Link
+                  href="https://github.com/HiDeoo/issue-form-block/issues/new/choose"
+                  sx={assigneeStyle}
+                  target="_blank"
+                >
+                  <Avatar src={`https://avatars.githubusercontent.com/${assignee.text}`} sx={{ mr: 1 }} />
+                  <Text fontSize={1} fontWeight={600}>
+                    {assignee.text}
+                  </Text>
+                </Link>
+              </Box>
+            ))}
+          </Box>
+        </>
+      ) : null}
       <PreviewSeparator />
     </>
   )
