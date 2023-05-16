@@ -1,14 +1,17 @@
 import slugify from '@sindresorhus/slugify'
 import { type Pair, type Scalar, parse, stringify } from 'yaml'
 
+import type { Token } from '../components/editor/TokensEditor'
+
 import { issueFormElementSchema, type IssueFormElement } from './elements'
-import { z, zNonEmptyString, type RefinementCtx, ZodIssueCode } from './validations'
+import { z, zNonEmptyString, type RefinementCtx, ZodIssueCode, zTokenList } from './validations'
 
 const serializationKeyOrder = [
   'name',
   'label',
   'description',
   'title',
+  'assignees',
   'body',
   'type',
   'id',
@@ -23,13 +26,12 @@ const serializationKeyOrder = [
 ]
 
 const issueFormMetadataSchema = z.object({
-  name: zNonEmptyString,
+  assignees: zTokenList.optional(),
   description: zNonEmptyString,
-  title: z.string().optional(),
-  // TODO(HiDeoo)
-  // assignees
   // TODO(HiDeoo)
   // labels
+  name: zNonEmptyString,
+  title: z.string().optional(),
 })
 
 const issueFormSchema = z
@@ -37,6 +39,7 @@ const issueFormSchema = z
     body: z.array(issueFormElementSchema),
   })
   .merge(issueFormMetadataSchema)
+  .transform((value) => ({ ...value, assignees: parseTokensList(value.assignees) }))
   .superRefine((issueForm, ctx) => {
     validateIssueForm(issueForm, ctx)
   })
@@ -50,7 +53,7 @@ export function parseIssueForm(content: string) {
 }
 
 export function serializeIssueForm(metadata: IssueFormMetadata, elements: IssueFormElement[]): SerializedIssueForm {
-  const issueForm = { ...metadata, body: normalizeIssueFormElements(elements) }
+  const issueForm = { ...normalizeMetadata(metadata), body: normalizeIssueFormElements(elements) }
 
   const validation = issueFormSchema.safeParse(issueForm)
   const isValid = validation.success
@@ -87,6 +90,23 @@ export function isValidIssueFormPath(path: string, file: string) {
 
 export function isValidIssueFormExtension(file: string) {
   return file.endsWith('.yml') || file.endsWith('.yaml')
+}
+
+function parseTokensList(tokensList: string | string[] | undefined = []): Token[] {
+  const tokens = Array.isArray(tokensList) ? tokensList : tokensList.split(',')
+
+  return tokens.map((token) => ({ _id: crypto.randomUUID(), text: token.trim() }))
+}
+
+function normalizeMetadata(metadata: IssueFormMetadata) {
+  return {
+    ...metadata,
+    assignees: normalizeTokenList(metadata.assignees),
+  }
+}
+
+function normalizeTokenList(tokens: Token[]) {
+  return tokens.length > 0 ? tokens.map((token) => token.text) : undefined
 }
 
 function normalizeIssueFormElements(elements: IssueFormElement[]) {
@@ -215,7 +235,7 @@ function validateIssueForm(issueForm: IssueForm, ctx: RefinementCtx) {
 }
 
 export type IssueForm = z.infer<typeof issueFormSchema>
-export type IssueFormMetadata = z.infer<typeof issueFormMetadataSchema>
+export type IssueFormMetadata = Omit<IssueForm, 'body'>
 
 interface SerializedIssueForm {
   errors: IssueFormError[]

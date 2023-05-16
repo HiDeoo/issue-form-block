@@ -7,5 +7,5 @@ export function useMetadata() {
 }
 
 function selector(state: MetadataState) {
-  return { description: state.description, name: state.name, title: state.title }
+  return { assignees: state.assignees, description: state.description, name: state.name, title: state.title }
 }
