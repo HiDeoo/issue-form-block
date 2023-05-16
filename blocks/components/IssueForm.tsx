@@ -27,9 +27,6 @@ export const IssueForm = memo(function IssueForm({
 
     const issueForm = parseIssueForm(content)
 
-    // FIXME(HiDeoo)
-    console.error('🚨 [IssueForm.tsx:13] issueForm:', issueForm)
-
     setOriginalMetadata(issueForm.metadata)
     setOriginalElements(issueForm.elements)
   }, [content, onParseContent, setOriginalElements, setOriginalMetadata, shouldParseContent])
