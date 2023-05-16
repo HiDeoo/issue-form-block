@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Heading, Link, Text, TextInput } from '@primer/react'
+import { Avatar, Box, Button, Heading, Label, LabelGroup, Link, Text, TextInput } from '@primer/react'
 
 import { useMetadata } from '../../hooks/useMetadata'
 
@@ -70,6 +70,21 @@ export function MetadataPreview() {
               </Box>
             ))}
           </Box>
+        </>
+      ) : null}
+      {metadata.labels.length > 0 ? (
+        <>
+          <PreviewSeparator />
+          <Text fontSize={1} fontWeight={600}>
+            Labels
+          </Text>
+          <LabelGroup>
+            {metadata.labels.map((label) => (
+              <Label key={label._id} variant="done" sx={{ bg: 'done.subtle' }}>
+                {label.text}
+              </Label>
+            ))}
+          </LabelGroup>
         </>
       ) : null}
       <PreviewSeparator />
