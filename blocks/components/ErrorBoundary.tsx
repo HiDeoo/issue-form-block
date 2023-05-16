@@ -60,9 +60,11 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
         <Text as="p" sx={{ fontSize: 1 }}>
           {subtitle}
         </Text>
-        <Button onClick={resetErrorBoundary} variant="primary">
-          New issue form
-        </Button>
+        {isZodError ? (
+          <Button onClick={resetErrorBoundary} variant="primary">
+            New issue form
+          </Button>
+        ) : null}
       </Flash>
       <Box
         sx={{
