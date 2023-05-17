@@ -16,6 +16,7 @@ const checkboxesElementSchema = z
       options: z
         .object({
           label: zNonEmptyString,
+          required: z.boolean().optional(),
         })
         .array()
         .transform((value) => value.map((option) => ({ ...option, _id: crypto.randomUUID() }))),
@@ -23,7 +24,6 @@ const checkboxesElementSchema = z
     type: z.literal('checkboxes'),
   })
   .extend(zId)
-  .extend(zValidations)
   .extend(_zCollapsed)
   .transform((value) => ({ ...value, _id: crypto.randomUUID() }))
 

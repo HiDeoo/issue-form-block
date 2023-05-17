@@ -18,6 +18,7 @@ const serializationKeyOrder = [
   'id',
   'attributes',
   'validations',
+  'required',
   'description',
   'placeholder',
   'value',

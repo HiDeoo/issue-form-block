@@ -6,6 +6,12 @@ import type { CheckboxesElement } from '../../libs/elements'
 import { Markdown } from './Markdown'
 import { PreviewBlock } from './PreviewBlock'
 
+const formControlStyle = {
+  '& label span span': {
+    color: 'danger.fg',
+  },
+}
+
 const checkboxStyle = {
   bg: 'canvas.inset',
   borderColor: 'border.default',
@@ -18,12 +24,11 @@ export function CheckboxesPreview({ _id }: CheckboxesPreviewProps) {
     <PreviewBlock
       description={checkboxes.attributes.description}
       id={checkboxes._id}
-      required={checkboxes.validations?.required}
       title={checkboxes.attributes.label}
     >
       <CheckboxGroup aria-labelledby={`${checkboxes._id}-caption`}>
         {checkboxes.attributes.options.map((option) => (
-          <FormControl key={option._id}>
+          <FormControl key={option._id} required={option.required} sx={formControlStyle}>
             <Checkbox checked={false} readOnly sx={checkboxStyle} />
             <FormControl.Label>
               <Markdown>{option.label}</Markdown>

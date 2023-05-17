@@ -1,4 +1,5 @@
 import { FormControl, Checkbox as PrimerCheckbox } from '@primer/react'
+import type { BetterSystemStyleObject } from '@primer/react/lib/sx'
 
 const checkboxStyle = {
   bg: 'canvas.inset',
@@ -11,13 +12,13 @@ const checkboxStyle = {
   },
 }
 
-export function Checkbox({ caption, checked = false, label, onChange, required = false }: CheckboxProps) {
+export function Checkbox({ caption, checked = false, label, onChange, required = false, sx }: CheckboxProps) {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     onChange(event.target.checked)
   }
 
   return (
-    <FormControl required={required}>
+    <FormControl required={required} sx={sx}>
       <PrimerCheckbox aria-label={label} checked={checked} onChange={handleChange} sx={checkboxStyle} />
       <FormControl.Label>{label}</FormControl.Label>
       {caption ? <FormControl.Caption>{caption}</FormControl.Caption> : null}
@@ -31,4 +32,5 @@ interface CheckboxProps {
   label: string
   onChange: (newValue: boolean) => void
   required?: boolean
+  sx?: BetterSystemStyleObject
 }

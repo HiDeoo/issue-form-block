@@ -5,7 +5,6 @@ import { useElementsActions } from '../../hooks/useElementsActions'
 import type { DraggableProps } from '../../libs/dnd'
 import type { CheckboxesElement } from '../../libs/elements'
 
-import { Checkbox } from './Checkbox'
 import { EditorBlock } from './EditorBlock'
 import { IdInput } from './IdInput'
 import { type Option, OptionsEditor } from './OptionsEditor'
@@ -25,10 +24,6 @@ export function CheckboxesEditor({ _id, ...others }: CheckboxesEditorProps) {
 
   function handleLabelChange(label: string) {
     setElement({ ...checkboxes, attributes: { ...checkboxes.attributes, label } })
-  }
-
-  function handleRequiredChange(required: boolean) {
-    setElement({ ...checkboxes, validations: { ...checkboxes.validations, required } })
   }
 
   function handleOptionAddition() {
@@ -78,6 +73,22 @@ export function CheckboxesEditor({ _id, ...others }: CheckboxesEditorProps) {
     })
   }
 
+  function handleOptionRequired(updatedId: Option['_id'], newRequired: Option['required']) {
+    setElement({
+      ...checkboxes,
+      attributes: {
+        ...checkboxes.attributes,
+        options: checkboxes.attributes.options.map((option) => {
+          if (option._id !== updatedId) {
+            return option
+          }
+
+          return { ...option, required: newRequired }
+        }),
+      },
+    })
+  }
+
   return (
     <EditorBlock
       collapsed={checkboxes._collapsed}
@@ -107,15 +118,10 @@ export function CheckboxesEditor({ _id, ...others }: CheckboxesEditorProps) {
         onChange={handleOptionChange}
         onDelete={handleOptionDeletion}
         onReorder={handleOptionReorder}
+        onRequire={handleOptionRequired}
         options={checkboxes.attributes.options}
       />
       <IdInput onChange={handleIdChange} value={checkboxes.id} />
-      <Checkbox
-        caption="Prevents form submission for public repositories until the set of checkboxes is completed."
-        checked={checkboxes.validations?.required}
-        label="Required"
-        onChange={handleRequiredChange}
-      />
     </EditorBlock>
   )
 }

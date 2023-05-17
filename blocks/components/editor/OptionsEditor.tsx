@@ -14,6 +14,8 @@ import {
   resetDragCursor,
 } from '../../libs/dnd'
 
+import { Checkbox } from './Checkbox'
+
 const dndItemType = 'option'
 const dndOptions = getDndOptions(dndItemType, true)
 
@@ -32,6 +34,16 @@ const dragHandleStyle = {
   '> svg': {
     height: 22,
     width: 22,
+  },
+}
+
+const checkboxStyle = {
+  ml: 4,
+  my: 1,
+  '& label': {
+    color: 'fg.muted',
+    fontSize: 0,
+    fontWeight: 400,
   },
 }
 
@@ -173,6 +185,7 @@ function OptionEditor({
   name,
   onChange,
   onDelete,
+  onRequire,
   option,
   setActivatorNodeRef,
   setNodeRef,
@@ -197,8 +210,13 @@ function OptionEditor({
     onChange(option._id, event.target.value)
   }
 
+  function handleRequiredChange(required: boolean) {
+    onRequire?.(option._id, required)
+  }
+
   const isEmpty = option.label.trim().length === 0
   const isDragged = isDragOverlay ?? isDragging
+  const isRequirable = onRequire !== undefined
 
   return (
     <Box ref={setNodeRef} style={style} sx={{ opacity: isDragging ? 0.5 : 1 }}>
@@ -229,6 +247,14 @@ function OptionEditor({
           />
         </Tooltip>
       </Box>
+      {isRequirable ? (
+        <Checkbox
+          checked={option.required}
+          label="Prevents form submission for public repositories until the checkbox is completed."
+          onChange={handleRequiredChange}
+          sx={checkboxStyle}
+        />
+      ) : null}
       {isEmpty ? <FormControl.Validation variant="error">An option cannot be empty.</FormControl.Validation> : null}
     </Box>
   )
@@ -245,6 +271,7 @@ interface OptionsEditorProps {
   onChange: (updatedId: Option['_id'], newLabel: Option['label']) => void
   onDelete: (deletedId: Option['_id']) => void
   onReorder: (fromIndex: number, toIndex: number) => void
+  onRequire?: (updatedId: Option['_id'], newRequired: Option['required']) => void
   options: Option[]
 }
 
@@ -255,6 +282,7 @@ interface OptionDraggableEditorProps {
   name: OptionsEditorProps['name']
   onChange: OptionsEditorProps['onChange']
   onDelete: OptionsEditorProps['onDelete']
+  onRequire?: OptionsEditorProps['onRequire']
   option: Option
 }
 
@@ -263,4 +291,5 @@ type OptionEditorProps = OptionDraggableEditorProps & DraggableProps
 export interface Option {
   _id: string
   label: string
+  required?: boolean
 }
