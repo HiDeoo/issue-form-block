@@ -1,4 +1,7 @@
 {
+  "examples/debug.yml": {
+    "default": "HiDeoo__issue-form-block__issue-form-block"
+  },
   "examples/elements.yml": {
     "default": "HiDeoo__issue-form-block__issue-form-block"
   },
