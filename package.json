@@ -2,7 +2,7 @@
   "name": "issue-form-block",
   "version": "0.0.1",
   "license": "MIT",
-  "description": "// TODO(HiDeoo)",
+  "description": "GitHub Block to preview and edit issue forms as a custom file renderer in GitHub.",
   "author": "HiDeoo <github@hideoo.dev> (https://hideoo.dev)",
   "type": "module",
   "scripts": {
@@ -59,7 +59,12 @@
   "private": true,
   "sideEffects": false,
   "keywords": [
-    "// TODO(HiDeoo)"
+    "github-blocks",
+    "github",
+    "blocks",
+    "issue",
+    "forms",
+    "issue-forms"
   ],
   "homepage": "https://github.com/HiDeoo/issue-form-block",
   "repository": {
