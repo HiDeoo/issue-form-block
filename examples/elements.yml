@@ -9,9 +9,9 @@ body:
       options:
         - label: checkbox-option-1
         - label: checkbox-option-2
+          required: false
         - label: checkbox-option-3
-    validations:
-      required: true
+          required: true
   - type: dropdown
     id: dropdown-id
     attributes:
