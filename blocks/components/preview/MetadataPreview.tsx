@@ -57,11 +57,7 @@ export function MetadataPreview() {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {metadata.assignees.map((assignee) => (
               <Box display="flex" key={assignee._id}>
-                <Link
-                  href="https://github.com/HiDeoo/issue-form-block/issues/new/choose"
-                  sx={assigneeStyle}
-                  target="_blank"
-                >
+                <Link href={`https://github.com/${assignee.text}`} sx={assigneeStyle} target="_blank">
                   <Avatar src={`https://avatars.githubusercontent.com/${assignee.text}`} sx={{ mr: 1 }} />
                   <Text fontSize={1} fontWeight={600}>
                     {assignee.text}
