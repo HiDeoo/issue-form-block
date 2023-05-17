@@ -2,8 +2,8 @@
   {
     "type": "file",
     "id": "issue-form-block",
-    "title": "// TODO(HiDeoo)",
-    "description": "// TODO(HiDeoo)",
+    "title": "Issue forms",
+    "description": "Preview and edit issue forms.",
     "entry": "blocks/App.tsx",
     "matches": ["*.yml", "*.yaml"],
     "example_path": "https://github.com/HiDeoo/issue-form-block/blob/main/examples/example.yml"
