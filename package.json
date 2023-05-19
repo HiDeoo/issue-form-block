@@ -1,6 +1,6 @@
 {
   "name": "issue-form-block",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "description": "GitHub Block to preview and edit issue forms as a custom file renderer in GitHub.",
   "author": "HiDeoo <github@hideoo.dev> (https://hideoo.dev)",
