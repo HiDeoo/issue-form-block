@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "blocks start",
-    "build": "blocks build",
+    "build": "tsx scripts/build",
     "test": "vitest",
     "lint": "prettier -c --cache . && eslint . --cache --max-warnings=0 && tsc --noEmit",
     "prepare": "husky install"
@@ -37,11 +37,13 @@
     "@types/markdown-it": "12.2.3",
     "@types/react": "18.2.0",
     "@types/throttle-debounce": "5.0.0",
+    "esbuild": "0.17.19",
     "eslint": "8.40.0",
     "happy-dom": "9.10.9",
     "husky": "8.0.3",
     "lint-staged": "13.2.1",
     "prettier": "2.8.8",
+    "tsx": "3.12.7",
     "typescript": "5.0.4",
     "vitest": "0.31.0"
   },
