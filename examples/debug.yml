@@ -1,5 +1,7 @@
 name: Debug issue form
 description: A debug issue form
+assignees:
+  - hideoo
 body:
   - type: input
     attributes:
